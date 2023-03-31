@@ -1,0 +1,12 @@
+nodemcu1_0.name=NodeMCU 0.9 (ESP-12 Module)
+nodemcu1_0.upload.maximum_size=1048576
+nodemcu1_0.upload.maximum_data_size=327680
+nodemcu1_0.upload.speed=921600
+nodemcu1_0.bootloader.speed=115200
+nodemcu1_0.build.f_cpu=80000000L
+nodemcu1_0.build.flash_size=4M
+nodemcu1_0.build.flash_freq=40m
+nodemcu1_0.build.flash_mode=dio
+nodemcu1_0.build.boot=dio_1m
+nodemcu1_0.build.core=esp8266
+nodemcu1_0.build.variant=nodemcu
