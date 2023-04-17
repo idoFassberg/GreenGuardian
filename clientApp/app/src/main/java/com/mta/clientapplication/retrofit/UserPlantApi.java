@@ -11,6 +11,6 @@ public interface UserPlantApi {
     @GET("/user-plant/get-all")
     Call<List<UserPlant>> getAllUserPlants();
 
-    @POST("/user-plant/save")
+    @POST("createUser")
     Call<UserPlant> saveUserPlant(@Body UserPlant userPlant);
 }

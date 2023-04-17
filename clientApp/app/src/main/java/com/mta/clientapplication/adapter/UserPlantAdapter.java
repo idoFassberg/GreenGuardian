@@ -31,7 +31,7 @@ public class UserPlantAdapter extends RecyclerView.Adapter<UserPlantHolder> {
         UserPlant plant = userPlantList.get(position);
         holder.nickName.setText(plant.getNickName());
         holder.plantName.setText(plant.getPlantName());
-        holder.date.setText(plant.getCreationDateStr());
+        //holder.date.setText(plant.getCreationDateStr());
     }
 
     @Override

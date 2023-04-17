@@ -7,14 +7,20 @@ public class UserPlant {
     private int userId;
     private String plantName;
     private String nickName;
-    private int currentHumidityLevel;
-    private int recommendedHumidityLevel;
-    private String pictureURL;
+    //private int currentHumidityLevel;
+    //private int recommendedHumidityLevel;
+    //private String pictureURL;
 
-    private java.sql.Date creationDate;
+    //private java.sql.Date creationDate;
 
     public UserPlant() {
-        this.creationDate = new java.sql.Date(new java.util.Date().getTime());
+    }
+
+    public UserPlant(int plantId, int userId, String plantName, String nickName) {
+        this.plantId = plantId;
+        this.userId = userId;
+        this.plantName = plantName;
+        this.nickName = nickName;
     }
 
     public int getPlantId() {
@@ -48,15 +54,15 @@ public class UserPlant {
     public void setNickName(String nickName) {
         this.nickName = nickName;
     }
-    public int getCurrentHumidityLevel() {
+   /* public int getCurrentHumidityLevel() {
         return currentHumidityLevel;
     }
 
     public void setCurrentHumidityLevel(int currentHumidityLevel) {
         this.currentHumidityLevel = currentHumidityLevel;
-    }
+    }*/
 
-    public int getRecommendedHumidityLevel() {
+   /* public int getRecommendedHumidityLevel() {
         return recommendedHumidityLevel;
     }
 
@@ -70,11 +76,11 @@ public class UserPlant {
 
     public void setPictureURL(String pictureURL) {
         this.pictureURL = pictureURL;
-    }
+    }*/
 
-    public String getCreationDateStr() {
+   /* public String getCreationDateStr() {
         return creationDate.toString();
-    }
+    }*/
 
     @Override
     public String toString() {
