@@ -2,7 +2,9 @@ package com.mta.greenguardianapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
@@ -18,5 +20,9 @@ public class MainActivity extends AppCompatActivity {
 
         //mDatabase = FirebaseDatabase.getInstance().getReference();
 
+    }
+    public void onCLICKactivity(View v){
+        Intent intent = new Intent("com.mta.greenguardianapplication.AddImageForm");
+        startActivity(intent);
     }
 }

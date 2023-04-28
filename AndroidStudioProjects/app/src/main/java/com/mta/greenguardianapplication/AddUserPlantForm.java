@@ -36,11 +36,11 @@ public class AddUserPlantForm extends AppCompatActivity {
             String plantName = String.valueOf(inputEditPlantName.getText());
             String nickName = String.valueOf(inputEditNickName.getText());
 
-            writeNewUser(12345,Integer.parseInt(userId), plantName, nickName);
+            writeNewUser("12345",userId, plantName, nickName);
 
         });
     }
-    public void writeNewUser(int plantId, int userId, String plantName, String nickName) {
+    public void writeNewUser(String plantId, String userId, String plantName, String nickName) {
         UserPlant userPlant = new UserPlant(plantId, userId, plantName, nickName);
 
         mDatabase.child(plantName).setValue(userPlant);

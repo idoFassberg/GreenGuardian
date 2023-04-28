@@ -13,49 +13,47 @@
         android:padding="15dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img1"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@mipmap/ic_launcher"
             android:layout_centerVertical="true"
-            android:id="@+id/img1"
-            app:civ_border_width="2dp"
+            android:layout_marginEnd="15dp"
+            android:src="@mipmap/ic_launcher"
             app:civ_border_color="#FF000000"
-            />
+            app:civ_border_width="2dp" />
 
         <TextView
+            android:id="@+id/form_textFieldPlantName1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/nametext"
-            android:text="This is Demo Name"
-            android:textStyle="bold"
-            android:textSize="25sp"
-            android:textColor="#000"
+            android:layout_marginTop="10dp"
             android:layout_toEndOf="@id/img1"
-            android:layout_marginStart="10dp"/>
+            android:text="Plant Name"
+            android:textColor="#000"
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/form_textFieldNickName1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/coursetext"
-            android:text="This is Course Name"
-            android:textSize="25sp"
-            android:textColor="#000"
+            android:layout_below="@id/form_textFieldPlantName1"
+            android:layout_marginTop="5dp"
             android:layout_toEndOf="@id/img1"
-            android:layout_below="@id/nametext"
-            android:layout_marginStart="10dp"/>
-
+            android:text="Nickname"
+            android:textColor="#000"
+            android:textSize="25sp" />
 
         <TextView
+            android:id="@+id/form_textFieldUserId1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/emailtext"
-            android:text="This is Email Name"
-            android:textSize="25sp"
-            android:textColor="#000"
+            android:layout_below="@id/form_textFieldNickName1"
+            android:layout_marginTop="5dp"
             android:layout_toEndOf="@id/img1"
-            android:layout_below="@id/coursetext"
-            android:layout_marginStart="10dp"/>
-
+            android:text="User ID"
+            android:textColor="#000"
+            android:textSize="25sp" />
 
     </RelativeLayout>
 

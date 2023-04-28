@@ -39,7 +39,7 @@ public class UserPlantListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_plant_list);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-ValueEventListener postListener = new ValueEventListener() {
+       /* ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
@@ -53,7 +53,7 @@ ValueEventListener postListener = new ValueEventListener() {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
             }
         };
-        mDatabase.addValueEventListener(postListener);
+        mDatabase.addValueEventListener(postListener);*/
 
         recyclerView = findViewById(R.id.userPlantList_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -69,8 +69,16 @@ ValueEventListener postListener = new ValueEventListener() {
         recyclerView.setAdapter(userPlantAdapter);
     }
 
-    private void loadUserPlants() {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        userPlantAdapter.startListening();
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        userPlantAdapter.stopListening();
     }
 
 }

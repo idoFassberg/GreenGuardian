@@ -16,7 +16,6 @@ import com.mta.greenguardianapplication.model.UserPlant;
 import java.util.List;
 
 public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlantAdapter.UserPlantHolder> {
-    private List<UserPlant> userPlantList;
 
     public UserPlantAdapter(@NonNull FirebaseRecyclerOptions<UserPlant> options) {
         super(options);
@@ -29,32 +28,24 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
         return new UserPlantHolder(view);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull UserPlantHolder holder, int position) {
-        UserPlant plant = userPlantList.get(position);
-        holder.nickName.setText(plant.getNickName());
-        holder.plantName.setText(plant.getPlantName());
-       // holder.date.setText(plant.getCreationDateStr());
-    }
 
     @Override
     protected void onBindViewHolder(@NonNull UserPlantHolder holder, int position, @NonNull UserPlant model) {
-
+        holder.nickName.setText(model.getNickName());
+        holder.plantName.setText(model.getPlantName());
+        holder.userID.setText(model.getUserId());
     }
 
-    @Override
-    public int getItemCount() {
-        return userPlantList.size();
-    }
+
 
     class UserPlantHolder extends RecyclerView.ViewHolder {
-        TextView nickName, plantName, date;
+        TextView nickName, plantName, userID;
 
         public UserPlantHolder(@NonNull View itemView) {
             super(itemView);
-            nickName = itemView.findViewById(R.id.form_textFieldNickName);
-            plantName = itemView.findViewById(R.id.form_textFieldPlantName);
-            //date = itemView.findViewById(R.id.);
+            nickName = itemView.findViewById(R.id.form_textFieldNickName1);
+            plantName = itemView.findViewById(R.id.form_textFieldPlantName1);
+            userID = itemView.findViewById(R.id.form_textFieldUserId1);
         }
     }
 

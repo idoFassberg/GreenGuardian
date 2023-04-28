@@ -1,8 +1,17 @@
 package com.mta.greenguardianapplication.model;
 
 public class UserPlant {
-    private int plantId;
-    private int userId;
+    private String plantId;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    private String userId;
     private String plantName;
     private String nickName;
 
@@ -10,28 +19,21 @@ public class UserPlant {
     public UserPlant() {
     }
 
-    public UserPlant(int plantId, int userId, String plantName, String nickName) {
+    public UserPlant(String plantId, String userId, String plantName, String nickName) {
         this.plantId = plantId;
         this.userId = userId;
         this.plantName = plantName;
         this.nickName = nickName;
     }
 
-    public int getPlantId() {
+    public String getPlantId() {
         return plantId;
     }
 
-    public void setPlantId(int plantId) {
+    public void setPlantId(String plantId) {
         this.plantId = plantId;
     }
 
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 
     public String getPlantName() {
         return plantName;

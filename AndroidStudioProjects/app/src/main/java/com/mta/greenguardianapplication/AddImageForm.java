@@ -53,35 +53,10 @@ public class AddImageForm extends AppCompatActivity {
         browse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    String[] projection = new String[]{
-                            MediaStore.Images.Media.DISPLAY_NAME,
-                            MediaStore.Images.Media.SIZE,
-                            MediaStore.Images.Media.DATE_TAKEN,
-                            MediaStore.Images.Media._ID
-                    };
-                    Cursor cursor = getContentResolver().query(
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                            projection,
-                            null,
-                            null,
-                            MediaStore.Images.Media.DATE_TAKEN + " DESC");
-
-                    if (cursor != null && cursor.moveToFirst()) {
-                        int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
-                        long id = cursor.getLong(idColumn);
-                        Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-                        Intent intent = new Intent(Intent.ACTION_VIEW, contentUri);
-                        startActivity(intent);
-                        cursor.close();
-                    }
-                } else {
-                    Intent intent = new Intent(Intent.ACTION_PICK);
-                    intent.setType("image/*");
-                    startActivityForResult(Intent.createChooser(intent, "Please select Image"), 1);
-                }
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "Please select Image"), 1);
             }
-
         });
 
         upload.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +96,7 @@ public class AddImageForm extends AppCompatActivity {
 
 
         FirebaseStorage storage=FirebaseStorage.getInstance();
+        StorageReference uploader1=storage.getReference();
         StorageReference uploader=storage.getReference().child("image1");
         uploader.putFile(filepath)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
