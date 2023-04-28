@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Client Application</string>
+    <string name="form_userId">User Id</string>
+    <string name="form_plantName">Plant Name</string>
+    <string name="form_nickName">Nickname</string>
+    <string name="button_saveUserPlant">SAVE PLANT</string>
+</resources>

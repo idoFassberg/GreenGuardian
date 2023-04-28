@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "208821466478",
+    "firebase_url": "https://greenguardian-app-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "greenguardian-app",
+    "storage_bucket": "greenguardian-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:208821466478:android:37df11b13d20aa80b73d7f",
+        "android_client_info": {
+          "package_name": "com.mta.greenguardianapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "208821466478-bdhjancsuh1v0anvn461ghq11ujnjo1j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVRkEZ26r-MQSMKW6RQvW-loxVIKgE22Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "208821466478-bdhjancsuh1v0anvn461ghq11ujnjo1j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
