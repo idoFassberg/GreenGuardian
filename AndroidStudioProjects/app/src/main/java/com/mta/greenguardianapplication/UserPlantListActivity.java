@@ -59,7 +59,7 @@ public class UserPlantListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Query query = FirebaseDatabase.getInstance()
                 .getReference()
-                .child("Plants")
+                .child("UserPlant")
                 .limitToLast(10);
         FirebaseRecyclerOptions< UserPlant> options =
                 new FirebaseRecyclerOptions.Builder<UserPlant>()
