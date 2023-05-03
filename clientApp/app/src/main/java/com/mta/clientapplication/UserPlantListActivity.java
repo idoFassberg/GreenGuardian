@@ -26,7 +26,7 @@ import retrofit2.Response;
 public class UserPlantListActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private FirebaseAnalytics mFirebaseAnalyticsUserPlant = FirebaseAnalytics.getInstance(this);;
+    private FirebaseAnalytics mFirebaseAnalyticsUserPlant = FirebaseAnalytics.getInstance(this);
 
     @SuppressLint("InvalidAnalyticsName")
     @Override

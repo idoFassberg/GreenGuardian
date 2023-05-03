@@ -21,7 +21,7 @@ public class AddUserPlantForm extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.form_add_user_plant);
-        mDatabase = FirebaseDatabase.getInstance().getReference("Plants");
+        mDatabase = FirebaseDatabase.getInstance().getReference("UserPlant");
         initializeComponents();
     }
 
