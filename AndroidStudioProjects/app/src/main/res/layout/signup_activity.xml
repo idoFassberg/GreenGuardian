@@ -112,7 +112,6 @@
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="32dp"
-                android:background="@drawable/green_background"
                 android:text="Signup"
                 android:textColor="#ffffff"
                 android:textSize="23sp"
