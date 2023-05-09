@@ -15,6 +15,9 @@
         android:theme="@style/Theme.GreenGuardianApplication"
         tools:targetApi="31">
         <activity
+            android:name=".signup_screen"
+            android:exported="false" />
+        <activity
             android:name=".LoginSignup.LoginScreen"
             android:exported="true" />
         <activity
@@ -22,13 +25,13 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".UserPlantListActivity"
             android:exported="true">
