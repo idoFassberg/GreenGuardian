@@ -14,15 +14,15 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/back_btn"
+            android:id="@+id/back_btn_loginscreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="back"
             android:padding="5dp"
             android:textColor="@color/black"
             android:textSize="18sp"
-            android:onClick="callStratupScreen"
-            android:transitionName="transition_stratup"/>
+            android:onClick="callStartupScreen"
+            android:transitionName="transition_startup_loginscreen"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,31 +39,43 @@
             android:orientation="vertical"
             android:layout_marginTop="80dp">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:text="Enter Username"
-                android:textColor="@color/black"
+                android:hint="Username"
+                app:hintTextColor="@color/black"
                 app:boxStrokeColor="@color/black"
-                android:background="@drawable/grey_background"
                 app:boxStrokeWidthFocused="2dp"
-                android:inputType="text">
-            </com.google.android.material.textfield.TextInputEditText>
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/black">
 
-            <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/muli"
+                    android:textColor="@color/black"
+                    android:inputType="text"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:text="Enter Password"
-                android:textColor="@color/black"
+                android:hint="Password"
+                app:hintTextColor="@color/black"
                 app:boxStrokeColor="@color/black"
-                android:background="@drawable/grey_background"
                 app:boxStrokeWidthFocused="2dp"
-                android:inputType="textPassword"
-                android:layout_marginTop="10dp">
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/black">
 
-            </com.google.android.material.textfield.TextInputEditText>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/muli"
+                    android:textColor="@color/black"
+                    android:inputType="textPassword"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -91,20 +103,26 @@
             </RelativeLayout>
 
             <Button
+                android:id="@+id/loginBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Login"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/white_btn"
-                android:textColor="@color/white"
-                android:layout_marginTop="20dp" />
+                android:text="Login"
+                android:textColor="@color/white" />
 
-            <TextView
+            <Button
+                android:id="@+id/signup_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="#00000000"
+                android:elevation="5dp"
+                android:fontFamily="@font/muli_light"
                 android:text="create acount"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/black"
-                android:textSize="16sp"/>
+                android:textColor="@color/white"
+                android:onClick="callSignupScreen"
+                android:transitionName="transition_signup"/>
 
         </LinearLayout>
 

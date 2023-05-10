@@ -33,7 +33,7 @@ public class StartupScreen extends AppCompatActivity {
 
     public void callSignupScreen(View view){
 
-        Intent intent =  new Intent(getApplicationContext(), SignupScreen.class);
+        Intent intent = new Intent(getApplicationContext(), SignupScreen.class);
 
         Pair[] pairs = new Pair[1];
         pairs[0] = new Pair<View, String>(findViewById(R.id.signup_btn),"transition_signup");

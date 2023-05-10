@@ -8,7 +8,11 @@ import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.mta.greenguardianapplication.AddUserPlantForm;
 import com.mta.greenguardianapplication.R;
 
 public class LoginScreen extends AppCompatActivity {
@@ -24,7 +28,18 @@ public class LoginScreen extends AppCompatActivity {
         Intent intent =  new Intent(getApplicationContext(), StartupScreen.class);
 
         Pair[] pairs = new Pair[1];
-        pairs[0] = new Pair<View, String>(findViewById(R.id.back_btn),"transition_stratup");
+        pairs[0] = new Pair<View, String>(findViewById(R.id.back_btn_loginscreen),"transition_startup_loginscreen");
+
+        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(LoginScreen.this, pairs);
+        startActivity(intent, options.toBundle());
+    }
+
+    public void callSignupScreen(View view){
+
+        Intent intent = new Intent(getApplicationContext(), SignupScreen.class);
+
+        Pair[] pairs = new Pair[1];
+        pairs[0] = new Pair<View, String>(findViewById(R.id.signup_btn),"transition_signup");
 
         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(LoginScreen.this, pairs);
         startActivity(intent, options.toBundle());
