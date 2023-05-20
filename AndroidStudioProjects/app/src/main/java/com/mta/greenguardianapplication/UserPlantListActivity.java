@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +21,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.auth.User;
+import com.mta.greenguardianapplication.adapter.PlantAdapter;
 import com.mta.greenguardianapplication.adapter.UserPlantAdapter;
+import com.mta.greenguardianapplication.model.Plant;
 import com.mta.greenguardianapplication.model.UserPlant;
 
 import java.util.List;
@@ -29,7 +32,6 @@ import java.util.List;
 public class UserPlantListActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private DatabaseReference mDatabase;
     private UserPlantAdapter userPlantAdapter;
 
 
@@ -37,7 +39,6 @@ public class UserPlantListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_plant_list);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
 
        /* ValueEventListener postListener = new ValueEventListener() {
             @Override
@@ -57,15 +58,23 @@ public class UserPlantListActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.userPlantList_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        Query query = FirebaseDatabase.getInstance()
-                .getReference()
-                .child("UserPlant")
-                .limitToLast(10);
-        FirebaseRecyclerOptions< UserPlant> options =
-                new FirebaseRecyclerOptions.Builder<UserPlant>()
-                        .setQuery(query, UserPlant.class)
-                        .build();
+
+        Query query = FirebaseDatabase.getInstance().getReference("UserPlants").limitToLast(10);
+
+        //Add this later and change <MyUserId> to actual logged in user id
+        //Query query = FirebaseDatabase.getInstance().getReference("UserPlants")
+        //    .orderByChild("userId")
+        //    .equalTo(<MyUserId>)
+        //    .limitToLast(10);
+
+        // Pass the Query object to the FirebaseRecyclerOptions.Builder
+        FirebaseRecyclerOptions<UserPlant> options = new FirebaseRecyclerOptions.Builder<UserPlant>()
+                .setQuery(query, UserPlant.class).build();
+
+        // Create a new PlantAdapter with the options
         userPlantAdapter = new UserPlantAdapter(options);
+
+        // Set the PlantAdapter to the RecyclerView
         recyclerView.setAdapter(userPlantAdapter);
     }
 

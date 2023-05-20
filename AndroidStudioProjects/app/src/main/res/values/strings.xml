@@ -15,5 +15,5 @@
 
     <item name="form_textFieldType1" type="id" />
     <item name="form_imageViewPictureUrl1" type="id" />
-    <item name="form_textFieldRecommendedHumidity1" type="id" />
+    <item name="form_userPlant_textFieldOptimalHumidity" type="id" />
 </resources>

@@ -38,7 +38,7 @@ public class PlantAdapter extends FirebaseRecyclerAdapter<Plant, PlantAdapter.Pl
 
     @Override
     protected void onBindViewHolder(@NonNull PlantHolder holder, int position, @NonNull Plant model) {
-        holder.pictureView.setTag(model.getPictureUrl());
+        //holder.pictureView.setTag(model.getPictureUrl());
         holder.bind(model);
     }
 

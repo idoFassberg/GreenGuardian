@@ -30,41 +30,47 @@ public class AddUserPlantForm extends AppCompatActivity {
         plantType = plantType != null ? plantType : "";
         optimalHumidity = optimalHumidity != null ? optimalHumidity : "";
         pictureUrl = pictureUrl != null ? pictureUrl : "";
-        mDatabase = FirebaseDatabase.getInstance().getReference("UserPlant");
+        mDatabase = FirebaseDatabase.getInstance().getReference("UserPlants");
         initializeComponents(plantType, optimalHumidity,pictureUrl);
     }
 
     private void initializeComponents(String plantType,String optimalHumidity,String pictureUrl) {
-        TextInputEditText inputEditUserId = findViewById(R.id.form_textFieldPlantType);
-        TextInputEditText inputEditPlantName = findViewById(R.id.form_textFieldOptimalHumidity);
+        TextInputEditText inputEditPlantType = findViewById(R.id.form_textFieldPlantType);
+        TextInputEditText inputEditOptimalHumidity = findViewById(R.id.form_textFieldOptimalHumidity);
         TextInputEditText inputEditNickName = findViewById(R.id.form_textFieldNickName);
-        ImageView pictureView = findViewById(R.id.plant_image);
+        TextInputEditText inputEditBoardId = findViewById(R.id.form_textFieldBoardId);
+        ImageView imageView = findViewById(R.id.plant_image);
         MaterialButton buttonSaveUserPlant = findViewById(R.id.form_buttonSaveUserPlant);
         if(pictureUrl != "") {
-            Glide.with(pictureView.getContext())
+            Glide.with(imageView.getContext())
                     .load(pictureUrl)
                     .apply(new RequestOptions().circleCrop())
-                    .into(pictureView);
+                    .into(imageView);
         }
-        inputEditUserId.setText(plantType);
-        inputEditPlantName.setText(optimalHumidity);
+        imageView.setTag(pictureUrl);
+        inputEditPlantType.setText(plantType);
+        inputEditOptimalHumidity.setText(optimalHumidity);
 
         buttonSaveUserPlant.setOnClickListener(view -> {
-            String userId = String.valueOf(inputEditUserId.getText());
-            String plantName = String.valueOf(inputEditPlantName.getText());
+            String type = String.valueOf(inputEditPlantType.getText());
             String nickName = String.valueOf(inputEditNickName.getText());
+            String optimalHumidityStr = String.valueOf(inputEditOptimalHumidity.getText());
+            String boardId = String.valueOf(inputEditBoardId.getText());
 
-            writeNewUser("12345",userId, plantName, nickName);
+            addNewUserPlant(type, nickName,Integer.parseInt(optimalHumidityStr),boardId, (String)imageView.getTag());
 
             Intent intent = new Intent(AddUserPlantForm.this, UserPlantListActivity.class);
             startActivity(intent);
         });
     }
-    public void writeNewUser(String plantId, String userId, String plantName, String nickName) {
-        UserPlant userPlant = new UserPlant(plantId, userId, plantName, nickName);
 
-        mDatabase.child(plantName).setValue(userPlant);
-        //mDatabase.push().setValue(userPlant);
+    public void addNewUserPlant(String type, String nickName, int optimalHumidity, String boardId, String pictureUrl) {
+        UserPlant userPlant = new UserPlant(nickName, optimalHumidity, pictureUrl, type, "123", boardId,-1 );
+
+        String plantId = mDatabase.push().getKey(); // Generate a unique ID
+
+        mDatabase.child(plantId).setValue(userPlant); // Save the plant with the generated ID
+
         Toast.makeText(AddUserPlantForm.this, "Save successful", Toast.LENGTH_SHORT).show();
     }
 }
