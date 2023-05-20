@@ -2,7 +2,7 @@
 #if defined(ESP32)
 #include <WiFi.h>
 #include <FirebaseESP32.h>
-#elif defined(ESP8266)
+#elif defined(ESP8266) // This is defined
 #include <ESP8266WiFi.h>
 #include <FirebaseESP8266.h>
 #elif defined(ARDUINO_RASPBERRY_PI_PICO_W)
@@ -28,7 +28,7 @@ FirebaseData fbdo2;
 FirebaseAuth auth;
 FirebaseConfig config;
 #define soilMoisturePin A0
-
+String macAddress;
 
 void initializeWiFiConnection()
 {
@@ -42,7 +42,7 @@ void initializeWiFiConnection()
 
   Serial.println("");
   Serial.println("WiFi connected");
-  Serial.print("NodeMCU IP address: " + WiFi.localIP().toString());
+  Serial.println("NodeMCU IP address: " + WiFi.localIP().toString());
 }
 
 void setup()
@@ -54,6 +54,12 @@ void setup()
   digitalWrite(LED_BUILTIN, LOW);
 
   initializeWiFiConnection();
+
+  // Retrieve and print the MAC address
+  macAddress = WiFi.macAddress();
+  macAddress.replace(":", "");
+  Serial.print("MAC Address: ");
+  Serial.println(macAddress);
 
   config.api_key = webAPIKey;
   config.database_url = databaseUrl;
@@ -68,26 +74,21 @@ const unsigned long interval = 5000; // 5 second interval
 void loop()
 {
   int soilMoisture = analogRead(soilMoisturePin); // Read the analog input value from the sensor
-
+  
   // Create a time delay using millis()
   unsigned long currentMillis = millis();
 
-
   if (currentMillis - previousMillis >= interval) { // create delay without using delay()
       previousMillis = currentMillis;
-
+      
     if (Firebase.ready())
     {
-      Firebase.getBool(fbdo2, FPSTR("/mode"));
-      if (!fbdo2.to<bool>())
-      {
-        Serial.println("mode is OFF");
-      }
-      else
-      {
-        Firebase.setInt(fbdo, F("/ido"), soilMoisture);
-        Serial.println("soilMoisture = " + String(soilMoisture));
-      }
+      FirebaseJson json;
+      json.set("humidity", soilMoisture);
+
+      // Set the data in Firebase under the MAC address node
+      String path = "/RealTimeData/" + macAddress;
+      Serial.println(Firebase.RTDB.setJSON(&fbdo, path.c_str(), &json) ? "Json sent successfully" : fbdo.errorReason().c_str());
     }
     else
     {
