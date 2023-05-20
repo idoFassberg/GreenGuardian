@@ -1,10 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#F2F5DF"
     android:fadeScrollbars="false"
     android:fadingEdge="none"
-    android:orientation="horizontal"
     android:padding="16dp">
 
     <ImageView
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:text="Plant Type: "
                 android:textColor="#4CAF50"
-                android:textSize="14sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -43,10 +43,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
+                android:fontFamily="sans-serif"
                 android:maxLines="1"
-                android:textColor="@android:color/black"
+                android:textColor="@color/material_dynamic_neutral40"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="normal|bold|italic" />
         </LinearLayout>
 
         <LinearLayout
@@ -59,18 +60,34 @@
                 android:id="@+id/plant_humidity_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Humidity Recommended: "
+                android:text="Optimal Humidity: "
                 android:textColor="#4CAF50"
-                android:textSize="14sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/plant_humidity"
+                android:id="@+id/optimal_humidity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
-                android:textSize="14sp" />
+                android:ellipsize="end"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:textColor="@color/material_dynamic_neutral40"
+                android:textSize="14sp"
+                android:textStyle="normal|bold|italic" />
         </LinearLayout>
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/add_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="bottom|end"
+        android:background="@android:drawable/ic_input_add"
+        android:contentDescription="@string/add_button_description"
+        android:onClick="onAddButtonClick"
+        android:tooltipText="Add Plant"
+        app:layout_constraintBottom_toBottomOf="@id/plant_humidity_title"
+        app:layout_constraintEnd_toEndOf="@id/plant_humidity_title" />
 
 </LinearLayout>

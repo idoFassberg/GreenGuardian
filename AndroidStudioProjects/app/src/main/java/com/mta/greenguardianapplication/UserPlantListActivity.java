@@ -80,5 +80,4 @@ public class UserPlantListActivity extends AppCompatActivity {
         super.onStop();
         userPlantAdapter.stopListening();
     }
-
 }

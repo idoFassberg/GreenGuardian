@@ -11,6 +11,7 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="plant_image_description">Image</string>
+    <string name="add_button_description">Add plant to my plants</string>
 
     <item name="form_textFieldType1" type="id" />
     <item name="form_imageViewPictureUrl1" type="id" />
