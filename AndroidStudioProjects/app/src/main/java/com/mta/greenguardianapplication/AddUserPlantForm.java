@@ -1,5 +1,6 @@
 package com.mta.greenguardianapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -55,6 +56,8 @@ public class AddUserPlantForm extends AppCompatActivity {
 
             writeNewUser("12345",userId, plantName, nickName);
 
+            Intent intent = new Intent(AddUserPlantForm.this, UserPlantListActivity.class);
+            startActivity(intent);
         });
     }
     public void writeNewUser(String plantId, String userId, String plantName, String nickName) {
