@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.auth.User;
@@ -20,8 +21,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         openAddPlant = (Button)findViewById(R.id.openAddUserForm);
         viewListPlants = (Button)findViewById(R.id.openListPlants);
+
 
         openAddPlant.setOnClickListener(new View.OnClickListener() {
             @Override
