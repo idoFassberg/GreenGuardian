@@ -50,7 +50,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:background="@drawable/white_btn"
+                android:background="@color/white"
                 android:text="Login"
                 android:onClick="callLoginScreen"
                 android:transitionName="transition_login"/>
@@ -62,7 +62,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
-                android:background="@drawable/white_btn"
+                android:background="@color/white"
                 android:text="Signup"
                 android:onClick="callSignupScreen"
                 android:transitionName="transition_signup"/>
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_weight="1"
-            android:background="@drawable/white_btn"
+            android:background="@color/white"
             android:text="about us"/>
 
     </LinearLayout>
