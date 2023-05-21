@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -13,13 +13,14 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.GreenGuardianApplication"
-        tools:targetApi="31" >
+        tools:targetApi="31">
         <activity
             android:name=".ProfileActivity"
             android:exported="true" />
         <activity
             android:name=".LoginSignup.StartupScreen"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,18 +37,17 @@
             android:name=".MainActivity"
             android:exported="true" />
         <activity
-            android:name=".UserPlantListActivity"
+            android:name=".PlantListActivity"
             android:exported="true">
-
-
-
-            <!--
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
+            </intent-filter>-->
+        </activity>
+        <activity
+            android:name=".UserPlantListActivity"
+            android:exported="true">
         </activity>
         <activity
             android:name=".AddUserPlantForm"
