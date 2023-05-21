@@ -23,23 +23,15 @@ public class StartupScreen extends AppCompatActivity {
     public void callLoginScreen(View view){
 
         Intent intent =  new Intent(getApplicationContext(), LoginScreen.class);
-
-        Pair[] pairs = new Pair[1];
-        pairs[0] = new Pair<View, String>(findViewById(R.id.login_btn),"transition_login");
-
-        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(StartupScreen.this, pairs);
-        startActivity(intent, options.toBundle());
+        startActivity(intent);
+        finish();
     }
 
     public void callSignupScreen(View view){
 
         Intent intent = new Intent(getApplicationContext(), SignupScreen.class);
-
-        Pair[] pairs = new Pair[1];
-        pairs[0] = new Pair<View, String>(findViewById(R.id.signup_btn),"transition_signup");
-
-        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(StartupScreen.this, pairs);
-        startActivity(intent, options.toBundle());
+        startActivity(intent);
+        finish();
     }
 
 }
