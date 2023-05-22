@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginSignup.StartupScreen"
-    android:background="@color/white"
+    android:background="@color/beige"
     android:padding="30dp">
 
     <LinearLayout
@@ -39,6 +39,7 @@
             android:textColor="@color/black"
             android:textSize="20sp" />
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -50,7 +51,8 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:background="@color/white"
+                android:background="#4CAF50"
+                android:textColor="@color/white"
                 android:text="Login"
                 android:onClick="callLoginScreen"
                 android:transitionName="transition_login"/>
@@ -62,7 +64,8 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
-                android:background="@color/white"
+                android:background="#4CAF50"
+                android:textColor="@color/white"
                 android:text="Signup"
                 android:onClick="callSignupScreen"
                 android:transitionName="transition_signup"/>
@@ -71,11 +74,13 @@
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
             android:layout_marginTop="20dp"
             android:layout_weight="1"
-            android:background="@color/white"
-            android:text="about us"/>
+            android:background="#4CAF50"
+            android:text="about us"
+            android:textColor="@color/white" />
+
 
     </LinearLayout>
 

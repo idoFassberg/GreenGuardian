@@ -56,12 +56,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void OnClickBack(View view) {
         Intent intent =  new Intent(getApplicationContext(), StartupScreen.class);
-
-        Pair[] pairs = new Pair[1];
-        pairs[0] = new Pair<View, String>(btn_back,"transition_startup");
-
-        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(ProfileActivity.this, pairs);
-        startActivity(intent, options.toBundle());
+        startActivity(intent);
+        finish();
     }
 
     public void onClickLogout(View view) {
