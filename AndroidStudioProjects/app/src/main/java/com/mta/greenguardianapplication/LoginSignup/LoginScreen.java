@@ -28,6 +28,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.mta.greenguardianapplication.AddUserPlantForm;
 import com.mta.greenguardianapplication.R;
+import com.mta.greenguardianapplication.UserPlantListActivity;
+
 
 public class LoginScreen extends AppCompatActivity {
 
@@ -46,25 +48,17 @@ public class LoginScreen extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login_screen);
 
-
         login = findViewById(R.id.loginBtn);
         signup = findViewById(R.id.signup_btn);
         te_emailUser = findViewById(R.id.userNameLogin);
         te_passwordUser = findViewById(R.id.passwordLogin);
-        progressBar = findViewById(R.id.progressBarLogin);
-
-
-
+        /*progressBar = findViewById(R.id.progressBarLogin);*/
     }
 
     public void callStartupScreen(View view){
         Intent intent =  new Intent(getApplicationContext(), StartupScreen.class);
-
-        Pair[] pairs = new Pair[1];
-        pairs[0] = new Pair<View, String>(findViewById(R.id.back_btn_loginscreen),"transition_startup_loginscreen");
-
-        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(LoginScreen.this, pairs);
-        startActivity(intent, options.toBundle());
+        startActivity(intent);
+        finish();
     }
 
     public void callSignupScreen(View view){
@@ -86,12 +80,14 @@ public class LoginScreen extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+/*
                             progressBar.setVisibility(View.GONE);
+*/
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             Toast.makeText(LoginScreen.this, "Login Successful.",
                                     Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), StartupScreen.class); //needs to change
+                            Intent intent = new Intent(getApplicationContext(), UserPlantListActivity.class);
                             startActivity(intent);
                             finish();
                         } else {
@@ -103,6 +99,14 @@ public class LoginScreen extends AppCompatActivity {
                     }
                 });
     }
+
+    public void onClickLogout(View view) {
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(getApplicationContext(), StartupScreen.class); //needs to change
+        startActivity(intent);
+        finish();
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -113,5 +117,7 @@ public class LoginScreen extends AppCompatActivity {
             finish();
         }
     }
+
+
 
 }
