@@ -6,9 +6,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Patterns;
@@ -36,9 +39,9 @@ public class LoginScreen extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     Button login, signup;
-
     TextInputEditText te_emailUser,te_passwordUser;
     ProgressBar progressBar;
+    TextView forgotPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +55,48 @@ public class LoginScreen extends AppCompatActivity {
         signup = findViewById(R.id.signup_btn);
         te_emailUser = findViewById(R.id.userNameLogin);
         te_passwordUser = findViewById(R.id.passwordLogin);
+        forgotPassword = findViewById(R.id.forgotPassword);
         /*progressBar = findViewById(R.id.progressBarLogin);*/
+
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder= new AlertDialog.Builder(LoginScreen.this);
+                View dialogView = getLayoutInflater().inflate(R.layout.dialog_forgot_password, null);
+                TextInputEditText emailBox = dialogView.findViewById(R.id.emailBox);
+
+                builder.setView(dialogView);
+                AlertDialog dialog = builder.create();
+
+                dialogView.findViewById(R.id.resetPasswordBtn).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String userEmail = emailBox.getText().toString();
+
+                        if (TextUtils.isEmpty(userEmail) && !Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()){
+                            Toast.makeText(LoginScreen.this, "Enter your registered email", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        mAuth.sendPasswordResetEmail(userEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    Toast.makeText(LoginScreen.this, "Check your email", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                } 
+                                else{
+                                    Toast.makeText(LoginScreen.this, "Unable to send, failed", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                });
+                if (dialog.getWindow() != null){
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+                }
+                dialog.show();
+            }
+        });
     }
 
     public void callStartupScreen(View view){
@@ -62,15 +106,11 @@ public class LoginScreen extends AppCompatActivity {
     }
 
     public void callSignupScreen(View view){
-
         Intent intent = new Intent(getApplicationContext(), SignupScreen.class);
-
-        Pair[] pairs = new Pair[1];
-        pairs[0] = new Pair<View, String>(findViewById(R.id.signup_btn),"transition_signup");
-
-        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(LoginScreen.this, pairs);
-        startActivity(intent, options.toBundle());
+        startActivity(intent);
+        finish();
     }
+
     public void onLoginClick(View view) {
         String email = te_emailUser.getText().toString();
         String password = te_passwordUser.getText().toString();
@@ -118,6 +158,10 @@ public class LoginScreen extends AppCompatActivity {
         }
     }
 
+    public void callLoginScreen(View view){
 
-
+        Intent intent =  new Intent(getApplicationContext(), LoginScreen.class);
+        startActivity(intent);
+        finish();
+    }
 }
