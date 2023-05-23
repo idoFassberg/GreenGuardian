@@ -152,7 +152,6 @@
             android:text="Login"
             android:transitionName="transition_login_signupscreen"
             android:onClick="callLoginScreen"
-            android:fontFamily="@font/muli"
             android:textSize="12sp"
             android:textColor="@color/black"/>
 
