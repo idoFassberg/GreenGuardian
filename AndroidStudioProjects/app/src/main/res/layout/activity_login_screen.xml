@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginSignup.LoginScreen"
-    android:background="#4CAF50"
+    android:background="@color/beige"
     android:padding="30dp">
 
     <LinearLayout
@@ -104,7 +104,6 @@
 
             </RelativeLayout>
 
-
             <Button
                 android:id="@+id/loginBtn"
                 android:layout_width="match_parent"
@@ -116,6 +115,18 @@
                 android:textColor="@color/white" />
 
             <Button
+                android:id="@+id/btn_logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onClickLogout"
+                android:text="LOGOUT"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
                 android:id="@+id/signup_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -124,15 +135,15 @@
                 android:elevation="5dp"
                 android:fontFamily="@font/muli_light"
                 android:text="create acount"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:onClick="callSignupScreen"
                 android:transitionName="transition_signup"/>
 
-            <ProgressBar
+            <!--<ProgressBar
                 android:id="@+id/progressBarLogin"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content" />-->
 
         </LinearLayout>
 
