@@ -54,7 +54,7 @@ public class SignupScreen extends AppCompatActivity {
         signup = findViewById(R.id.signup_signupscreen_btn);
         /*progressBar = findViewById(R.id.progressBar);*/
 
-        te_userName = findViewById(R.id.userNameSignup);
+        /*te_userName = findViewById(R.id.userNameSignup);*/
         te_fullName = findViewById(R.id.fullNameSignup);
         te_email = findViewById(R.id.emailSignup);
         te_password = findViewById(R.id.passwordSignup);

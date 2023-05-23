@@ -20,7 +20,7 @@
             android:minHeight="48dp"
             android:onClick="callStartupScreen"
             android:padding="5dp"
-            android:text="back"
+            android:drawableLeft="@drawable/baseline_arrow_back_24"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:transitionName="transition_startup" />
@@ -30,14 +30,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="CREATE ACCOUNT"
-            android:textColor="@color/black"
-            android:textSize="40sp" />
+            android:textSize="40sp"
+            android:fontFamily="@font/muli_black"
+            android:textColor="@color/black"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="40dp">
+            android:layout_marginTop="25dp">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -46,7 +47,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:startIconTint="@color/black"
                 app:hintTextColor="@color/black"
-                android:textColorHint="@color/black"
                 app:endIconMode="clear_text"
                 app:endIconTint="@color/black"
                 app:boxStrokeWidthFocused="2dp"
@@ -56,18 +56,20 @@
                     android:id="@+id/fullNameSignup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="text"/>
+                    android:inputType="text"
+                    android:fontFamily="@font/muli_black"
+                    android:textColor="@color/black"
+                    android:drawableLeft="@drawable/baseline_person_24"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
+            <!--<com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Username"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:startIconTint="@color/black"
                 app:hintTextColor="@color/black"
-                android:textColorHint="@color/black"
                 app:endIconMode="clear_text"
                 app:endIconTint="@color/black"
                 app:boxStrokeWidthFocused="2dp"
@@ -77,9 +79,10 @@
                     android:id="@+id/userNameSignup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="text"/>
+                    android:inputType="text"
+                    android:fontFamily="@font/muli_black"/>
 
-            </com.google.android.material.textfield.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>-->
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -88,7 +91,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:startIconTint="@color/black"
                 app:hintTextColor="@color/black"
-                android:textColorHint="@color/black"
                 app:endIconMode="clear_text"
                 app:endIconTint="@color/black"
                 app:boxStrokeWidthFocused="2dp"
@@ -98,7 +100,9 @@
                     android:id="@+id/emailSignup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="textEmailAddress"/>
+                    android:inputType="textEmailAddress"
+                    android:fontFamily="@font/muli_black"
+                    android:drawableLeft="@drawable/baseline_email_24"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -109,7 +113,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:startIconTint="@color/black"
                 app:hintTextColor="@color/black"
-                android:textColorHint="@color/black"
                 app:passwordToggleTint="@color/black"
                 app:passwordToggleEnabled="true"
                 app:endIconTint="@color/black"
@@ -120,7 +123,8 @@
                     android:id="@+id/passwordSignup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:fontFamily="@font/muli_black"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -135,7 +139,8 @@
             android:layout_marginTop="20dp"
             android:elevation="5dp"
             android:transitionName="transition_signup_signupscreen"
-            android:onClick="callSignup"/>
+            android:onClick="callSignup"
+            android:background="@color/white"/>
 
         <Button
             android:id="@+id/login_btn"
@@ -145,9 +150,11 @@
             android:background="#00000000"
             android:elevation="5dp"
             android:text="Login"
-            android:textColor="@color/black"
             android:transitionName="transition_login_signupscreen"
-            android:onClick="callLoginScreen"/>
+            android:onClick="callLoginScreen"
+            android:fontFamily="@font/muli"
+            android:textSize="12sp"
+            android:textColor="@color/black"/>
 
         <!--<ProgressBar
             android:id="@+id/progressBar"
