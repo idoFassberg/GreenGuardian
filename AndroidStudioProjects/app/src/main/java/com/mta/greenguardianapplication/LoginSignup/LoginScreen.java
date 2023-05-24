@@ -18,6 +18,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,8 @@ public class LoginScreen extends AppCompatActivity {
     TextInputEditText te_emailUser,te_passwordUser;
     ProgressBar progressBar;
     TextView forgotPassword;
+    CheckBox checkBox = findViewById(R.id.rememberMeCheckBox);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,14 +155,13 @@ public class LoginScreen extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-            Intent intent = new Intent(getApplicationContext(), StartupScreen.class); //needs to change
+            Intent intent = new Intent(getApplicationContext(), UserPlantListActivity.class); //needs to change
             startActivity(intent);
             finish();
         }
     }
 
     public void callLoginScreen(View view){
-
         Intent intent =  new Intent(getApplicationContext(), LoginScreen.class);
         startActivity(intent);
         finish();

@@ -90,7 +90,8 @@
                     style="@style/Widget.AppCompat.CompoundButton.CheckBox"
                     android:text="Remember Me"
                     android:buttonTint="@color/black"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/black"
+                    android:id="@+id/rememberMeCheckBox"/>
 
             </RelativeLayout>
 

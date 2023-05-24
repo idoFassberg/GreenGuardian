@@ -8,10 +8,13 @@ import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.CheckBox;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.mta.greenguardianapplication.R;
 
 public class StartupScreen extends AppCompatActivity {
+    CheckBox checkBox = findViewById(R.id.rememberMeCheckBox);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,5 +36,4 @@ public class StartupScreen extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
 }
