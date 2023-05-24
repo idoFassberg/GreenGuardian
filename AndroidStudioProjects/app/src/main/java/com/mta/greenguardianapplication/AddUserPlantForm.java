@@ -5,12 +5,16 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.mta.greenguardianapplication.model.UserPlant;
@@ -70,6 +74,26 @@ public class AddUserPlantForm extends AppCompatActivity {
         String plantId = mDatabase.push().getKey(); // Generate a unique ID
 
         mDatabase.child(plantId).setValue(userPlant); // Save the plant with the generated ID
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference usersRef = database.getReference("Users");
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        String userId = mAuth.getCurrentUser().getUid();
+        String plantKey = usersRef.child(userId).child("plants").push().getKey();
+
+// Set the plant data at the generated key under the user's "plants" node
+        usersRef.child(userId).child("plants").child(plantKey).setValue(userPlant)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Plant added successfully
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Failed to add the plant
+                    }
+                });
 
         Toast.makeText(AddUserPlantForm.this, "Save successful", Toast.LENGTH_SHORT).show();
     }

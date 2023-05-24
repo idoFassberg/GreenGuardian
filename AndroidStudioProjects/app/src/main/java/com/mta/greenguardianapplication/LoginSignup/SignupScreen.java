@@ -24,10 +24,14 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.mta.greenguardianapplication.AddUserPlantForm;
 import com.mta.greenguardianapplication.ProfileActivity;
 import com.mta.greenguardianapplication.UserPlantListActivity;
 import com.mta.greenguardianapplication.R;
+
+import java.util.HashMap;
 
 public class SignupScreen extends AppCompatActivity {
 
@@ -59,21 +63,6 @@ public class SignupScreen extends AppCompatActivity {
         te_email = findViewById(R.id.emailSignup);
         te_password = findViewById(R.id.passwordSignup);
 
-        /*signup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = te_email.getText().toString();
-                String password = te_password.getText().toString();
-                progressBar.setVisibility(View.VISIBLE);
-
-
-                if (Patterns.EMAIL_ADDRESS.matcher(email).matches() && isPasswordValid(password)) {
-                    registerUser(email,password);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Invalid email or password", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });*/
     }
 
     @Override
@@ -110,6 +99,7 @@ public class SignupScreen extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
+                            createUserDB();
                             Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), UserPlantListActivity.class);
                             startActivity(intent);
@@ -124,6 +114,23 @@ public class SignupScreen extends AppCompatActivity {
                     }
                 });
     }
+
+    private void createUserDB() {
+        FirebaseUser user = mAuth.getCurrentUser();;
+        HashMap<Object, String> hashMap = new HashMap<>();
+        hashMap.put("email",user.getEmail());
+        hashMap.put("uid",user.getUid());
+        hashMap.put("name","");
+        hashMap.put("phone","");
+        hashMap.put("plants","");
+        hashMap.put("image","");
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("Users");
+        reference.child(user.getUid()).setValue(hashMap);
+
+    }
+
     public void callSignup(View view){
         String email = te_email.getText().toString();
         String password = te_password.getText().toString();
