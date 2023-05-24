@@ -1,11 +1,17 @@
 package com.mta.greenguardianapplication;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -18,6 +24,7 @@ import com.mta.greenguardianapplication.model.UserPlant;
 public class AddUserPlantForm extends AppCompatActivity {
     private DatabaseReference mDatabase;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +41,7 @@ public class AddUserPlantForm extends AppCompatActivity {
         initializeComponents(plantType, optimalHumidity,pictureUrl);
     }
 
-    private void initializeComponents(String plantType,String optimalHumidity,String pictureUrl) {
+    private void initializeComponents(String plantType, String optimalHumidity, String pictureUrl) {
         TextInputEditText inputEditPlantType = findViewById(R.id.form_textFieldPlantType);
         TextInputEditText inputEditOptimalHumidity = findViewById(R.id.form_textFieldOptimalHumidity);
         TextInputEditText inputEditNickName = findViewById(R.id.form_textFieldNickName);
