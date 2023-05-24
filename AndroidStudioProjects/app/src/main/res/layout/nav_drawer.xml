@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@drawable/drawer_border"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:padding="16dp"
+        android:background="@drawable/header_bkg"
+        android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
+
+        <!--<ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="320dp"
+            android:src="@drawable/logo" />-->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:fontFamily="@font/muli_black"
+            android:orientation="vertical"
+            android:text="Green Guardian"
+            android:textColor="@color/black"
+            android:textSize="28sp"/>
+
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/myPlants"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/greenApp"
+            android:text="My Plants"
+            android:textSize="20sp"
+            android:drawableLeft="@drawable/baseline_flower_24"
+            android:drawablePadding="8dp"/>
+
+    </LinearLayout>
+
+<!--    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/notifications"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/greenApp"
+            android:text="Notifications"
+            android:textSize="20sp"
+            android:drawableLeft="@drawable/baseline_notifications_24"
+            android:drawablePadding="8dp"/>
+
+    </LinearLayout>-->
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/forum"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/greenApp"
+            android:text="Forum"
+            android:textSize="20sp"
+            android:drawableLeft="@drawable/baseline_forum_24"
+            android:drawablePadding="8dp"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/greenApp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/logoutNav"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/greenApp"
+            android:text="Logout"
+            android:textSize="20sp"
+            android:drawableLeft="@drawable/baseline_logout_24"
+            android:drawablePadding="8dp"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

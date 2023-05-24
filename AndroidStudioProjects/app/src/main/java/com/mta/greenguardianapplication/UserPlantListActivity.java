@@ -45,14 +45,14 @@ public class UserPlantListActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     ImageView menu;
-    LinearLayout home, forum, logout;
+    LinearLayout myPlants, forum, logout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_plant_list);
         drawerLayout = findViewById(R.id.drawerLayout);
         menu = findViewById(R.id.menu);
-        home = findViewById(R.id.home);
+        myPlants = findViewById(R.id.myPlants);
         forum = findViewById(R.id.forum);
         logout = findViewById(R.id.logoutNav);
 
@@ -63,7 +63,7 @@ public class UserPlantListActivity extends AppCompatActivity {
             }
         });
 
-        home.setOnClickListener(new View.OnClickListener() {
+        myPlants.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 recreate();
