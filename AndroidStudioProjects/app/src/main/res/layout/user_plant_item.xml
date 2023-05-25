@@ -123,7 +123,6 @@
                 android:layout_weight="1"
                 android:max="100"
                 android:scaleX="1"
-                android:progressBackgroundTint="#F5F5AA"
                 android:progressTint="@color/our_green"/>
 
         </LinearLayout>
