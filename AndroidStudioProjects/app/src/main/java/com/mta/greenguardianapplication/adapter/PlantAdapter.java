@@ -1,6 +1,5 @@
 package com.mta.greenguardianapplication.adapter;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +15,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.mta.greenguardianapplication.AddUserPlantForm;
 import com.mta.greenguardianapplication.R;
 import com.mta.greenguardianapplication.model.Plant;
-
-import java.util.List;
+import com.mta.greenguardianapplication.AddUserPlantForm;
 
 public class PlantAdapter extends FirebaseRecyclerAdapter<Plant, PlantAdapter.PlantHolder> {
 

@@ -15,12 +15,14 @@
         android:theme="@style/Theme.GreenGuardianApplication"
         tools:targetApi="31">
         <activity
+            android:name=".ForumActivity2"
+            android:exported="true" />
+        <activity
             android:name=".ProfileActivity"
             android:exported="true" />
         <activity
             android:name=".LoginSignup.StartupScreen"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -38,16 +40,18 @@
         <activity
             android:name=".PlantListActivity"
             android:exported="true">
-            <!--<intent-filter>
+
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
         <activity
             android:name=".UserPlantListActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".AddUserPlantForm"
             android:exported="true"

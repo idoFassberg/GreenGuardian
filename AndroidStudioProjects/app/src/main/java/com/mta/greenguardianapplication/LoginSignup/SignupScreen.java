@@ -63,6 +63,21 @@ public class SignupScreen extends AppCompatActivity {
         te_email = findViewById(R.id.emailSignup);
         te_password = findViewById(R.id.passwordSignup);
 
+        /*signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = te_email.getText().toString();
+                String password = te_password.getText().toString();
+                progressBar.setVisibility(View.VISIBLE);
+
+
+                if (Patterns.EMAIL_ADDRESS.matcher(email).matches() && isPasswordValid(password)) {
+                    registerUser(email,password);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Invalid email or password", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });*/
     }
 
     @Override
