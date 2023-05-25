@@ -89,6 +89,42 @@
             android:drawablePadding="8dp"/>
 
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_plant"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/greenApp"
+            android:text="Add Plant"
+            android:textSize="20sp"
+            android:drawableLeft="@drawable/baseline_flower_24"
+            android:drawablePadding="8dp"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/my_profile"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/greenApp"
+            android:text="My profile"
+            android:textSize="20sp"
+            android:drawableLeft="@drawable/ic_account_profile"
+            android:drawablePadding="8dp"/>
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"

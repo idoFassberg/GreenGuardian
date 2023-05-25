@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,7 +46,7 @@ public class UserPlantListActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     ImageView menu;
-    LinearLayout myPlants, forum, logout;
+    LinearLayout myPlants, forum, logout,addPlant,myProfile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +56,8 @@ public class UserPlantListActivity extends AppCompatActivity {
         myPlants = findViewById(R.id.myPlants);
         forum = findViewById(R.id.forum);
         logout = findViewById(R.id.logoutNav);
+        addPlant = findViewById(R.id.add_plant);
+        myProfile = findViewById(R.id.my_profile);
 
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +77,20 @@ public class UserPlantListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 redirectActivity(UserPlantListActivity.this,ForumActivity2.class);
+            }
+        });
+
+        addPlant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirectActivity(UserPlantListActivity.this,AddUserPlantForm.class);
+            }
+        });
+
+        myProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirectActivity(UserPlantListActivity.this,ProfileActivity.class);
             }
         });
 
@@ -105,8 +122,9 @@ public class UserPlantListActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.userPlantList_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        Query query = FirebaseDatabase.getInstance().getReference("UserPlants").limitToLast(10);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        Query query = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid()).child("plants");
 
         //Add this later and change <MyUserId> to actual logged in user id
         //Query query = FirebaseDatabase.getInstance().getReference("UserPlants")

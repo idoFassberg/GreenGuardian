@@ -85,10 +85,9 @@ public class AddUserPlantForm extends AppCompatActivity {
         DatabaseReference usersRef = database.getReference("Users");
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         String userId = mAuth.getCurrentUser().getUid();
-        String plantKey = usersRef.child(userId).child("plants").push().getKey();
 
 // Set the plant data at the generated key under the user's "plants" node
-        usersRef.child(userId).child("plants").child(plantKey).setValue(userPlant)
+        usersRef.child(userId).child("plants").child(plantId).setValue(userPlant)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

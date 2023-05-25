@@ -131,7 +131,7 @@ public class SignupScreen extends AppCompatActivity {
     }
 
     private void createUserDB() {
-        FirebaseUser user = mAuth.getCurrentUser();;
+        FirebaseUser user = mAuth.getCurrentUser();
         HashMap<Object, String> hashMap = new HashMap<>();
         hashMap.put("email",user.getEmail());
         hashMap.put("uid",user.getUid());
