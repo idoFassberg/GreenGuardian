@@ -5,12 +5,16 @@ import static android.content.ContentValues.TAG;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -20,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,13 +47,13 @@ public class UserPlantListActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private UserPlantAdapter userPlantAdapter;
-
     DrawerLayout drawerLayout;
     ImageView menu;
     LinearLayout myPlants, forum, logout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        updateHumidity();
         setContentView(R.layout.activity_user_plant_list);
         drawerLayout = findViewById(R.id.drawerLayout);
         menu = findViewById(R.id.menu);
@@ -106,7 +111,7 @@ public class UserPlantListActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.userPlantList_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        Query query = FirebaseDatabase.getInstance().getReference("UserPlants").limitToLast(10);
+        Query query = FirebaseDatabase.getInstance().getReference("UserPlants");
 
         //Add this later and change <MyUserId> to actual logged in user id
         //Query query = FirebaseDatabase.getInstance().getReference("UserPlants")
@@ -159,4 +164,69 @@ public class UserPlantListActivity extends AppCompatActivity {
         super.onStop();
         userPlantAdapter.stopListening();
     }
+
+    private static void updateHumidity(){
+        // Create a Handler on the main (UI) thread
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        // Define a Runnable to update the humidity
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                // Perform the humidity update here
+
+                // Get the reference to the RealTimeData node in Firebase
+                DatabaseReference realTimeDataRef = FirebaseDatabase.getInstance().getReference("RealTimeData");
+
+                // Query the RealTimeData node for the necessary board ID (replace "boardId" with the actual board ID)
+                Query query = realTimeDataRef.orderByKey();
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        // Iterate over the matching data snapshots
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            // Get the humidity value from the snapshot
+                            int humidity = snapshot.child("humidity").getValue(Integer.class);
+
+                            // Get the boardId associated with the snapshot
+                            String boardId = snapshot.getKey();
+                            DatabaseReference userPlantsRef = FirebaseDatabase.getInstance().getReference("Users")
+                                    .child(FirebaseAuth.getInstance().getUid()).child("plants");
+
+                            // Update the current humidity of the corresponding plant in the UserPlants table
+                            //DatabaseReference userPlantsRef = FirebaseDatabase.getInstance().getReference("UserPlants");
+                            Query userPlantsQuery = userPlantsRef.orderByChild("boardId").equalTo(boardId);
+
+                            userPlantsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot userPlantsDataSnapshot) {
+                                    for (DataSnapshot userPlantsSnapshot : userPlantsDataSnapshot.getChildren()) {
+                                        userPlantsSnapshot.getRef().child("currentHumidity").setValue(humidity);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    // Handle potential errors here
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // Handle potential errors here
+                    }
+                });
+
+
+                // Schedule the next update after 10 minutes
+                handler.postDelayed(this, 10  * 1000); // 10 minutes (10 * 60 * 1000 milliseconds)
+            }
+        };
+
+        // Start the initial update immediately
+        runnable.run();
+    }
+
 }
