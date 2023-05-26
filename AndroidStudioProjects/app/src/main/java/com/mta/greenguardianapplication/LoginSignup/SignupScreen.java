@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.auth.User;
 import com.mta.greenguardianapplication.AddUserPlantForm;
 import com.mta.greenguardianapplication.ProfileActivity;
 import com.mta.greenguardianapplication.UserPlantListActivity;
@@ -86,7 +87,8 @@ public class SignupScreen extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-            Intent intent = new Intent(getApplicationContext(), ProfileActivity.class); //needs to change
+            Toast.makeText(SignupScreen.this, "User already login", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(), UserPlantListActivity.class); //needs to change
             startActivity(intent);
             finish();
         }

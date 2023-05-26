@@ -55,7 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public void OnClickBack(View view) {
-        Intent intent =  new Intent(getApplicationContext(), StartupScreen.class);
+        Intent intent =  new Intent(getApplicationContext(), UserPlantListActivity.class);
         startActivity(intent);
         finish();
     }

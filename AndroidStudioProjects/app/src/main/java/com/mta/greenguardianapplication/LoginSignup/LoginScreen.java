@@ -25,6 +25,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.mta.greenguardianapplication.AddUserPlantForm;
 import com.mta.greenguardianapplication.R;
 import com.mta.greenguardianapplication.UserPlantListActivity;
 
@@ -147,7 +148,8 @@ public class LoginScreen extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-            Intent intent = new Intent(getApplicationContext(), StartupScreen.class); //needs to change
+            Toast.makeText(LoginScreen.this, "User already login", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(), UserPlantListActivity.class); //needs to change
             startActivity(intent);
             finish();
         }

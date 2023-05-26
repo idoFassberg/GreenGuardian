@@ -20,7 +20,7 @@ public class ForumActivity2 extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     ImageView menu;
-    LinearLayout myPlants, forum, logout;
+    LinearLayout myPlants, forum, logout,myProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +32,7 @@ public class ForumActivity2 extends AppCompatActivity {
         myPlants = findViewById(R.id.myPlants);
         forum = findViewById(R.id.forum);
         logout = findViewById(R.id.logoutNav);
+        myProfile = findViewById(R.id.my_profile);
 
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,6 +52,13 @@ public class ForumActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 redirectActivity(ForumActivity2.this, UserPlantListActivity.class);
+            }
+        });
+
+        myProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirectActivity(ForumActivity2.this,ProfileActivity.class);
             }
         });
 

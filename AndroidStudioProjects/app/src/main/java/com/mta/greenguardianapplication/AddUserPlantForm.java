@@ -23,12 +23,16 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.mta.greenguardianapplication.LoginSignup.StartupScreen;
 import com.mta.greenguardianapplication.model.UserPlant;
 
 public class AddUserPlantForm extends AppCompatActivity {
     private DatabaseReference mDatabase;
+    DrawerLayout drawerLayout;
+    ImageView menu;
+    LinearLayout myPlants, forum, logout,myProfile,addPlant;
 
-    @SuppressLint("MissingInflatedId")
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +40,60 @@ public class AddUserPlantForm extends AppCompatActivity {
         String plantType = getIntent().getStringExtra("plantType");
         String optimalHumidity = getIntent().getStringExtra("optimalHumidity");
         String pictureUrl = getIntent().getStringExtra("pictureUrl");
+
+        drawerLayout = findViewById(R.id.drawerLayout);
+        menu = findViewById(R.id.menu);
+        myPlants = findViewById(R.id.myPlants);
+        forum = findViewById(R.id.forum);
+        logout = findViewById(R.id.logoutNav);
+        myProfile = findViewById(R.id.my_profile);
+        addPlant = findViewById(R.id.add_plant);
+
+
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openDrawer(drawerLayout);
+            }
+        });
+
+        forum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                redirectActivity(AddUserPlantForm.this, ForumActivity2.class);
+            }
+        });
+
+        myPlants.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                redirectActivity(AddUserPlantForm.this, UserPlantListActivity.class);
+            }
+        });
+
+        myProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirectActivity(AddUserPlantForm.this,ProfileActivity.class);
+            }
+        });
+        addPlant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recreate();
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(AddUserPlantForm.this, "Logout", Toast.LENGTH_SHORT).show();
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), StartupScreen.class); //needs to change
+                startActivity(intent);
+                finish();
+            }
+        });
 
         // Assign default values if the extras are null
         plantType = plantType != null ? plantType : "";
@@ -102,5 +160,22 @@ public class AddUserPlantForm extends AppCompatActivity {
                 });
 
         Toast.makeText(AddUserPlantForm.this, "Save successful", Toast.LENGTH_SHORT).show();
+    }
+
+    public  static void openDrawer(DrawerLayout drawerLayout){
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    public static void closeDrawer(DrawerLayout drawerLayout){
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
+
+    public static void redirectActivity(Activity activity, Class secondActivity){
+        Intent intent = new Intent(activity, secondActivity);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        activity.startActivity(intent);
+        activity.finish();
     }
 }

@@ -1,75 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="25dp"
-    tools:context=".AddUserPlantForm"
-    android:background="#F2F5DF">
+    android:background="@color/beige">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/plant_image"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:adjustViewBounds="false"
-            android:background="@drawable/image"
-            android:contentDescription="@string/plant_image_description"
-            android:scaleType="center"
-            android:src="@drawable/ic_launcher_background" />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/form_textFieldPlantType"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/form_buttonSaveUserPlant"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:hint="PlantType"
-            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            android:inputType="text"
-            android:minHeight="48dp" />
+            android:layout_alignParentBottom="true"
+            android:backgroundTint="#A4C639"
+            android:minHeight="60dp"
+            android:text="@string/button_saveUserPlant"
+            android:textColor="#F2F5DF" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/form_textFieldOptimalHumidity"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:hint="Optimal Humidity"
-            android:inputType="number"
-            android:minHeight="48dp" />
+            android:orientation="vertical">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/form_textFieldNickName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:hint="@string/form_nickName"
-            android:minHeight="48dp" />
+            <include layout="@layout/toolbar" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/form_textFieldBoardId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:hint="Board ID"
-            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-            android:inputType="text"
-            android:minHeight="48dp" />
+            <ImageView
+                android:id="@+id/plant_image"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:adjustViewBounds="false"
+                android:background="@drawable/image"
+                android:contentDescription="@string/plant_image_description"
+                android:scaleType="center"
+                android:src="@drawable/ic_launcher_background" />
 
-    </LinearLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/form_textFieldPlantType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                android:hint="PlantType"
+                android:inputType="text"
+                android:minHeight="48dp" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/form_buttonSaveUserPlant"
-        android:textColor="#F2F5DF"
-        android:text="@string/button_saveUserPlant"
-        android:layout_alignParentBottom="true"
-        android:minHeight="60dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#A4C639"/>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/form_textFieldOptimalHumidity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:hint="Optimal Humidity"
+                android:inputType="number"
+                android:minHeight="48dp" />
 
-</RelativeLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/form_textFieldNickName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:hint="@string/form_nickName"
+                android:minHeight="48dp" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/form_textFieldBoardId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                android:hint="Board ID"
+                android:inputType="text"
+                android:minHeight="48dp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <!-- Add your drawer content here -->
+    <!-- For example, you can use a NavigationView -->
+
+</androidx.drawerlayout.widget.DrawerLayout>
