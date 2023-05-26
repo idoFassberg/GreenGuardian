@@ -5,6 +5,7 @@
         <item name="colorPrimary">#4CAF50</item>
         <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">#4CAF50</item>
+        <item name="windowNoTitle">true</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">#4CAF50</item>
         <item name="colorSecondaryVariant">#4CAF50</item>

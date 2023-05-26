@@ -1,6 +1,7 @@
 package com.mta.greenguardianapplication.model;
 
 public class UserPlant {
+    private String plantId;
     private String nickName;
     private int optimalHumidity;
     private String pictureUrl;
@@ -14,7 +15,8 @@ public class UserPlant {
         // Default constructor required for Firebase
     }
 
-    public UserPlant(String nickName, int optimalHumidity, String pictureUrl, String plantType, String userId, String boardId, Integer currentHumidity) {
+    public UserPlant(String plantId, String nickName, int optimalHumidity, String pictureUrl, String plantType, String userId, String boardId, Integer currentHumidity) {
+        this.plantId = plantId;
         this.nickName = nickName;
         this.optimalHumidity = optimalHumidity;
         this.pictureUrl = pictureUrl;
@@ -78,5 +80,13 @@ public class UserPlant {
 
     public void setCurrentHumidity(int currentHumidity) {
         this.currentHumidity = currentHumidity;
+    }
+
+    public String getPlantId() {
+        return plantId;
+    }
+
+    public void setPlantId(String plantId) {
+        this.plantId = plantId;
     }
 }
