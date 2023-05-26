@@ -24,6 +24,18 @@
             app:civ_border_color="#FF000000"
             app:civ_border_width="2dp" />
 
+        <Button
+            android:id="@+id/editButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/beige"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:textColor="#989191"
+            android:textSize="20dp"
+            android:textStyle="bold|italic"
+            android:text="Edit" />
+
         <TextView
             android:id="@+id/form_userPlant_textFieldNickName"
             android:layout_width="match_parent"
