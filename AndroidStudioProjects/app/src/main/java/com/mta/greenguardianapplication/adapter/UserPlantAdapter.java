@@ -1,5 +1,6 @@
 package com.mta.greenguardianapplication.adapter;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -7,6 +8,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -17,7 +19,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.mta.greenguardianapplication.AddUserPlantForm;
 import com.mta.greenguardianapplication.R;
+import com.mta.greenguardianapplication.model.Plant;
 import com.mta.greenguardianapplication.model.UserPlant;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -44,6 +48,8 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
         TextView nickName, plantType, optimalHumidity, currentHumidity;
         CircleImageView imageView;
         ProgressBar humidityDif;
+        ImageButton editButton;
+
 
         public UserPlantHolder(@NonNull View itemView) {
             super(itemView);
@@ -53,6 +59,7 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
             imageView = itemView.findViewById(R.id.form_userPlant_imageView);
             currentHumidity = itemView.findViewById(R.id.current_humidity_value);
             humidityDif = itemView.findViewById(R.id.positiveProgressBar);
+            editButton = itemView.findViewById(R.id.editButton);
         }
 
         void bind(UserPlant userPlant) {
@@ -65,6 +72,42 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
                     .load(userPlant.getPictureUrl())
                     .apply(new RequestOptions().circleCrop())
                     .into(imageView);
+
+            /*editButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Handle button click event
+                }
+            });*/
+
+            editButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Get the position of the item
+                    int position = getBindingAdapterPosition();
+
+                    // Check if the position is valid
+                    if (position != RecyclerView.NO_POSITION) {
+                        // Get the clicked plant item
+                        UserPlant clickedPlant = getItem(position);
+                        String plantId = getSnapshots().getSnapshot(position).getKey();
+
+                        // Retrieve the values you want to pass to the another form activity
+                        String optimalHumidity = String.valueOf(clickedPlant.getOptimalHumidity());
+
+                        // Create the intent and pass the values as extras
+                        Intent intent = new Intent(v.getContext(), AddUserPlantForm.class);
+                        intent.putExtra("plantType", clickedPlant.getPlantType());
+                        intent.putExtra("optimalHumidity", optimalHumidity);
+                        intent.putExtra("pictureUrl", clickedPlant.getPictureUrl());
+                        intent.putExtra("nickName", clickedPlant.getNickName());
+                        intent.putExtra("boardId", clickedPlant.getBoardId());
+                        intent.putExtra("currentHumidity", clickedPlant.getCurrentHumidity());
+                        intent.putExtra("plantId", clickedPlant.getPlantId());
+                        v.getContext().startActivity(intent);
+                    }
+                }
+            });
         }
 
         void calcProgress(int currentHumidity, int optimalHumidity){

@@ -32,16 +32,20 @@ public class AddUserPlantForm extends AppCompatActivity {
         String plantType = getIntent().getStringExtra("plantType");
         String optimalHumidity = getIntent().getStringExtra("optimalHumidity");
         String pictureUrl = getIntent().getStringExtra("pictureUrl");
+        String boardId = getIntent().getStringExtra("boardId");
+        String nickName = getIntent().getStringExtra("nickName");
 
         // Assign default values if the extras are null
         plantType = plantType != null ? plantType : "";
         optimalHumidity = optimalHumidity != null ? optimalHumidity : "";
         pictureUrl = pictureUrl != null ? pictureUrl : "";
+        boardId = boardId != null ? boardId : "";
+        nickName = nickName != null ? nickName : "";
         mDatabase = FirebaseDatabase.getInstance().getReference("UserPlants");
-        initializeComponents(plantType, optimalHumidity,pictureUrl);
+        initializeComponents(plantType, optimalHumidity,pictureUrl,boardId,nickName);
     }
 
-    private void initializeComponents(String plantType, String optimalHumidity, String pictureUrl) {
+    private void initializeComponents(String plantType, String optimalHumidity, String pictureUrl, String boardId, String nickName) {
         TextInputEditText inputEditPlantType = findViewById(R.id.form_textFieldPlantType);
         TextInputEditText inputEditOptimalHumidity = findViewById(R.id.form_textFieldOptimalHumidity);
         TextInputEditText inputEditNickName = findViewById(R.id.form_textFieldNickName);
@@ -57,14 +61,16 @@ public class AddUserPlantForm extends AppCompatActivity {
         imageView.setTag(pictureUrl);
         inputEditPlantType.setText(plantType);
         inputEditOptimalHumidity.setText(optimalHumidity);
+        inputEditBoardId.setText(boardId);
+        inputEditNickName.setText(nickName);
 
         buttonSaveUserPlant.setOnClickListener(view -> {
             String type = String.valueOf(inputEditPlantType.getText());
-            String nickName = String.valueOf(inputEditNickName.getText());
+            String nickNameStr = String.valueOf(inputEditNickName.getText());
             String optimalHumidityStr = String.valueOf(inputEditOptimalHumidity.getText());
-            String boardId = String.valueOf(inputEditBoardId.getText());
+            String boardIdStr = String.valueOf(inputEditBoardId.getText());
 
-            addNewUserPlant(type, nickName,Integer.parseInt(optimalHumidityStr),boardId, (String)imageView.getTag());
+            addNewUserPlant(type, nickNameStr,Integer.parseInt(optimalHumidityStr),boardIdStr, (String)imageView.getTag());
 
             Intent intent = new Intent(AddUserPlantForm.this, UserPlantListActivity.class);
             startActivity(intent);
@@ -72,10 +78,11 @@ public class AddUserPlantForm extends AppCompatActivity {
     }
 
     public void addNewUserPlant(String type, String nickName, int optimalHumidity, String boardId, String pictureUrl) {
-        UserPlant userPlant = new UserPlant(nickName, optimalHumidity, pictureUrl, type, "123", boardId,-1 );
-
-        String plantId = mDatabase.push().getKey(); // Generate a unique ID
-
+        String plantId = getIntent().getStringExtra("plantId");
+        if(plantId == null){
+            plantId = mDatabase.push().getKey();
+        }
+        UserPlant userPlant = new UserPlant(plantId, nickName, optimalHumidity, pictureUrl, type, "123", boardId,-1 );
         mDatabase.child(plantId).setValue(userPlant); // Save the plant with the generated ID
 
         Toast.makeText(AddUserPlantForm.this, "Save successful", Toast.LENGTH_SHORT).show();
