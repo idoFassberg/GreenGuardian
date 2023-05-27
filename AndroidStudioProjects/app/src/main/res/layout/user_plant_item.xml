@@ -26,7 +26,7 @@
 
         <ImageButton
             android:id="@+id/editButton"
-            android:background="@android:drawable/ic_menu_edit"
+            android:background="@drawable/baseline_edit_24"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

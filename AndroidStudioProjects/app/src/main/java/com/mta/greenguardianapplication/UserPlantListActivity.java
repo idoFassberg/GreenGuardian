@@ -51,7 +51,7 @@ public class UserPlantListActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     ImageView menu;
-    LinearLayout myPlants, forum, logout,addPlant,myProfile;
+    LinearLayout myPlants, forum, logout,addPlant,myProfile,plantsLibrary;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +62,7 @@ public class UserPlantListActivity extends AppCompatActivity {
         myPlants = findViewById(R.id.myPlants);
         forum = findViewById(R.id.forum);
         logout = findViewById(R.id.logoutNav);
+        plantsLibrary = findViewById(R.id.plantsLibrary);
         addPlant = findViewById(R.id.add_plant);
         myProfile = findViewById(R.id.my_profile);
 
@@ -76,6 +77,13 @@ public class UserPlantListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 recreate();
+            }
+        });
+
+        plantsLibrary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                redirectActivity(UserPlantListActivity.this, PlantListActivity.class);
             }
         });
 
