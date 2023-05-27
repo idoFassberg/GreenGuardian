@@ -49,7 +49,7 @@ public class UserPlantListActivity extends AppCompatActivity {
     private UserPlantAdapter userPlantAdapter;
     DrawerLayout drawerLayout;
     ImageView menu;
-    LinearLayout myPlants, forum, logout;
+    LinearLayout myPlants, forum, logout, plantsLibrary;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +60,7 @@ public class UserPlantListActivity extends AppCompatActivity {
         myPlants = findViewById(R.id.myPlants);
         forum = findViewById(R.id.forum);
         logout = findViewById(R.id.logoutNav);
+        plantsLibrary = findViewById(R.id.plantsLibrary);
 
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +73,13 @@ public class UserPlantListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 recreate();
+            }
+        });
+
+        plantsLibrary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                redirectActivity(UserPlantListActivity.this, PlantListActivity.class);
             }
         });
 
