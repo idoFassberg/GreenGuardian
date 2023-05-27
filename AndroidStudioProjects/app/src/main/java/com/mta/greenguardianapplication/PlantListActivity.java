@@ -37,7 +37,7 @@ public class PlantListActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     ImageView menu;
-    LinearLayout myPlants, forum, logout, plantsLibrary;
+    LinearLayout myPlants, forum, logout, plantsLibrary,addPlant,myProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +50,8 @@ public class PlantListActivity extends AppCompatActivity {
         forum = findViewById(R.id.forum);
         logout = findViewById(R.id.logoutNav);
         plantsLibrary = findViewById(R.id.plantsLibrary);
+        addPlant = findViewById(R.id.add_plant);
+        myProfile = findViewById(R.id.my_profile);
 
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +80,18 @@ public class PlantListActivity extends AppCompatActivity {
                 redirectActivity(PlantListActivity.this, ForumActivity2.class);
             }
         });
+        myProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirectActivity(PlantListActivity.this,ProfileActivity.class);
+            }
+        });
+
+        addPlant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirectActivity(PlantListActivity.this,AddUserPlantForm.class);            }
+        });
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +103,7 @@ public class PlantListActivity extends AppCompatActivity {
                 finish();
             }
         });
+
 
         recyclerView = findViewById(R.id.recycler_view_plant_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
