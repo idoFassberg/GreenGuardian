@@ -30,7 +30,7 @@ public class AddUserPlantForm extends AppCompatActivity {
     private DatabaseReference mDatabase;
     DrawerLayout drawerLayout;
     ImageView menu;
-    LinearLayout myPlants, forum, logout,myProfile,addPlant;
+    LinearLayout myPlants, forum, logout, myProfile, addPlant, plantLibrary;
 
 
     @Override
@@ -50,7 +50,7 @@ public class AddUserPlantForm extends AppCompatActivity {
         logout = findViewById(R.id.logoutNav);
         myProfile = findViewById(R.id.my_profile);
         addPlant = findViewById(R.id.add_plant);
-
+        plantLibrary = findViewById(R.id.plantsLibrary);
 
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,12 +73,20 @@ public class AddUserPlantForm extends AppCompatActivity {
             }
         });
 
+        plantLibrary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirectActivity(AddUserPlantForm.this, PlantListActivity.class);
+            }
+        });
+
         myProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 redirectActivity(AddUserPlantForm.this,ProfileActivity.class);
             }
         });
+
         addPlant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
