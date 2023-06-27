@@ -1,0 +1,1 @@
+Add WiFiManager to Arduino project: https://randomnerdtutorials.com/wifimanager-with-esp8266-autoconnect-custom-parameter-and-manage-your-ssid-and-password/
