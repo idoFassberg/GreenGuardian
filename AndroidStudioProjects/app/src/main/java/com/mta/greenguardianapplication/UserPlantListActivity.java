@@ -42,6 +42,7 @@ import com.mta.greenguardianapplication.model.UserPlant;
 
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class UserPlantListActivity extends AppCompatActivity {
@@ -194,61 +195,65 @@ public class UserPlantListActivity extends AppCompatActivity {
 
     private static void updateHumidity(){
         // Create a Handler on the main (UI) thread
+
         Handler handler = new Handler(Looper.getMainLooper());
 
         // Define a Runnable to update the humidity
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                // Perform the humidity update here
+                String uid = FirebaseAuth.getInstance().getUid();
+                if (uid != null) {
 
-                // Get the reference to the RealTimeData node in Firebase
-                DatabaseReference realTimeDataRef = FirebaseDatabase.getInstance().getReference("RealTimeData");
+                    // Perform the humidity update here
 
-                // Query the RealTimeData node for the necessary board ID (replace "boardId" with the actual board ID)
-                Query query = realTimeDataRef.orderByKey();
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        // Iterate over the matching data snapshots
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            // Get the humidity value from the snapshot
-                            int humidity = snapshot.child("humidity").getValue(Integer.class);
+                    // Get the reference to the RealTimeData node in Firebase
+                    DatabaseReference realTimeDataRef = FirebaseDatabase.getInstance().getReference("RealTimeData");
 
-                            // Get the boardId associated with the snapshot
-                            String boardId = snapshot.getKey();
-                            DatabaseReference userPlantsRef = FirebaseDatabase.getInstance().getReference("Users")
-                                    .child(FirebaseAuth.getInstance().getUid()).child("plants");
+                    // Query the RealTimeData node for the necessary board ID (replace "boardId" with the actual board ID)
+                    Query query = realTimeDataRef.orderByKey();
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            // Iterate over the matching data snapshots
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                // Get the humidity value from the snapshot
+                                Integer humidity = snapshot.child("humidity").getValue(Integer.class);
+                                // Get the boardId associated with the snapshot
+                                String boardId = snapshot.getKey();
+                                DatabaseReference userPlantsRef = FirebaseDatabase.getInstance().getReference("Users")
+                                        .child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid())).child("plants");
 
-                            // Update the current humidity of the corresponding plant in the UserPlants table
-                            //DatabaseReference userPlantsRef = FirebaseDatabase.getInstance().getReference("UserPlants");
-                            Query userPlantsQuery = userPlantsRef.orderByChild("boardId").equalTo(boardId);
+                                // Update the current humidity of the corresponding plant in the UserPlants table
+                                //DatabaseReference userPlantsRef = FirebaseDatabase.getInstance().getReference("UserPlants");
+                                Query userPlantsQuery = userPlantsRef.orderByChild("boardId").equalTo(boardId);
 
-                            userPlantsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot userPlantsDataSnapshot) {
-                                    for (DataSnapshot userPlantsSnapshot : userPlantsDataSnapshot.getChildren()) {
-                                        userPlantsSnapshot.getRef().child("currentHumidity").setValue(humidity);
+                                userPlantsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot userPlantsDataSnapshot) {
+                                        for (DataSnapshot userPlantsSnapshot : userPlantsDataSnapshot.getChildren()) {
+                                            userPlantsSnapshot.getRef().child("currentHumidity").setValue(humidity);
+                                        }
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    // Handle potential errors here
-                                }
-                            });
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        // Handle potential errors here
+                                    }
+                                });
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        // Handle potential errors here
-                    }
-                });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            // Handle potentital errors here
+                        }
+                    });
 
 
-                // Schedule the next update after 10 minutes
-                handler.postDelayed(this, 10  * 1000); // 10 minutes (10 * 60 * 1000 milliseconds)
+                    // Schedule the next update after 10 minutes
+                    handler.postDelayed(this, 10 * 1000); // 10 minutes (10 * 60 * 1000 milliseconds)
+                }
             }
         };
 

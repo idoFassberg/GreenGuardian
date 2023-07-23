@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
@@ -27,6 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.auth.User;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.mta.greenguardianapplication.AddUserPlantForm;
 import com.mta.greenguardianapplication.ProfileActivity;
 import com.mta.greenguardianapplication.UserPlantListActivity;
@@ -106,17 +109,19 @@ public class SignupScreen extends AppCompatActivity {
         return password.length() >= 6; // For example, minimum 6 characters
     }
 
-    private void registerUser(String email,String password)
-    {
+    private void registerUser(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener( new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         /*progressBar.setVisibility(View.GONE);*/
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
-                            createUserDB();
+
+                            // Get the FCM token and create User DataBase
+                            getTokenAndCreateUser();
+
                             Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), UserPlantListActivity.class);
                             startActivity(intent);
@@ -132,21 +137,83 @@ public class SignupScreen extends AppCompatActivity {
                 });
     }
 
-    private void createUserDB() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        HashMap<Object, String> hashMap = new HashMap<>();
-        hashMap.put("email",user.getEmail());
-        hashMap.put("uid",user.getUid());
-        hashMap.put("name","");
-        hashMap.put("phone","");
-        hashMap.put("plants","");
-        hashMap.put("image","");
+    private void getTokenAndCreateUser()
+    {
+        // Get the FCM token asynchronously using addOnSuccessListener and addOnFailureListener
+        FirebaseMessaging.getInstance().getToken()
+                .addOnSuccessListener(new OnSuccessListener<String>() {
+                    @Override
+                    public void onSuccess(String token) {
+                        // The FCM token is successfully retrieved
+                        // Call createUserDB with the FCM token after the user is successfully registered
+                        createUserDB(token);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("Users");
-        reference.child(user.getUid()).setValue(hashMap);
+                        // You can perform any other actions here after both user data and FCM token are saved
+                        Log.d("FCM Token", "Token retrieved: " + token);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // An error occurred while retrieving the FCM token
+                        Log.e("FCM Token", "Error getting FCM token: " + e.getMessage());
+                        // Handle the failure gracefully, you can choose to proceed without the token
+                        // or try again later
+                    }
+                });
+
 
     }
+    private void createUserDB(String fcmToken) {
+        // Get the current user's UID
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            String uid = user.getUid();
+
+            // Get a reference to the "Users" node in the Firebase Realtime Database
+            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+
+            // Create the user data HashMap
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("email", user.getEmail());
+            hashMap.put("uid", uid);
+            hashMap.put("name", "");
+            hashMap.put("phone", "");
+            hashMap.put("plants", "");
+            hashMap.put("image", "");
+
+            // Set user data in the database and add an onSuccessListener
+            usersRef.child(uid).setValue(hashMap)
+                    .addOnSuccessListener(aVoid -> {
+                        // After the user data is successfully saved, save the FCM token to the database
+                        saveTokenToDatabase(uid, fcmToken);
+
+                        // You can perform any other actions here after both user data and FCM token are saved
+                        Log.d("FCM Token", "Token saved to database: " + fcmToken);
+                    })
+                    .addOnFailureListener(e -> {
+                        // An error occurred while saving user data
+                        Log.e("Create User", "Error saving user data: " + e.getMessage());
+                    });
+        }
+    }
+    private void saveTokenToDatabase(String uid, String token) {
+        // Get a reference to the "Users" node in the Firebase Realtime Database
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+
+        // Update the user's data with the FCM token
+        usersRef.child(uid).child("fcmToken").setValue(token)
+                .addOnSuccessListener(aVoid -> {
+                    // The FCM token was successfully saved to the database
+                    Log.d("FCM Token", "Token saved to database: " + token);
+                })
+                .addOnFailureListener(e -> {
+                    // An error occurred while saving the FCM token to the database
+                    Log.e("FCM Token", "Error saving token to database: " + e.getMessage());
+                });
+    }
+
+
 
     public void callSignup(View view){
         String email = te_email.getText().toString();

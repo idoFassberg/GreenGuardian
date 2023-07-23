@@ -25,6 +25,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.mta.greenguardianapplication.AddUserPlantForm;
 import com.mta.greenguardianapplication.R;
 import com.mta.greenguardianapplication.UserPlantListActivity;
@@ -123,6 +126,7 @@ public class LoginScreen extends AppCompatActivity {
                             Log.d(TAG, "signInWithEmail:success");
                             Toast.makeText(LoginScreen.this, "Login Successful.",
                                     Toast.LENGTH_SHORT).show();
+                            saveTokenToUser();
                             Intent intent = new Intent(getApplicationContext(), UserPlantListActivity.class);
                             startActivity(intent);
                             finish();
@@ -136,6 +140,21 @@ public class LoginScreen extends AppCompatActivity {
                 });
     }
 
+    private void saveTokenToUser()
+    {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                String token = task.getResult();
+                FirebaseUser user = mAuth.getCurrentUser();
+                String uid = user.getUid();
+                DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+                usersRef.child(uid).child("fcmToken").setValue(token);
+                // Save the token to your server or database for later use
+            } else {
+                Log.d("token error","The token doesn't insert to db");
+            }
+        });
+    }
     public void onClickLogout(View view) {
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(getApplicationContext(), StartupScreen.class); //needs to change
