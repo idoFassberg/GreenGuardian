@@ -19,10 +19,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.github.mikephil.charting.data.BarEntry;
 import com.mta.greenguardianapplication.AddUserPlantForm;
+import com.mta.greenguardianapplication.GraphActivity;
 import com.mta.greenguardianapplication.R;
 import com.mta.greenguardianapplication.model.Plant;
 import com.mta.greenguardianapplication.model.UserPlant;
+
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -48,7 +52,7 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
         TextView nickName, plantType, optimalHumidity, currentHumidity;
         CircleImageView imageView;
         ProgressBar humidityDif;
-        ImageButton editButton;
+        ImageButton editButton, statsButton;
 
 
         public UserPlantHolder(@NonNull View itemView) {
@@ -60,6 +64,7 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
             currentHumidity = itemView.findViewById(R.id.current_humidity_value);
             humidityDif = itemView.findViewById(R.id.positiveProgressBar);
             editButton = itemView.findViewById(R.id.editButton);
+            statsButton = itemView.findViewById(R.id.statsButton);
         }
 
         void bind(UserPlant userPlant) {
@@ -79,6 +84,20 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
                     // Handle button click event
                 }
             });*/
+
+            statsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getBindingAdapterPosition();
+
+                    if (position != RecyclerView.NO_POSITION) {
+                        Intent intent = new Intent(v.getContext(), GraphActivity.class);
+                        intent.putExtra("plantId", userPlant.getPlantId());
+                        intent.putExtra("userId", userPlant.getUserId());
+                        v.getContext().startActivity(intent);
+                    }
+                }
+            });
 
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override

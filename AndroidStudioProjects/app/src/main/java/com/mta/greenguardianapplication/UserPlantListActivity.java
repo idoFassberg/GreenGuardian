@@ -213,7 +213,7 @@ public class UserPlantListActivity extends AppCompatActivity {
                         // Iterate over the matching data snapshots
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             // Get the humidity value from the snapshot
-                            int humidity = snapshot.child("humidity").getValue(Integer.class);
+                            Integer humidity = snapshot.child("humidity").getValue(Integer.class);
 
                             // Get the boardId associated with the snapshot
                             String boardId = snapshot.getKey();
@@ -255,5 +255,4 @@ public class UserPlantListActivity extends AppCompatActivity {
         // Start the initial update immediately
         runnable.run();
     }
-
 }
