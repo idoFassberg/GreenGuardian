@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class GraphActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        barArrayList.add(new BarEntry(0, 0));
         setContentView(R.layout.activity_graph);
     }
 
@@ -61,7 +63,7 @@ public class GraphActivity extends AppCompatActivity {
         } else {
             // Handle the case when there's no data passed.
             // For example, you can initialize barArrayList with some default data.
-            // barArrayList = new ArrayList<>();
+            barArrayList = new ArrayList<>();
         }
     }
 
@@ -72,6 +74,29 @@ public class GraphActivity extends AppCompatActivity {
                 .child("Plants")
                 .child(plantId)
                 .child("statsHumidity");
+        Query query = statsHumidityRef.orderByKey();
+        statsHumidityRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Long> statsHumidityList = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    // Cast the data to the appropriate type (Long in this case)
+                    Long humidityValue = snapshot.getValue(Long.class);
+                    statsHumidityList.add(humidityValue);
+                }
+
+                // Now you have the ArrayList of statsHumidity data
+                // You can use statsHumidityList as needed
+                // For example, update the BarChart with this data
+                updateBarChart(statsHumidityList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle any errors that occurred during data retrieval
+            }
+        });
+
     }
 
     private void updateBarChart(List<Long> statsHumidityList) {
@@ -81,5 +106,4 @@ public class GraphActivity extends AppCompatActivity {
             barArrayList.add(new BarEntry(i, statsHumidityList.get(i)));
         }
     }
-
 }
