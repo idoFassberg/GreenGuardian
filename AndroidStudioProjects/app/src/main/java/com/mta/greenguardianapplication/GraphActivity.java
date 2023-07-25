@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
@@ -34,7 +35,11 @@ public class GraphActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        barArrayList.add(new BarEntry(0, 0));
+        /*barArrayList.add(new BarEntry(1, 10));
+        barArrayList.add(new BarEntry(2, 20));
+        barArrayList.add(new BarEntry(3, 30));
+        barArrayList.add(new BarEntry(4, 40));
+        barArrayList.add(new BarEntry(5, 50));*/
         setContentView(R.layout.activity_graph);
     }
 
@@ -42,7 +47,7 @@ public class GraphActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         BarChart barChart = findViewById(R.id.barchart);
-        barArrayList = new ArrayList<BarEntry>();
+        //barArrayList = new ArrayList<BarEntry>();
         getData();
         BarDataSet barDataSet = new BarDataSet(barArrayList, "Graph");
         BarData barData = new BarData(barDataSet);
@@ -52,6 +57,7 @@ public class GraphActivity extends AppCompatActivity {
         barDataSet.setValueTextSize(16f);
         barChart.getDescription().setEnabled(true);
         barChart.invalidate();
+        //setContentView(R.layout.activity_graph);
     }
 
     private void getData() {
@@ -71,10 +77,12 @@ public class GraphActivity extends AppCompatActivity {
         DatabaseReference statsHumidityRef = FirebaseDatabase.getInstance()
                 .getReference("Users")
                 .child(FirebaseAuth.getInstance().getUid())
-                .child("Plants")
+                .child("plants")
                 .child(plantId)
                 .child("statsHumidity");
-        Query query = statsHumidityRef.orderByKey();
+
+        Log.d("status", statsHumidityRef.getKey());
+        //Query query = statsHumidityRef.orderByKey();
         statsHumidityRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -100,10 +108,24 @@ public class GraphActivity extends AppCompatActivity {
     }
 
     private void updateBarChart(List<Long> statsHumidityList) {
+        // Clear the previous data
+        barArrayList.clear();
+
         // Convert the List<Long> to List<BarEntry> for the bar chart
-        List<BarEntry> barArrayList = new ArrayList<>();
         for (int i = 0; i < statsHumidityList.size(); i++) {
             barArrayList.add(new BarEntry(i, statsHumidityList.get(i)));
+            Log.d("mymy",statsHumidityList.get(i).toString());
         }
+
+        // Notify the chart that the data has changed
+        BarChart barChart = findViewById(R.id.barchart);
+        BarDataSet barDataSet = new BarDataSet(barArrayList, "Graph");
+        BarData barData = new BarData(barDataSet);
+        barChart.setData(barData);
+        barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        barDataSet.setValueTextColor(Color.BLACK);
+        barDataSet.setValueTextSize(16f);
+        barChart.getDescription().setEnabled(true);
+        barChart.invalidate();
     }
 }
