@@ -1,29 +1,32 @@
 package com.mta.greenguardianapplication;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.mta.greenguardianapplication.LoginSignup.StartupScreen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +34,10 @@ import java.util.List;
 public class GraphActivity extends AppCompatActivity {
 
     ArrayList<BarEntry> barArrayList = new ArrayList<BarEntry>();
+
+    DrawerLayout drawerLayout;
+    ImageView menu;
+    LinearLayout myPlants, forum, logout, plantsLibrary,addPlant,myProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +48,66 @@ public class GraphActivity extends AppCompatActivity {
         barArrayList.add(new BarEntry(4, 40));
         barArrayList.add(new BarEntry(5, 50));*/
         setContentView(R.layout.activity_graph);
+
+        drawerLayout = findViewById(R.id.drawerLayout);
+        menu = findViewById(R.id.menu);
+        myPlants = findViewById(R.id.myPlants);
+        forum = findViewById(R.id.forum);
+        logout = findViewById(R.id.logoutNav);
+        plantsLibrary = findViewById(R.id.plantsLibrary);
+        addPlant = findViewById(R.id.add_plant);
+        myProfile = findViewById(R.id.my_profile);
+
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openDrawer(drawerLayout);
+            }
+        });
+
+        plantsLibrary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                redirectActivity(GraphActivity.this, PlantListActivity.class);
+            }
+        });
+
+        myPlants.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                redirectActivity(GraphActivity.this, UserPlantListActivity.class);
+            }
+        });
+
+        forum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                redirectActivity(GraphActivity.this, ForumActivity2.class);
+            }
+        });
+        myProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirectActivity(GraphActivity.this,ProfileActivity.class);
+            }
+        });
+
+        addPlant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirectActivity(GraphActivity.this,AddUserPlantForm.class);            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(GraphActivity.this, "Logout", Toast.LENGTH_SHORT).show();
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), StartupScreen.class); //needs to change
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     @Override
@@ -127,5 +194,38 @@ public class GraphActivity extends AppCompatActivity {
         barDataSet.setValueTextSize(16f);
         barChart.getDescription().setEnabled(true);
         barChart.invalidate();
+    }
+
+    public  static void openDrawer(DrawerLayout drawerLayout){
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    public static void closeDrawer(DrawerLayout drawerLayout){
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
+
+    public  static void redirectActivity(Activity activity, Class secondActivity){
+        Intent intent = new Intent(activity, secondActivity);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        activity.startActivity(intent);
+        activity.finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        closeDrawer(drawerLayout);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 }
