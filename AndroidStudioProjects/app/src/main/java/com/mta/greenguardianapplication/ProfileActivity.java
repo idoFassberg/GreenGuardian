@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
@@ -32,7 +33,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
-    Button btn_back;
+    //Button btn_back;
     TextView userName,userEmail;
     DrawerLayout drawerLayout;
     ImageView menu;
@@ -48,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
         user = mAuth.getCurrentUser();
         userName = findViewById(R.id.profileName);
         userEmail = findViewById(R.id.EmailUser);
-        btn_back = findViewById(R.id.back_btn_profile);
+        //btn_back = findViewById(R.id.back_btn_profile);
 
         drawerLayout = findViewById(R.id.drawerLayout);
         menu = findViewById(R.id.menu);
@@ -58,7 +59,34 @@ public class ProfileActivity extends AppCompatActivity {
         plantsLibrary = findViewById(R.id.plantsLibrary);
         addPlant = findViewById(R.id.add_plant);
         myProfile = findViewById(R.id.my_profile);
+        // In your Java code, after finding the TextView by its ID
+        //TextView countOfPlantsTextView = findViewById(R.id.countOfPlants);
 
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("plants");
+
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // dataSnapshot.getChildrenCount() gives you the number of children (plants)
+                    long plantCount = dataSnapshot.getChildrenCount();
+                    // Update the TextView with the plant count
+                    TextView countOfPlantsTextView = findViewById(R.id.countOfPlants);
+                    countOfPlantsTextView.setText("Have " + plantCount + " plants");
+                } else {
+                    // Handle the case where there are no plants
+                    // For example, display "No plants" in the TextView
+                    TextView countOfPlantsTextView = findViewById(R.id.countOfPlants);
+                    countOfPlantsTextView.setText("No plants");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle the error case if the database operation is cancelled
+            }
+        });
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -161,12 +189,12 @@ public class ProfileActivity extends AppCompatActivity {
         finish();
     }
 
-    public void onClickLogout(View view) {
+    /*public void onClickLogout(View view) {
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(getApplicationContext(), StartupScreen.class); //needs to change
         startActivity(intent);
         finish();
-    }
+    }*/
 
     public  static void openDrawer(DrawerLayout drawerLayout){
         drawerLayout.openDrawer(GravityCompat.START);
@@ -183,6 +211,12 @@ public class ProfileActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activity.startActivity(intent);
         activity.finish();
+    }
+    public void callSignupScreen(View view) {
+
+        Intent intent = new Intent(getApplicationContext(), SignupScreen.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
