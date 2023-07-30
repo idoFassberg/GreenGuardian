@@ -106,6 +106,7 @@
                 android:text="My Plants"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                android:onClick="openPlantList"
                 style="@android:style/Widget.Button"
                 android:textAlignment="viewStart" />
             <androidx.appcompat.widget.AppCompatButton
