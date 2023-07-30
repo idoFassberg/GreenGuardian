@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +86,7 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
                 public void onClick(View v) {
                     // Get the position of the item
                     int position = getBindingAdapterPosition();
-
+                    Log.d("position is ", String.valueOf(position));
                     // Check if the position is valid
                     if (position != RecyclerView.NO_POSITION) {
                         // Get the clicked plant item

@@ -30,6 +30,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -127,6 +128,8 @@ public class ProfileActivity extends AppCompatActivity {
                             // Image selection successful, handle the image URI here
                             handleImageCapture(IMAGE_PICK_GALLERY_CODE, result); // Add the requestCode to the handleImageCapture call
                         } else {
+                            Toast.makeText(ProfileActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
                             // Image selection canceled or failed, handle accordingly
                             // For example, show a Toast or perform some action
                         }
@@ -302,7 +305,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     private void showEditProfileDialog() {
-        String option[] = {"Edit profile picture", "Edit name", "Edit phone number"};
+        String option[] = {"Edit profile picture", "Edit name"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Choose Action");
         builder.setItems(option, new DialogInterface.OnClickListener() {
@@ -312,9 +315,7 @@ public class ProfileActivity extends AppCompatActivity {
                     showCustomProgressDialog("Updating profile picture...");
                     showEditImageDialog();
                 } else if (which == 1) { // Edit Name
-                    showCustomProgressDialog("Updating name...");
-                } else if (which == 2) { // Edit phone number
-                    showCustomProgressDialog("Updating phone number...");
+                    showEditNameDialog();
                 }
             }
         });
@@ -330,9 +331,14 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 0) { // Camera
                     if (!checkCameraPermission()) {
+                        Log.d("permission ","ask for camera permission");
                         requestCameraPermission();
+                        progressDialog.dismiss();
                     } else {
+                        Log.d("permission ","the user have camera permission! try open camera");
                         pickFromCamera();
+                        progressDialog.dismiss();
+
                     }
                 } else if (which == 1) { // Gallery
                     if (!checkStoragePermission()) {
@@ -345,6 +351,69 @@ public class ProfileActivity extends AppCompatActivity {
         });
         builder.show();
     }
+
+    private void showEditNameDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Edit Name");
+
+        // Create an EditText to input the new name
+        final EditText input = new EditText(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        builder.setView(input);
+
+        // Set the positive button to update the name
+        builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newName = input.getText().toString().trim();
+                if (!newName.isEmpty()) {
+                    updateUserName(newName);
+                } else {
+                    Toast.makeText(ProfileActivity.this, "Name cannot be empty", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        // Set the negative button to cancel the dialog
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        // Show the dialog
+        builder.show();
+    }
+
+    private void updateUserName(String newName) {
+        // Get the current user's ID
+        String userId = user.getUid();
+
+        // Get a reference to the "Users" node in the database
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+
+        // Get a reference to the specific user's profile in the database
+        DatabaseReference userRef = usersRef.child(userId);
+
+        // Update the "name" field in the user's profile with the new name
+        userRef.child("name").setValue(newName)
+                .addOnSuccessListener(aVoid -> {
+                    // Name is successfully updated in the database
+                    Toast.makeText(ProfileActivity.this, "Name updated successfully", Toast.LENGTH_SHORT).show();
+
+                    // Update the UI with the new name
+                    userName.setText(newName);
+                })
+                .addOnFailureListener(e -> {
+                    // There was an error updating the name
+                    Toast.makeText(ProfileActivity.this, "Failed to update name", Toast.LENGTH_SHORT).show();
+                });
+    }
+
 
 
     private void showCustomProgressDialog(String message) {
@@ -428,7 +497,7 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(ProfileActivity.this, "Storage permission denied", Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == CAMERA_REQUEST_CODE) {
-            // Handle the camera permission result if needed
+            pickFromCamera();
         }
     }
 
@@ -440,15 +509,17 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void pickFromCamera() {
-        // Check if the camera permission is granted before proceeding
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, "Image");
-        values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera");
-        // Create a content URI to store the image
-        image_uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        // Create the camera intent
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        // Start the camera activity using the cameraLauncher
-        cameraLauncher.launch(image_uri);
+        // Check if there's a camera app available to handle the intent
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            // Launch the camera activity and pass null as the argument
+            cameraLauncher.launch(null);
+        } else {
+            // If there's no camera app available, show a message to the user or handle the situation accordingly
+            Toast.makeText(this, "No camera app found", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -551,5 +622,8 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    public void openPlantList(View view) {
+        redirectActivity(ProfileActivity.this, UserPlantListActivity.class);
+    }
 
 }
