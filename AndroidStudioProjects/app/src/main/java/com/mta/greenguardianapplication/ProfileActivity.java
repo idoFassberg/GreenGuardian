@@ -149,12 +149,19 @@ public class ProfileActivity extends AppCompatActivity {
                     // Get the download URL of the profile picture from the database
                     String profileImageUrl = dataSnapshot.getValue(String.class);
 
-                    // Load and display the profile picture using Picasso
-                    Picasso.get()
-                            .load(profileImageUrl)
-                            .placeholder(R.drawable.ic_account_profile2) // Placeholder image while loading
-                            .error(R.drawable.ic_account_profile2) // Error image if the URL is invalid or loading fails
-                            .into(profilePicture);
+                    if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
+                        // Load and display the profile picture using Picasso
+                        // Load and display the profile picture using Picasso
+                        Picasso.get()
+                                .load(profileImageUrl)
+                                .placeholder(R.drawable.ic_account_profile2) // Placeholder image while loading
+                                .error(R.drawable.ic_account_profile2) // Error image if the URL is invalid or loading fails
+                                .into(profilePicture);
+                    } else {
+                        // If the "image" value is empty or null, set a default profile picture
+                        profilePicture.setImageResource(R.drawable.ic_account_profile2);
+                    }
+
                 } else {
                     // If the "image" value does not exist in the database, handle the case here
                     // For example, you can set a default profile picture
