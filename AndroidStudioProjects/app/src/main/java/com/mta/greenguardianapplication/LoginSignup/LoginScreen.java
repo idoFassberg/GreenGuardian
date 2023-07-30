@@ -168,6 +168,7 @@ public class LoginScreen extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
             Toast.makeText(LoginScreen.this, "User already login", Toast.LENGTH_SHORT).show();
+            saveTokenToUser();
             Intent intent = new Intent(getApplicationContext(), UserPlantListActivity.class); //needs to change
             startActivity(intent);
             finish();
