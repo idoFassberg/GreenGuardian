@@ -47,6 +47,10 @@ public class SignupScreen extends AppCompatActivity {
     ProgressBar progressBar;
 
 
+    public TextInputEditText getTe_fullName() {
+        return te_fullName;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +70,8 @@ public class SignupScreen extends AppCompatActivity {
         te_fullName = findViewById(R.id.fullNameSignup);
         te_email = findViewById(R.id.emailSignup);
         te_password = findViewById(R.id.passwordSignup);
+
+
 
         /*signup.setOnClickListener(new View.OnClickListener() {
             @Override

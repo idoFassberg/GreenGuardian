@@ -62,7 +62,7 @@ public class AddUserPlantForm extends AppCompatActivity {
         forum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                redirectActivity(AddUserPlantForm.this, ForumActivity2.class);
+                redirectActivity(AddUserPlantForm.this, MainChatActivity.class);
             }
         });
 

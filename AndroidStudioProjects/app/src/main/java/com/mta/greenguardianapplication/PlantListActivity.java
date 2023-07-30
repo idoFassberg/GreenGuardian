@@ -77,7 +77,7 @@ public class PlantListActivity extends AppCompatActivity {
         forum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                redirectActivity(PlantListActivity.this, ForumActivity2.class);
+                redirectActivity(PlantListActivity.this, MainChatActivity.class);
             }
         });
         myProfile.setOnClickListener(new View.OnClickListener() {
