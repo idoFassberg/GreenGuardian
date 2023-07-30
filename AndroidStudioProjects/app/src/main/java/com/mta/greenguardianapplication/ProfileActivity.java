@@ -223,7 +223,7 @@ public class ProfileActivity extends AppCompatActivity {
         forum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                redirectActivity(ProfileActivity.this,ForumActivity2.class);
+                redirectActivity(ProfileActivity.this,MainChatActivity.class);
             }
         });
 
