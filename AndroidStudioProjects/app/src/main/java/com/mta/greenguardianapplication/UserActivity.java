@@ -39,9 +39,9 @@ public class UserActivity extends AppCompatActivity {
 
     private void getUsers(){
         // Get a reference to the "users" node in the database
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        // Attach a ValueEventListener to the "users" node
+// Attach a ValueEventListener to the "users" node
         usersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -51,23 +51,24 @@ public class UserActivity extends AppCompatActivity {
 
                 // Iterate through all child nodes (users) and deserialize them into User objects
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    User user = userSnapshot.getValue(User.class);
-                    users.add(user);
+                    // Check if the user data exists
+                    if (userSnapshot.exists()) {
+                        // Get the email and name from the specific user's snapshot
+                        String email = userSnapshot.child("email").getValue(String.class);
+                        String name = userSnapshot.child("name").getValue(String.class);
+
+                        User user = new User(name, email);
+                        users.add(user);
+                    }
                 }
 
-                if (users.size()>0){
-                    UserAdapter userAdapter =  new UserAdapter(users);
-                    binding.userRecyclerView.setAdapter(userAdapter);
-                    binding.userRecyclerView.setVisibility(View.VISIBLE);
-                }
-                else {
-                    showErrorMessage();
-                }
+                // Here, the 'users' list contains all the users' information with names and emails
+                // You can do whatever you want with this list, such as displaying the data in your app UI.
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // This method will be called if there's an error reading data from the database
+                // Handle the error if something goes wrong
             }
         });
 
