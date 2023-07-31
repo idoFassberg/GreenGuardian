@@ -2,15 +2,15 @@ package com.mta.greenguardianapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Printer;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.data.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.mta.greenguardianapplication.LoginSignup.StartupScreen;
 import com.mta.greenguardianapplication.databinding.ActivityMainChatBinding;
 import com.mta.greenguardianapplication.utilities.Constants;
 import com.mta.greenguardianapplication.utilities.PreferenceManager;
@@ -33,6 +34,10 @@ public class MainChatActivity extends AppCompatActivity {
     private FirebaseUser user;
     private FirebaseAuth mAuth;
 
+    DrawerLayout drawerLayout;
+    ImageView menu;
+    LinearLayout myPlants, forum, logout, plantsLibrary,addPlant,myProfile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +49,12 @@ public class MainChatActivity extends AppCompatActivity {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid());
         loadUserDetails(userRef);
         /*getToken();*/
+        setListeners();
+    }
 
+    private void setListeners(){
+        binding.fabNewChat.setOnClickListener(v->
+                startActivity(new Intent(getApplicationContext(), UserActivity.class)));
     }
 
     private void loadUserDetails(DatabaseReference userRef) {
