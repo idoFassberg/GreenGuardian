@@ -29,7 +29,7 @@ public class ForumActivity2 extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         menu = findViewById(R.id.menu);
         myPlants = findViewById(R.id.myPlants);
-        forum = findViewById(R.id.forum);
+        forum = findViewById(R.id.chat);
         logout = findViewById(R.id.logoutNav);
         myProfile = findViewById(R.id.my_profile);
         addPlant = findViewById(R.id.add_plant);

@@ -54,7 +54,7 @@ public class ProfileActivity extends AppCompatActivity {
     TextView userName,userEmail;
     DrawerLayout drawerLayout;
     ImageView menu,profilePicture;
-    LinearLayout myPlants, forum, logout,addPlant,myProfile,plantsLibrary;
+    LinearLayout myPlants, chat, logout,addPlant,myProfile,plantsLibrary;
     AppCompatButton btn_accountSetting;
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final int STORAGE_REQUEST_CODE = 200;
@@ -94,7 +94,7 @@ public class ProfileActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         menu = findViewById(R.id.menu);
         myPlants = findViewById(R.id.myPlants);
-        forum = findViewById(R.id.forum);
+        chat = findViewById(R.id.chat);
         logout = findViewById(R.id.logoutNav);
         plantsLibrary = findViewById(R.id.plantsLibrary);
         addPlant = findViewById(R.id.add_plant);
@@ -212,7 +212,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        forum.setOnClickListener(new View.OnClickListener() {
+        chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 redirectActivity(ProfileActivity.this, MainChatActivity.class);
