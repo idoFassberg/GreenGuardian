@@ -5,9 +5,12 @@ import java.io.Serializable;
 public class User implements Serializable {
     public String name, image, email, fcmToken, plants;
 
+    public User() {
+        // Default constructor required for Firebase
+    }
     public User(String name, String email) {
-        setName(name);
-        setEmail(email);
+        this.name = name;
+        this.email = email;
     }
 
     public String getName() {

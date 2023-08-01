@@ -3,6 +3,7 @@ package com.mta.greenguardianapplication;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.google.firebase.database.DatabaseReference;
@@ -18,6 +19,10 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+
 
 public class UserActivity extends AppCompatActivity {
 
@@ -29,6 +34,12 @@ public class UserActivity extends AppCompatActivity {
         binding = ActivityUserBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setListeners();
+
+        // Bind the RecyclerView
+        binding.userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        UserAdapter userAdapter = new UserAdapter(new ArrayList<>()); // Create an empty adapter initially
+        binding.userRecyclerView.setAdapter(userAdapter);
+
         getUsers();
     }
 
@@ -41,13 +52,15 @@ public class UserActivity extends AppCompatActivity {
         // Get a reference to the "users" node in the database
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
-// Attach a ValueEventListener to the "users" node
+        // Attach a ValueEventListener to the "users" node
         usersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // This method will be called when data is changed in the "users" node
 
                 List<User> users = new ArrayList<>();
+
+                loading(true);
 
                 // Iterate through all child nodes (users) and deserialize them into User objects
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
@@ -62,8 +75,12 @@ public class UserActivity extends AppCompatActivity {
                     }
                 }
 
-                // Here, the 'users' list contains all the users' information with names and emails
-                // You can do whatever you want with this list, such as displaying the data in your app UI.
+                loading(false);
+
+                UserAdapter userAdapter = new UserAdapter(users);
+                binding.userRecyclerView.setAdapter(userAdapter);
+
+                userAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -73,6 +90,7 @@ public class UserActivity extends AppCompatActivity {
         });
 
     }
+
     private void showErrorMessage(){
         binding.textErrorMessage.setText(String.format("%s", "No user available"));
         binding.textErrorMessage.setVisibility(View.VISIBLE);
