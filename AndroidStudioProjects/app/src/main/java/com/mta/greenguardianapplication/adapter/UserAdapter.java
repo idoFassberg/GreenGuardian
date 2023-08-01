@@ -52,7 +52,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         void setUserDate(User user){
             binding.textName.setText(user.name);
-            binding.textName.setText(user.email);
+            binding.textEmail.setText(user.email);
             /*binding.imageProfile.setImageBitmap(getUserImage(user.image));*/
         }
     }
