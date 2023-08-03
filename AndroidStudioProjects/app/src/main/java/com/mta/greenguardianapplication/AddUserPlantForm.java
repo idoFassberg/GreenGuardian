@@ -42,6 +42,8 @@ import com.google.firebase.storage.StorageReference;
 import com.mta.greenguardianapplication.LoginSignup.StartupScreen;
 import com.mta.greenguardianapplication.model.UserPlant;
 
+import java.util.Objects;
+
 public class AddUserPlantForm extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
@@ -221,7 +223,7 @@ public class AddUserPlantForm extends AppCompatActivity {
             String nickNameStr = String.valueOf(inputEditNickName.getText());
             String optimalHumidityStr = String.valueOf(inputEditOptimalHumidity.getText());
             String boardIdStr = String.valueOf(inputEditBoardId.getText());
-            if(pictureUrl != "")
+            if(!Objects.equals(pictureUrl, ""))
                 imageUrl = pictureUrl;
             addNewUserPlant(type, nickNameStr,Integer.parseInt(optimalHumidityStr),boardIdStr, imageUrl);
 
@@ -427,7 +429,7 @@ public class AddUserPlantForm extends AppCompatActivity {
         if(plantId == null){
             plantId = mDatabase.push().getKey();
         }
-        UserPlant userPlant = new UserPlant(plantId, nickName, optimalHumidity, pictureUrl, type, "123", boardId,-1 );
+        UserPlant userPlant = new UserPlant(plantId, nickName, optimalHumidity, pictureUrl == null ? "" : pictureUrl, type, "123", boardId,-1 );
         mDatabase.child(plantId).setValue(userPlant); // Save the plant with the generated ID
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference usersRef = database.getReference("Users");

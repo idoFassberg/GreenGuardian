@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,11 +69,20 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
             optimalHumidity.setText(String.valueOf(userPlant.getOptimalHumidity()));
             plantType.setText(String.valueOf(userPlant.getPlantType()));
             currentHumidity.setText(String.valueOf(userPlant.getCurrentHumidity()));
+            String pictureUrl = userPlant.getPictureUrl();
             calcProgress(userPlant.getCurrentHumidity(), userPlant.getOptimalHumidity());
-            Glide.with(imageView.getContext())
-                    .load(userPlant.getPictureUrl())
-                    .apply(new RequestOptions().circleCrop())
-                    .into(imageView);
+            if (!TextUtils.isEmpty(pictureUrl)) {
+                Glide.with(imageView.getContext())
+                        .load(pictureUrl)
+                        .apply(new RequestOptions().circleCrop())
+                        .into(imageView);
+            } else {
+                // Load the default image when pictureUrl is empty
+                Glide.with(imageView.getContext())
+                        .load(R.drawable.ic_launcher_background)
+                        .apply(new RequestOptions().circleCrop())
+                        .into(imageView);
+            }
 
             /*editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
