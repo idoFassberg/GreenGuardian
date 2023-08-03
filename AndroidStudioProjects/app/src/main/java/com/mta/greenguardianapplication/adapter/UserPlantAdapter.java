@@ -102,9 +102,11 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
                     int position = getBindingAdapterPosition();
 
                     if (position != RecyclerView.NO_POSITION) {
+                        UserPlant clickedPlant = getItem(position);
                         Intent intent = new Intent(v.getContext(), GraphActivity.class);
-                        intent.putExtra("plantId", userPlant.getPlantId());
-                        intent.putExtra("userId", userPlant.getUserId());
+                        intent.putExtra("plantId", clickedPlant.getPlantId());
+                        intent.putExtra("userId", clickedPlant.getUserId());
+                        intent.putExtra("optimalHumidity", clickedPlant.getOptimalHumidity()); // Pass optimalHumidity
                         v.getContext().startActivity(intent);
                     }
                 }
@@ -140,36 +142,29 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
             });
         }
 
-        void calcProgress(int currentHumidity, int optimalHumidity){
+        void calcProgress(int currentHumidity, int optimalHumidity) {
             humidityDif.setMax(optimalHumidity);
+            humidityDif.setProgress(currentHumidity);
 
-            if (currentHumidity <= optimalHumidity) {
-                humidityDif.setProgress(currentHumidity);
-            } else {
-                humidityDif.setProgress(optimalHumidity-(currentHumidity-optimalHumidity));
-            }
-            setColor();
+            int progressPercentage = (int) ((currentHumidity * 100.0f) / optimalHumidity);
+            setColor(progressPercentage);
         }
 
-        void setColor(){
-            Drawable progressDrawable = humidityDif.getProgressDrawable();
-            int progressPercentage = (int) ((humidityDif.getProgress() * 100.0f) / humidityDif.getMax());
-            if(progressPercentage == 0){
-                humidityDif.setProgress(1);
-            }
+        void setColor(int progressPercentage) {
+            LayerDrawable layerDrawable = (LayerDrawable) humidityDif.getProgressDrawable();
+            Drawable progressDrawable = layerDrawable.findDrawableByLayerId(android.R.id.progress);
+
             int progressColor;
 
-            LayerDrawable layerDrawable = (LayerDrawable) progressDrawable;
-            if(progressPercentage < 30){
+            if (progressPercentage < 30) {
                 progressColor = Color.RED;
-            } else if (progressPercentage<69) {
-                progressColor = Color.parseColor("#FFA500");
-            }
-            else {
-                progressColor= Color.parseColor("#A4C639");
+            } else if (progressPercentage < 70) {
+                progressColor = Color.parseColor("#FFA500"); // Orange
+            } else {
+                progressColor = Color.parseColor("#A4C639"); // Green
             }
 
-            layerDrawable.findDrawableByLayerId(android.R.id.progress).setColorFilter(progressColor, PorterDuff.Mode.SRC_IN);
+            progressDrawable.setColorFilter(progressColor, PorterDuff.Mode.SRC_IN);
             humidityDif.setProgressDrawable(layerDrawable);
         }
     }

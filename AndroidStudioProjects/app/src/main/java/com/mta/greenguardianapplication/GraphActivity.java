@@ -132,7 +132,8 @@ public class GraphActivity extends AppCompatActivity {
         if (intent != null && intent.hasExtra("plantId") && intent.hasExtra("userId")) {
             String plantId = intent.getStringExtra("plantId");
             String userId = intent.getStringExtra("userId");
-            getDataFromFirebase(plantId, userId);
+            int optimalHumidity = intent.getIntExtra("optimalHumidity", 70);
+            getDataFromFirebase(plantId, userId, optimalHumidity);
         } else {
             // Handle the case when there's no data passed.
             // For example, you can initialize barArrayList with some default data.
@@ -140,7 +141,8 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
-    private void getDataFromFirebase(String plantId, String userId) {
+    private void getDataFromFirebase(String plantId, String userId,int optimalHumidity) {
+
         DatabaseReference statsHumidityRef = FirebaseDatabase.getInstance()
                 .getReference("Users")
                 .child(FirebaseAuth.getInstance().getUid())
@@ -163,7 +165,7 @@ public class GraphActivity extends AppCompatActivity {
                 // Now you have the ArrayList of statsHumidity data
                 // You can use statsHumidityList as needed
                 // For example, update the BarChart with this data
-                updateBarChart(statsHumidityList);
+                updateBarChart(statsHumidityList, optimalHumidity);
             }
 
             @Override
@@ -174,27 +176,43 @@ public class GraphActivity extends AppCompatActivity {
 
     }
 
-    private void updateBarChart(List<Long> statsHumidityList) {
+    private void updateBarChart(List<Long> statsHumidityList, int optimalHumidity) {
         // Clear the previous data
         barArrayList.clear();
 
         // Convert the List<Long> to List<BarEntry> for the bar chart
         for (int i = 0; i < statsHumidityList.size(); i++) {
             barArrayList.add(new BarEntry(i, statsHumidityList.get(i)));
-            Log.d("mymy",statsHumidityList.get(i).toString());
         }
 
-        // Notify the chart that the data has changed
         BarChart barChart = findViewById(R.id.barchart);
         BarDataSet barDataSet = new BarDataSet(barArrayList, "Graph");
+
+        ArrayList<Integer> colors = new ArrayList<>();
+
+        // Set colors based on humidity level similar to progress bar colors
+        for (Long humidityValue : statsHumidityList) {
+            int progressPercentage = (int) ((humidityValue * 100.0f) / optimalHumidity);
+
+            if (progressPercentage < 30) {
+                colors.add(Color.RED);
+            } else if (progressPercentage < 70) {
+                colors.add(Color.parseColor("#FFA500")); // Orange
+            } else {
+                colors.add(Color.parseColor("#A4C639")); // Green
+            }
+        }
+
+        barDataSet.setColors(colors);
+
         BarData barData = new BarData(barDataSet);
         barChart.setData(barData);
-        barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
         barDataSet.setValueTextColor(Color.BLACK);
         barDataSet.setValueTextSize(16f);
         barChart.getDescription().setEnabled(true);
         barChart.invalidate();
     }
+
 
     public  static void openDrawer(DrawerLayout drawerLayout){
         drawerLayout.openDrawer(GravityCompat.START);
