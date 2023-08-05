@@ -2,6 +2,7 @@ package com.mta.greenguardianapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,8 +13,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.mta.greenguardianapplication.adapter.UserAdapter;
 import com.mta.greenguardianapplication.databinding.ActivityUserBinding;
 import com.google.firebase.database.DataSnapshot;
+import com.mta.greenguardianapplication.listeners.UserListener;
 import com.mta.greenguardianapplication.model.User;
 import com.google.firebase.database.DatabaseError;
+
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -24,7 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 
-public class UserActivity extends AppCompatActivity {
+public class UserActivity extends AppCompatActivity implements UserListener {
 
     private ActivityUserBinding binding;
 
@@ -37,7 +40,7 @@ public class UserActivity extends AppCompatActivity {
 
         // Bind the RecyclerView
         binding.userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        UserAdapter userAdapter = new UserAdapter(new ArrayList<>()); // Create an empty adapter initially
+        UserAdapter userAdapter = new UserAdapter(new ArrayList<>(), this); // Create an empty adapter initially
         binding.userRecyclerView.setAdapter(userAdapter);
 
         getUsers();
@@ -69,15 +72,16 @@ public class UserActivity extends AppCompatActivity {
                         // Get the email and name from the specific user's snapshot
                         String email = userSnapshot.child("email").getValue(String.class);
                         String name = userSnapshot.child("name").getValue(String.class);
+                        String id = userSnapshot.child("uid").getValue(String.class);
 
-                        User user = new User(name, email);
+                        User user = new User(id, name, email);
                         users.add(user);
                     }
                 }
 
                 loading(false);
 
-                UserAdapter userAdapter = new UserAdapter(users);
+                UserAdapter userAdapter = new UserAdapter(users, UserActivity.this);
                 binding.userRecyclerView.setAdapter(userAdapter);
 
                 userAdapter.notifyDataSetChanged();
@@ -103,5 +107,15 @@ public class UserActivity extends AppCompatActivity {
         else {
             binding.progressBar.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public void onUserClicked(User user) {
+        Intent intent =  new Intent(getApplicationContext(), ChatActivity.class);
+        intent.putExtra("id", user.getId());
+        intent.putExtra("name", user.getName());
+        intent.putExtra("email", user.getEmail());
+        startActivity(intent);
+        finish();
     }
 }
