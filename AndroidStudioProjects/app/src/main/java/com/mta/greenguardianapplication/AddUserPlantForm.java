@@ -430,14 +430,14 @@ public class AddUserPlantForm extends AppCompatActivity {
             plantId = mDatabase.push().getKey();
         }
         UserPlant userPlant = new UserPlant(plantId, nickName, optimalHumidity, pictureUrl == null ? "" : pictureUrl, type, "123", boardId,-1 );
-        mDatabase.child(plantId).setValue(userPlant); // Save the plant with the generated ID
+        mDatabase.child(nickName).setValue(userPlant); // Save the plant with the generated ID
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference usersRef = database.getReference("Users");
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         String userId = mAuth.getCurrentUser().getUid();
 
 // Set the plant data at the generated key under the user's "plants" node
-        usersRef.child(userId).child("plants").child(plantId).setValue(userPlant)
+        usersRef.child(userId).child("plants").child(nickName).setValue(userPlant)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

@@ -10,6 +10,7 @@ public class UserPlant {
 
     private String boardId;
     private int currentHumidity;
+    private String statsHumidity;
 
     public UserPlant() {
         // Default constructor required for Firebase
@@ -24,6 +25,7 @@ public class UserPlant {
         this.userId = userId;
         this.boardId = boardId;
         this.currentHumidity = currentHumidity;
+        this.statsHumidity = "";
     }
 
     public String getPlantType() {

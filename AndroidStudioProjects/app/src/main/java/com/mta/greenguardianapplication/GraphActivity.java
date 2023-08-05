@@ -133,7 +133,8 @@ public class GraphActivity extends AppCompatActivity {
             String plantId = intent.getStringExtra("plantId");
             String userId = intent.getStringExtra("userId");
             int optimalHumidity = intent.getIntExtra("optimalHumidity", 70);
-            getDataFromFirebase(plantId, userId, optimalHumidity);
+            String nickName = intent.getStringExtra("nickName");
+            getDataFromFirebase(nickName, userId, optimalHumidity);
         } else {
             // Handle the case when there's no data passed.
             // For example, you can initialize barArrayList with some default data.
@@ -141,13 +142,13 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
-    private void getDataFromFirebase(String plantId, String userId,int optimalHumidity) {
+    private void getDataFromFirebase(String nickName, String userId,int optimalHumidity) {
 
         DatabaseReference statsHumidityRef = FirebaseDatabase.getInstance()
                 .getReference("Users")
                 .child(FirebaseAuth.getInstance().getUid())
                 .child("plants")
-                .child(plantId)
+                .child(nickName)
                 .child("statsHumidity");
 
         Log.d("status", statsHumidityRef.getKey());
