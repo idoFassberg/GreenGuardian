@@ -17,77 +17,73 @@ admin.initializeApp();
 const lastCallTimes = {};
 const lastNotificationTimes = {}; // Object to store last notification times for each plant
 
-exports.monitorMoistureLevels = functions.database.ref('/Users/{userId}/plants/{plantId}/currentHumidity')
+exports.monitorMoistureLevels = functions.database.ref('/Users/{userId}/plants/{nickName}/currentHumidity')
     .onUpdate((change, context) => {
         const currentHumidity = change.after.val();
         console.log('new currentHumidity:', currentHumidity);
-        const plantId = context.params.plantId;
-        console.log('test plantId:', plantId);
+        const nickName = context.params.nickName;
+        console.log('test nickName:', nickName);
         const userId = context.params.userId;
         console.log('test userId:', userId);
 
-        // const lastCallTime = lastCallTimes[plantId] || 0;
-        // const currentTime = Date.now();
-        // const debounceTime = 60 * 1000; // 1 minute
+        const lastCallTimeRef = admin.database().ref(`/Users/${userId}/plants/${nickName}/lastNotificationTime`);
 
-        // if (currentTime - lastCallTime < debounceTime) {
-        //     console.log('Debounced:', plantId);
-        //     return null; // Skip processing for now
-        // }
-
-        // lastCallTimes[plantId] = currentTime;
-
-        // Check if a notification was sent for this plant within the last 6 hours
-        //const lastNotificationTime = lastNotificationTimes[plantId] || 0;
-        //const notificationThreshold = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
-
-        //if (currentTime - lastNotificationTime < notificationThreshold) {
-         //   console.log('Notification already sent:', plantId);
-          //  return null; // Skip sending the notification again
-        //}
-
-        // Retrieve the optimalHumidity threshold for the specific plant from the database
-
-        // Retrieve the optimalHumidity threshold for the specific plant from the database
-        return admin.database().ref(`/Users/${userId}/plants/${plantId}/optimalHumidity`).once('value')
+        return lastCallTimeRef.once('value')
             .then(snapshot => {
-                const optimalHumidity = snapshot.val();
-                console.log('new optimalHumidity:', optimalHumidity);
-                // Check if currentHumidity falls below the optimal threshold
-                if (currentHumidity < optimalHumidity) {
-                    console.log('ok its lower:');
-                    // Retrieve the user's FCM token from the database
-                    return admin.database().ref(`/Users/${userId}/fcmToken`).once('value');
+                const lastNotificationTime = snapshot.val() || 0;
+                const currentTime = Date.now();
+                const debounceTime = 2 * 60 * 1000; // 2 minutes in milliseconds
+
+                if (currentTime - lastNotificationTime < debounceTime) {
+                    console.log('Debounced:', nickName);
+                    return null; // Skip processing for now
                 }
-                return null;
-            })
-            .then(snapshot => {
-                const fcmToken = snapshot.val();
-                console.log('FCM Token:', fcmToken); // Log the value to check if it's defined correctly
-                if (fcmToken) {
-                    // Send a push notification to the user with the low moisture level alert
-                    const payload = {
-                        notification: {
-                            title: 'Green Guardian Alert',
-                            body: 'Your plant needs water! The moisture level is low.',
-                            click_action: 'OPEN_ACTIVITY'
+
+                // Retrieve the optimalHumidity threshold for the specific plant from the database
+                return admin.database().ref(`/Users/${userId}/plants/${nickName}/optimalHumidity`).once('value')
+                    .then(snapshot => {
+                        const optimalHumidity = snapshot.val();
+                        console.log('new optimalHumidity:', optimalHumidity);
+                        if (optimalHumidity !== null && currentHumidity < optimalHumidity) {
+                            console.log('ok the current humidity is lower then the optimal');
+                            // Retrieve the user's FCM token from the database
+                            return admin.database().ref(`/Users/${userId}/fcmToken`).once('value');
                         }
-                    };
-                    return admin.messaging().sendToDevice(fcmToken, payload)
-                        .then(() => {
-                           const currentTime = Date.now();
-                            // Update the last notification time for this plant
-                            lastNotificationTimes[plantId] = currentTime;
-                            console.log('Notification sent:', plantId);
-                            return null;
-                        });
-                }
-                return null;
+                        console.log('ok the current humidity is higher then the optimal');
+                        return null;
+                    })
+                    .then(snapshot => {
+                        if (snapshot !== null) {
+                            const fcmToken = snapshot.val();
+                            console.log('FCM Token:', fcmToken); // Log the value to check if it's defined correctly
+                            if (fcmToken) {
+                                // Send a push notification to the user with the low moisture level alert
+                                const payload = {
+                                    notification: {
+                                        title: 'Green Guardian Alert',
+                                        body: 'Your plant needs water! The moisture level is low.',
+                                        click_action: 'OPEN_ACTIVITY'
+                                    }
+                                };
+                                // Update the last notification time and send the notification
+                                return Promise.all([
+                                    admin.messaging().sendToDevice(fcmToken, payload),
+                                    lastCallTimeRef.set(currentTime)
+                                ]).then(() => {
+                                    console.log('Notification sent and lastNotificationTime updated:', nickName);
+                                    return null;
+                                });
+                            }
+                        }
+                        return null;
+                    });
             })
             .catch(error => {
                 console.error('Error sending push notification:', error);
             });
     });
+
+
 
 
 exports.getUserData = functions.https.onRequest(async (req, res) => {
