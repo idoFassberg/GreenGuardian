@@ -56,7 +56,7 @@ public class UserPlantListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateHumidity();
+        //updateHumidity();
         setContentView(R.layout.activity_user_plant_list);
         drawerLayout = findViewById(R.id.drawerLayout);
         menu = findViewById(R.id.menu);
@@ -193,7 +193,7 @@ public class UserPlantListActivity extends AppCompatActivity {
         userPlantAdapter.stopListening();
     }
 
-    private static void updateHumidity(){
+    /*private static void updateHumidity(){
         // Create a Handler on the main (UI) thread
 
         Handler handler = new Handler(Looper.getMainLooper());
@@ -259,6 +259,6 @@ public class UserPlantListActivity extends AppCompatActivity {
 
         // Start the initial update immediately
         runnable.run();
-    }
+    }*/
 
 }
