@@ -27,7 +27,7 @@ exports.monitorMoistureLevels = functions.database.ref('/Users/{userId}/plants/{
         console.log('test userId:', userId);
 
         const lastCallTimeRef = admin.database().ref(`/Users/${userId}/plants/${nickName}/lastNotificationTime`);
-        
+
         return lastCallTimeRef.once('value')
             .then(snapshot => {
                 const lastNotificationTime = snapshot.val() || 0;
@@ -39,44 +39,41 @@ exports.monitorMoistureLevels = functions.database.ref('/Users/{userId}/plants/{
                     return null; // Skip processing for now
                 }
 
-                // Update the last notification time
-                return lastCallTimeRef.set(currentTime)
-                    .then(() => {
-                        // Retrieve the optimalHumidity threshold for the specific plant from the database
-                        return admin.database().ref(`/Users/${userId}/plants/${nickName}/optimalHumidity`).once('value');
-                    })
+                // Retrieve the optimalHumidity threshold for the specific plant from the database
+                return admin.database().ref(`/Users/${userId}/plants/${nickName}/optimalHumidity`).once('value')
                     .then(snapshot => {
                         const optimalHumidity = snapshot.val();
                         console.log('new optimalHumidity:', optimalHumidity);
-                        // Check if currentHumidity falls below the optimal threshold
-                        if (currentHumidity < optimalHumidity) {
-                            console.log('ok its lower:');
+                        if (optimalHumidity !== null && currentHumidity < optimalHumidity) {
+                            console.log('ok the current humidity is lower then the optimal');
                             // Retrieve the user's FCM token from the database
                             return admin.database().ref(`/Users/${userId}/fcmToken`).once('value');
                         }
+                        console.log('ok the current humidity is higher then the optimal');
                         return null;
                     })
                     .then(snapshot => {
-                        const fcmToken = snapshot.val();
-                        console.log('FCM Token:', fcmToken); // Log the value to check if it's defined correctly
-                        if (fcmToken) {
-                            // Send a push notification to the user with the low moisture level alert
-                            const payload = {
-                                notification: {
-                                    title: 'Green Guardian Alert',
-                                    body: 'Your plant needs water! The moisture level is low.',
-                                    click_action: 'OPEN_ACTIVITY'
-                                }
-                            };
-                            return admin.messaging().sendToDevice(fcmToken, payload)
-                                .then(() => {
-                                    // Update the last notification time for this plant
-                                    return lastCallTimeRef.set(currentTime)
-                                        .then(() => {
-                                            console.log('Notification sent:', nickName);
-                                            return null;
-                                        });
+                        if (snapshot !== null) {
+                            const fcmToken = snapshot.val();
+                            console.log('FCM Token:', fcmToken); // Log the value to check if it's defined correctly
+                            if (fcmToken) {
+                                // Send a push notification to the user with the low moisture level alert
+                                const payload = {
+                                    notification: {
+                                        title: 'Green Guardian Alert',
+                                        body: 'Your plant needs water! The moisture level is low.',
+                                        click_action: 'OPEN_ACTIVITY'
+                                    }
+                                };
+                                // Update the last notification time and send the notification
+                                return Promise.all([
+                                    admin.messaging().sendToDevice(fcmToken, payload),
+                                    lastCallTimeRef.set(currentTime)
+                                ]).then(() => {
+                                    console.log('Notification sent and lastNotificationTime updated:', nickName);
+                                    return null;
                                 });
+                            }
                         }
                         return null;
                     });
@@ -85,6 +82,8 @@ exports.monitorMoistureLevels = functions.database.ref('/Users/{userId}/plants/{
                 console.error('Error sending push notification:', error);
             });
     });
+
+
 
 
 exports.getUserData = functions.https.onRequest(async (req, res) => {
