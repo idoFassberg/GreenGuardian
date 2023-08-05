@@ -107,6 +107,7 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
                         intent.putExtra("plantId", clickedPlant.getPlantId());
                         intent.putExtra("userId", clickedPlant.getUserId());
                         intent.putExtra("optimalHumidity", clickedPlant.getOptimalHumidity()); // Pass optimalHumidity
+                        intent.putExtra("nickName", clickedPlant.getNickName());
                         v.getContext().startActivity(intent);
                     }
                 }
