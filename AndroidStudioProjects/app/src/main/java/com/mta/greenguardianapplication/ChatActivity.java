@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Half;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,7 +43,6 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        receiverUser = (User) getIntent().getSerializableExtra("User");
         setListeners();
         loadReceiverDetails();
         init();
@@ -51,14 +51,13 @@ public class ChatActivity extends AppCompatActivity {
     private void init(){
         chatMessages = new ArrayList<>();
         chatAdapter = new ChatAdapter(chatMessages, /*getBitmapFromEncodedString(receiverUser.image),*/ receiverUser.id);
-        binding.chatRecyclerView.setAdapter(chatAdapter);
-        database = FirebaseFirestore.getInstance();
+        /*binding.chatRecyclerView.setAdapter(chatAdapter);
+        database = FirebaseFirestore.getInstance();*/
     }
 
     private void sendMessage() {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid());
         String messageText = binding.inputMessage.getText().toString();
         if (!messageText.isEmpty() && receiverUser != null) {
             HashMap<String, Object> message = new HashMap<>();
@@ -66,7 +65,7 @@ public class ChatActivity extends AppCompatActivity {
             message.put("receiver_id", receiverUser.id);
             message.put("message", messageText);
             message.put("timestamp", new Date());
-            /*database.collection("chats").add(message);*/
+            database.collection("Chats").add(message);
             binding.inputMessage.setText("");
         } else {
             // Handle the case when receiverUser is null or message is empty
