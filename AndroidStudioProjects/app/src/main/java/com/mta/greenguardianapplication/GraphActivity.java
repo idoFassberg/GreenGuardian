@@ -28,8 +28,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mta.greenguardianapplication.LoginSignup.StartupScreen;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class GraphActivity extends AppCompatActivity {
@@ -43,13 +44,7 @@ public class GraphActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*barArrayList.add(new BarEntry(1, 10));
-        barArrayList.add(new BarEntry(2, 20));
-        barArrayList.add(new BarEntry(3, 30));
-        barArrayList.add(new BarEntry(4, 40));
-        barArrayList.add(new BarEntry(5, 50));*/
         setContentView(R.layout.activity_graph);
-
         drawerLayout = findViewById(R.id.drawerLayout);
         menu = findViewById(R.id.menu);
         myPlants = findViewById(R.id.myPlants);
@@ -157,18 +152,41 @@ public class GraphActivity extends AppCompatActivity {
         statsHumidityRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<Long> statsHumidityList = new ArrayList<>();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    // Cast the data to the appropriate type (Long in this case)
-                    Long humidityValue = snapshot.getValue(Long.class);
-                    String date = snapshot.getKey();
-                    statsHumidityList.add(humidityValue);
+                // Create a list of lists to store the humidity values for each day
+                if (getIntent().getBooleanExtra("history", false)){
+                    List<Long> statsHumidityList = new ArrayList<>();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        // Cast the data to the appropriate type (Long in this case)
+                        Long humidityValue = snapshot.getValue(Long.class);
+                        statsHumidityList.add(humidityValue);
+                    }
+                    updateBarChartHistory(statsHumidityList, optimalHumidity);
                 }
+                else {
+                    List<List<Long>> humidityValuesByDay = new ArrayList<>();
+                    // Initialize the list of lists with empty lists for each day (0 to 6)
+                    for (int i = 0; i <= 6; i++) {
+                        humidityValuesByDay.add(new ArrayList<>());
+                    }
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        // Cast the data to the appropriate type (Long in this case)
+                        Long humidityValue = snapshot.getValue(Long.class);
+                        String date = snapshot.getKey();
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                        LocalDate inputDate = LocalDate.parse(date, formatter);
 
-                // Now you have the ArrayList of statsHumidity data
-                // You can use statsHumidityList as needed
-                // For example, update the BarChart with this data
-                updateBarChart(statsHumidityList, optimalHumidity);
+                        // Get the current date
+                        LocalDate currentDate = LocalDate.now();
+
+                        // Calculate the difference in days between the input date and the current date
+                        long daysDifference = currentDate.toEpochDay() - inputDate.toEpochDay();
+
+                        if (daysDifference <= 6) {
+                            humidityValuesByDay.get((int) daysDifference).add(humidityValue);
+                        }
+                    }
+                    updateBarChart(humidityValuesByDay, optimalHumidity);
+                }
             }
 
             @Override
@@ -179,7 +197,7 @@ public class GraphActivity extends AppCompatActivity {
 
     }
 
-    private void updateBarChart(List<Long> statsHumidityList, int optimalHumidity) {
+    private void updateBarChartHistory(List<Long> statsHumidityList, int optimalHumidity) {
         // Clear the previous data
         barArrayList.clear();
 
@@ -201,8 +219,11 @@ public class GraphActivity extends AppCompatActivity {
                 colors.add(Color.RED);
             } else if (progressPercentage < 70) {
                 colors.add(Color.parseColor("#FFA500")); // Orange
-            } else {
+            } else if (progressPercentage >= 70 && progressPercentage <= 150 ){
                 colors.add(Color.parseColor("#A4C639")); // Green
+            }
+            else {
+                colors.add(Color.parseColor("#000080")); // Blue
             }
         }
 
@@ -216,6 +237,57 @@ public class GraphActivity extends AppCompatActivity {
         barChart.invalidate();
     }
 
+    private void updateBarChart(List<List<Long>> statsHumidityList, int optimalHumidity) {
+        // Clear the previous data
+        barArrayList.clear();
+
+        // Convert the List<Long> to List<BarEntry> for the bar chart
+        for (int i = 0; i < statsHumidityList.size(); i++) {
+            List<Long> humidityValuesForDay = statsHumidityList.get(i);
+            float averageHumidity = calculateAverage(humidityValuesForDay);
+            barArrayList.add(new BarEntry(6-i, averageHumidity));
+        }
+
+        BarChart barChart = findViewById(R.id.barchart);
+        BarDataSet barDataSet = new BarDataSet(barArrayList, "Graph");
+
+        ArrayList<Integer> colors = new ArrayList<>();
+
+        // Set colors based on humidity level similar to progress bar colors
+        for (BarEntry entry : barArrayList) {
+            float averageHumidity = entry.getY();
+            int progressPercentage = (int) ((averageHumidity * 100.0f) / optimalHumidity);
+
+            if (progressPercentage < 30) {
+                colors.add(Color.RED);
+            } else if (progressPercentage < 70) {
+                colors.add(Color.parseColor("#FFA500")); // Orange
+            } else if (progressPercentage >= 70 && progressPercentage <= 150 ){
+                colors.add(Color.parseColor("#A4C639")); // Green
+            }
+            else {
+                colors.add(Color.parseColor("#000080")); // Blue
+            }
+        }
+
+        barDataSet.setColors(colors);
+
+        BarData barData = new BarData(barDataSet);
+        barChart.setData(barData);
+        barDataSet.setValueTextColor(Color.BLACK);
+        barDataSet.setValueTextSize(16f);
+        barChart.getDescription().setEnabled(true);
+        barChart.invalidate();
+    }
+
+    private float calculateAverage(List<Long> values) {
+        long sum = 0;
+        int count = values.size();
+        for (Long value : values) {
+            sum += value;
+        }
+        return count > 0 ? (float) sum / count : 0;
+    }
 
     public  static void openDrawer(DrawerLayout drawerLayout){
         drawerLayout.openDrawer(GravityCompat.START);

@@ -59,7 +59,7 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
         TextView nickName, plantType, optimalHumidity, currentHumidity;
         CircleImageView imageView;
         ProgressBar humidityDif;
-        ImageButton editButton, statsButton;
+        ImageButton editButton, statsButton, historyButton;
 
 
         public UserPlantHolder(@NonNull View itemView) {
@@ -72,6 +72,7 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
             humidityDif = itemView.findViewById(R.id.positiveProgressBar);
             editButton = itemView.findViewById(R.id.editButton);
             statsButton = itemView.findViewById(R.id.statsButton);
+            historyButton = itemView.findViewById(R.id.historyButton);
         }
 
         void bind(UserPlant userPlant) {
@@ -134,6 +135,25 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
                         intent.putExtra("userId", clickedPlant.getUserId());
                         intent.putExtra("optimalHumidity", clickedPlant.getOptimalHumidity()); // Pass optimalHumidity
                         intent.putExtra("nickName", clickedPlant.getNickName());
+                        intent.putExtra("history", false);
+                        v.getContext().startActivity(intent);
+                    }
+                }
+            });
+
+            historyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getBindingAdapterPosition();
+
+                    if (position != RecyclerView.NO_POSITION) {
+                        UserPlant clickedPlant = getItem(position);
+                        Intent intent = new Intent(v.getContext(), GraphActivity.class);
+                        intent.putExtra("plantId", clickedPlant.getPlantId());
+                        intent.putExtra("userId", clickedPlant.getUserId());
+                        intent.putExtra("optimalHumidity", clickedPlant.getOptimalHumidity()); // Pass optimalHumidity
+                        intent.putExtra("nickName", clickedPlant.getNickName());
+                        intent.putExtra("history", true);
                         v.getContext().startActivity(intent);
                     }
                 }
