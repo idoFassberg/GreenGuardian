@@ -29,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.mta.greenguardianapplication.LoginSignup.StartupScreen;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class GraphActivity extends AppCompatActivity {
@@ -160,6 +161,7 @@ public class GraphActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     // Cast the data to the appropriate type (Long in this case)
                     Long humidityValue = snapshot.getValue(Long.class);
+                    String date = snapshot.getKey();
                     statsHumidityList.add(humidityValue);
                 }
 
