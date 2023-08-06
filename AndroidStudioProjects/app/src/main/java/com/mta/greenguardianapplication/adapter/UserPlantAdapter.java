@@ -22,6 +22,11 @@ import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.github.mikephil.charting.data.BarEntry;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mta.greenguardianapplication.AddUserPlantForm;
 import com.mta.greenguardianapplication.GraphActivity;
 import com.mta.greenguardianapplication.R;
@@ -89,12 +94,33 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
                         .into(imageView);
             }
 
-            /*editButton.setOnClickListener(new View.OnClickListener() {
+            DatabaseReference currentHumidityRef = FirebaseDatabase.getInstance()
+                    .getReference("Users")
+                    .child(userPlant.getUserId())
+                    .child("plants")
+                    .child(userPlant.getNickName())
+                    .child("currentHumidity");
+
+            currentHumidityRef.addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onClick(View v) {
-                    // Handle button click event
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        // Retrieve the updated currentHumidity value
+                        int updatedHumidity = dataSnapshot.getValue(Integer.class);
+
+                        // Update the UI with the new humidity value
+                        currentHumidity.setText(String.valueOf(updatedHumidity));
+
+                        // Recalculate and set the progress
+                        calcProgress(updatedHumidity, userPlant.getOptimalHumidity());
+                    }
                 }
-            });*/
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle error if necessary
+                }
+            });
 
             statsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
