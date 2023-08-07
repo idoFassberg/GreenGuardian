@@ -155,10 +155,12 @@ public class GraphActivity extends AppCompatActivity {
                 // Create a list of lists to store the humidity values for each day
                 if (getIntent().getBooleanExtra("history", false)){
                     List<Long> statsHumidityList = new ArrayList<>();
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        // Cast the data to the appropriate type (Long in this case)
-                        Long humidityValue = snapshot.getValue(Long.class);
-                        statsHumidityList.add(humidityValue);
+                    for (DataSnapshot statsSnapshot : dataSnapshot.getChildren()) {
+                        for (DataSnapshot timestampSnapshot : statsSnapshot.getChildren()) {
+                            // Cast the data to the appropriate type (Long in this case)
+                            Long humidityValue = timestampSnapshot.getValue(Long.class);
+                            statsHumidityList.add(humidityValue);
+                        }
                     }
                     updateBarChartHistory(statsHumidityList, optimalHumidity);
                 }
@@ -168,21 +170,23 @@ public class GraphActivity extends AppCompatActivity {
                     for (int i = 0; i <= 6; i++) {
                         humidityValuesByDay.add(new ArrayList<>());
                     }
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        // Cast the data to the appropriate type (Long in this case)
-                        Long humidityValue = snapshot.getValue(Long.class);
-                        String date = snapshot.getKey();
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                        LocalDate inputDate = LocalDate.parse(date, formatter);
+                    for (DataSnapshot statsSnapshot : dataSnapshot.getChildren()) {
+                        for (DataSnapshot timestampSnapshot : statsSnapshot.getChildren()) {
+                            // Cast the data to the appropriate type (Long in this case)
+                            Long humidityValue = timestampSnapshot.getValue(Long.class);
+                            String date = timestampSnapshot.getKey();
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                            LocalDate inputDate = LocalDate.parse(date, formatter);
 
-                        // Get the current date
-                        LocalDate currentDate = LocalDate.now();
+                            // Get the current date
+                            LocalDate currentDate = LocalDate.now();
 
-                        // Calculate the difference in days between the input date and the current date
-                        long daysDifference = currentDate.toEpochDay() - inputDate.toEpochDay();
+                            // Calculate the difference in days between the input date and the current date
+                            long daysDifference = currentDate.toEpochDay() - inputDate.toEpochDay();
 
-                        if (daysDifference <= 6) {
-                            humidityValuesByDay.get((int) daysDifference).add(humidityValue);
+                            if (daysDifference <= 6) {
+                                humidityValuesByDay.get((int) daysDifference).add(humidityValue);
+                            }
                         }
                     }
                     updateBarChart(humidityValuesByDay, optimalHumidity);
