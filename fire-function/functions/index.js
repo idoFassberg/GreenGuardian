@@ -12,6 +12,7 @@ const {onRequest} = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
 const axios = require("axios")
 const admin = require('firebase-admin');
+const moment = require("moment");
 admin.initializeApp();
 
 const lastCallTimes = {};
@@ -83,6 +84,33 @@ exports.monitorMoistureLevels = functions.database.ref('/Users/{userId}/plants/{
             });
     });
 
+    exports.updateGeneratedKey = functions.database.ref('/Users/{userId}/plants/{nickName}/statsHumidity/{pushId}')
+    .onCreate((snapshot, context) => {
+        console.log("Function updateGeneratedKey triggered");
+
+        const value = snapshot.val();
+        console.log("Value:", value);
+
+        // Create a new map with the formatted timestamp and the value
+        const map = {};
+        map[moment().format("YYYY-MM-DD HH:mm")] = value;
+        console.log("Map:", map);
+
+        const parentRef = snapshot.ref.parent;
+
+        // Query the latest entry
+        return parentRef.orderByKey().limitToLast(1).once('value')
+            .then(latestSnapshot => {
+                const latestKey = Object.keys(latestSnapshot.val())[0];
+
+                // Update the latest entry with the new key and value
+                return parentRef.child(latestKey).update(map);
+            })
+            .catch(error => {
+                console.error('Error updating latest entry:', error);
+                return null;
+            });
+    });
 
 
 
