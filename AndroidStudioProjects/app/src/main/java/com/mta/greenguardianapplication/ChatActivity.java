@@ -41,8 +41,7 @@ public class ChatActivity extends AppCompatActivity {
     private User receiverUser;
     private List<ChatMessage> chatMessages;
     private ChatAdapter chatAdapter;
-    private DatabaseReference database;
-
+    private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
 
@@ -54,76 +53,103 @@ public class ChatActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         receiverUser = new User();
-        loadReceiverDetails();
         setListeners();
+        loadReceiverDetails();
         init();
         listenMessages();
     }
 
     private void init(){
         chatMessages = new ArrayList<>();
-        chatAdapter = new ChatAdapter(chatMessages, /*getBitmapFromEncodedString(receiverUser.image),*/ receiverUser.id);
+        chatAdapter = new ChatAdapter(chatMessages, /*getBitmapFromEncodedString(receiverUser.image),*/ receiverUser.getId());
         binding.chatRecyclerView.setAdapter(chatAdapter);
-        database = FirebaseDatabase.getInstance().getReference("Chats");
+        databaseReference = FirebaseDatabase.getInstance().getReference("Chats");
     }
 
     private void sendMessage() {
-        user = mAuth.getCurrentUser();
-        DatabaseReference chatsRef = database;
+        DatabaseReference chatsRef = databaseReference;
+        HashMap<String, Object> message = new HashMap<>();
+        String messageId = chatsRef.push().getKey();
+        message.put("sender_id", user.getUid());
+        message.put("receiver_id", receiverUser.getId());
         String messageText = binding.inputMessage.getText().toString();
+        message.put("message", messageText);
+        message.put("timestamp", new Date().getTime());
+        chatsRef.child(messageId).setValue(message);
 
-        if (!messageText.isEmpty() && receiverUser != null) {
-            String messageId = chatsRef.push().getKey(); // Generate a unique key for each message
-            Log.d("MyApp", "Sending message: " + messageText);
-            Log.d("MyApp", "Message ID: " + messageId);
-            HashMap<String, Object> message = new HashMap<>();
-            message.put("sender_id", user.getUid());
-            message.put("receiver_id", receiverUser.id);
-            message.put("message", messageText);
-            message.put("timestamp", new Date().getTime()); // Store timestamp as a long value
-            chatsRef.child(messageId).setValue(message); // Use the messageId as the key for each message
-            Log.d("MyApp", "Message sent successfully!");
-            binding.inputMessage.setText(null);
-        } else {
-            // Handle the case when receiverUser is null or message is empty
-        }
+        binding.inputMessage.setText(null);
     }
-
 
     private void listenMessages() {
         String currentUserId = mAuth.getCurrentUser().getUid();
         String receiverUserId = receiverUser.id;
 
         // Listen for messages sent by the current user to the receiver
-        database.orderByChild("sender_id").equalTo(currentUserId).addValueEventListener(eventListener);
+        databaseReference.orderByChild("sender_id").equalTo(currentUserId).addValueEventListener(eventListener);
 
         // Listen for messages sent by the receiver to the current user
-        database.orderByChild("receiver_id").equalTo(receiverUserId).addValueEventListener(eventListener);
+        databaseReference.orderByChild("receiver_id").equalTo(receiverUserId).addValueEventListener(eventListener);
     }
 
     private final ValueEventListener eventListener = new ValueEventListener() {
         @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        public void onDataChange(DataSnapshot dataSnapshot) {
             chatMessages.clear();
             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                ChatMessage chatMessage = snapshot.getValue(ChatMessage.class);
+                String message = snapshot.child("message").getValue(String.class);
+                String receiverId = snapshot.child("receiver_id").getValue(String.class);
+                String senderId = snapshot.child("sender_id").getValue(String.class);
+                Long time = snapshot.child("timestamp").getValue(long.class);
+                ChatMessage chatMessage = new ChatMessage(senderId, receiverId, message, time);
                 if (chatMessage != null) {
                     chatMessages.add(chatMessage);
                 }
             }
-            Collections.sort(chatMessages, (obj1, obj2) -> obj1.getTimestamp().compareTo(obj2.getTimestamp()));
+            Collections.sort(chatMessages, (obj1, obj2) -> Long.compare(obj2.dateTime, obj1.dateTime));
             chatAdapter.notifyDataSetChanged();
 
-            binding.chatRecyclerView.smoothScrollToPosition(chatMessages.size() - 1);
+            if (!chatMessages.isEmpty()) {
+                binding.chatRecyclerView.smoothScrollToPosition(chatMessages.size() - 1);
+            }
             binding.chatRecyclerView.setVisibility(View.VISIBLE);
             binding.progressBar.setVisibility(View.GONE);
         }
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-            // Handle onCancelled if needed
+            Log.e("MyApp", "onCancelled: " + databaseError.getMessage());
         }
     };
+
+    /*private final EventListener<QuerySnapshot> eventListener = (value, error) -> {
+        if(error != null){
+            return;
+        }
+        if (value != null){
+            int count = chatMessages.size();
+            for (DocumentChange documentChange : value.getDocumentChanges()) {
+                if (documentChange.getType() == DocumentChange.Type.ADDED) {
+                    ChatMessage chatMessage = new ChatMessage();
+                    chatMessage.senderId = documentChange.getDocument().getString(user.getUid());
+                    chatMessage.receiverId = documentChange.getDocument().getString(receiverUser.getId());
+                    chatMessage.message = documentChange.getDocument().getString(messageText);
+                    chatMessage.dateTime = getReadableDateTime(documentChange.getDocument().getDate(new Date().getTime()));
+                    chatMessage.dateObject = documentChange.getDocument().getDate(new Date().getTime());
+                    chatMessages.add(chatMessage);
+                }
+            }
+            Collections.sort(chatMessages, (obj1, obj2) -> obj1.dateObject.compareTo(obj2.dateObject));
+            if (count == 0){
+                chatAdapter.notifyDataSetChanged();
+            } else {
+                chatAdapter.notifyItemRangeInserted(chatMessages.size(), chatMessages.size());
+                binding.chatRecyclerView.smoothScrollToPosition(chatMessages.size() - 1);
+            }
+            binding.chatRecyclerView.setVisibility(View.VISIBLE);
+        }
+        binding.progressBar.setVisibility(View.GONE);
+    };
+*/
 
     private Bitmap getBitmapFromEncodedString(String encodedImage){
         byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
@@ -133,6 +159,8 @@ public class ChatActivity extends AppCompatActivity {
     private void loadReceiverDetails(){
         String userName = getIntent().getStringExtra("name");
         String userId = getIntent().getStringExtra("id");
+        receiverUser.email = getIntent().getStringExtra("email");
+        Log.d(userId, "userID:");
         receiverUser.name = userName;
         receiverUser.id = userId;
         binding.textName.setText(receiverUser.name);
