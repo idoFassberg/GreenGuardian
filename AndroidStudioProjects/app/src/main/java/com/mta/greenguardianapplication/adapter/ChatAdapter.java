@@ -1,6 +1,5 @@
 package com.mta.greenguardianapplication.adapter;
 
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -11,14 +10,16 @@ import com.mta.greenguardianapplication.databinding.ItemContainerRecievedMessage
 import com.mta.greenguardianapplication.databinding.ItemContainerSentMessageBinding;
 import com.mta.greenguardianapplication.model.ChatMessage;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<ChatMessage> chatMessages;
     /*private final Bitmap receiverProfileImage;*/
     private final String senderId;
-
     public static final int VIEW_TYPE_SENT = 1;
     public static final int VIEW_TYPE_RECEIVED = 2;
 
@@ -31,7 +32,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == VIEW_TYPE_SENT){
+        if (viewType == VIEW_TYPE_SENT) {
             return new SentMessageViewHolder(
                     ItemContainerSentMessageBinding.inflate(
                             LayoutInflater.from(parent.getContext()),
@@ -53,11 +54,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if(getItemViewType(position) == VIEW_TYPE_SENT){
-            ((SentMessageViewHolder) holder).setDate(chatMessages.get(position));
+        if(getItemViewType(position) == VIEW_TYPE_SENT) {
+            ((SentMessageViewHolder) holder).setData(chatMessages.get(position));
         }
         else {
-            ((ReceiverMessageViewHolder) holder).setDate(chatMessages.get(position)/*, receiverProfileImage*/);
+            ((ReceiverMessageViewHolder) holder).setData(chatMessages.get(position)/*, receiverProfileImage*/);
         }
     }
 
@@ -80,14 +81,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private final ItemContainerSentMessageBinding binding;
 
-        SentMessageViewHolder(ItemContainerSentMessageBinding itemContainerSentMessageBinding){
+        SentMessageViewHolder(ItemContainerSentMessageBinding itemContainerSentMessageBinding) {
             super(itemContainerSentMessageBinding.getRoot());
             binding = itemContainerSentMessageBinding;
         }
 
-        void setDate(ChatMessage chatMessage){
+        void setData(ChatMessage chatMessage){
             binding.textMessage.setText(chatMessage.message);
-            binding.textDateTime.setText(chatMessage.dateTime);
+            binding.textDateTime.setText(Math.toIntExact(chatMessage.dateTime));
         }
     }
 
@@ -100,10 +101,19 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             binding = itemContainerRecievedMessageBinding;
         }
 
-        void setDate(ChatMessage chatMessage/*, Bitmap receiverProfileImage*/){
+        void setData(ChatMessage chatMessage) {
             binding.textMessage.setText(chatMessage.message);
-            binding.textDateTime.setText(chatMessage.dateTime);
-            /*binding.imageProfile.setImageBitmap(receiverProfileImage);*/
+
+            // Format the dateTime as a readable date string
+            String formattedDateTime = getReadableDateTime(chatMessage.dateTime);
+            binding.textDateTime.setText(formattedDateTime);
         }
+
+        private String getReadableDateTime(long timestamp) {
+            Date date = new Date(timestamp);
+            SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy - hh:mm a", Locale.getDefault());
+            return sdf.format(date);
+        }
+
     }
 }
