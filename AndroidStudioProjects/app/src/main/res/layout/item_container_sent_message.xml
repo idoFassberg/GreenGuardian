@@ -18,7 +18,7 @@
             android:paddingBottom="8dp"
             app:layout_constraintWidth_max="wrap"
             android:textColor="@color/white"
-            android:textSize="13sp"
+            android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent="0.8"/>
@@ -28,8 +28,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="#474646"
-            android:textSize="8sp"
+            android:textColor="@color/black"
+            android:textSize="10sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textMessage"/>
 

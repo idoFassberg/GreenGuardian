@@ -88,7 +88,15 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         void setData(ChatMessage chatMessage){
             binding.textMessage.setText(chatMessage.message);
-            binding.textDateTime.setText(Math.toIntExact(chatMessage.dateTime));
+            // Format the dateTime as a readable date string
+            String formattedDateTime = getReadableDateTime(chatMessage.dateTime);
+            binding.textDateTime.setText(formattedDateTime);
+        }
+
+        private String getReadableDateTime(long timestamp) {
+            Date date = new Date(timestamp);
+            SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy - hh:mm a", Locale.getDefault());
+            return sdf.format(date);
         }
     }
 
@@ -114,6 +122,5 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy - hh:mm a", Locale.getDefault());
             return sdf.format(date);
         }
-
     }
 }

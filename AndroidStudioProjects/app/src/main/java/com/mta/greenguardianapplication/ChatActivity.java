@@ -15,6 +15,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -84,6 +85,46 @@ public class ChatActivity extends AppCompatActivity {
         String currentUserId = mAuth.getCurrentUser().getUid();
         String receiverUserId = receiverUser.id;
 
+        Query messagesQuery = databaseReference.orderByChild("timestamp");
+        messagesQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                chatMessages.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String message = snapshot.child("message").getValue(String.class);
+                    String receiverId = snapshot.child("receiver_id").getValue(String.class);
+                    String senderId = snapshot.child("sender_id").getValue(String.class);
+                    Long time = snapshot.child("timestamp").getValue(long.class);
+
+                    // Filter the messages based on sender and receiver IDs
+                    if ((senderId.equals(currentUserId) && receiverId.equals(receiverUserId))
+                            || (senderId.equals(receiverUserId) && receiverId.equals(currentUserId))) {
+                        ChatMessage chatMessage = new ChatMessage(senderId, receiverId, message, time);
+                        chatMessages.add(chatMessage);
+                    }
+                }
+
+                Collections.sort(chatMessages, (obj1, obj2) -> Long.compare(obj1.dateTime, obj2.dateTime));
+                chatAdapter.notifyDataSetChanged();
+
+                if (!chatMessages.isEmpty()) {
+                    binding.chatRecyclerView.smoothScrollToPosition(chatMessages.size() - 1);
+                }
+                binding.chatRecyclerView.setVisibility(View.VISIBLE);
+                binding.progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("MyApp", "onCancelled: " + databaseError.getMessage());
+            }
+        });
+    }
+
+    /*private void listenMessages() {
+        String currentUserId = mAuth.getCurrentUser().getUid();
+        String receiverUserId = receiverUser.id;
+
         // Listen for messages sent by the current user to the receiver
         databaseReference.orderByChild("sender_id").equalTo(currentUserId).addValueEventListener(eventListener);
 
@@ -105,12 +146,10 @@ public class ChatActivity extends AppCompatActivity {
                     chatMessages.add(chatMessage);
                 }
             }
-            Collections.sort(chatMessages, (obj1, obj2) -> Long.compare(obj2.dateTime, obj1.dateTime));
-            chatAdapter.notifyDataSetChanged();
 
-            if (!chatMessages.isEmpty()) {
-                binding.chatRecyclerView.smoothScrollToPosition(chatMessages.size() - 1);
-            }
+            Collections.sort(chatMessages, (obj1, obj2) -> Long.compare(obj1.dateTime, obj2.dateTime));
+            chatAdapter.notifyDataSetChanged();
+            binding.chatRecyclerView.smoothScrollToPosition(chatMessages.size());
             binding.chatRecyclerView.setVisibility(View.VISIBLE);
             binding.progressBar.setVisibility(View.GONE);
         }
@@ -119,7 +158,7 @@ public class ChatActivity extends AppCompatActivity {
         public void onCancelled(@NonNull DatabaseError databaseError) {
             Log.e("MyApp", "onCancelled: " + databaseError.getMessage());
         }
-    };
+    };*/
 
     /*private final EventListener<QuerySnapshot> eventListener = (value, error) -> {
         if(error != null){
