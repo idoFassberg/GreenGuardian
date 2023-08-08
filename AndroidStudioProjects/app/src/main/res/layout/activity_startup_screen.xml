@@ -80,7 +80,7 @@
             android:background="#4CAF50"
             android:text="about us"
             android:textColor="@color/white" />
-        <Button
+        <!--<Button
             android:id="@+id/getToken"
             android:layout_width="match_parent"
             android:layout_height="44dp"
@@ -89,7 +89,7 @@
             android:background="#4CAF50"
             android:onClick="callToken"
             android:text="token"
-            android:textColor="@color/white" />
+            android:textColor="@color/white" />-->
 
     </LinearLayout>
 

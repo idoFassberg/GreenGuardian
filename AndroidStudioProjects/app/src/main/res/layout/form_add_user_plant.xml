@@ -19,10 +19,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:backgroundTint="#A4C639"
+            android:backgroundTint="@color/greenApp"
             android:minHeight="60dp"
             android:text="@string/button_saveUserPlant"
-            android:textColor="#F2F5DF" />
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,12 +37,119 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:adjustViewBounds="false"
-                android:background="@drawable/image"
                 android:contentDescription="@string/plant_image_description"
                 android:scaleType="center"
-                android:src="@drawable/ic_launcher_background" />
+                android:src="@drawable/ic_launcher_background"
+                android:layout_marginTop="15dp"/>
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Plant Type"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:startIconTint="@color/black"
+                app:hintTextColor="@color/black"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/black"
+                app:boxStrokeWidthFocused="2dp"
+                app:boxStrokeColor="@color/black"
+                android:layout_marginStart="7dp"
+                android:layout_marginEnd="7dp"
+                android:layout_marginTop="7dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/form_textFieldPlantType"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="text"
+                    android:fontFamily="@font/muli_black"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    android:textColor="@color/black"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Optimal Humidity"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:startIconTint="@color/black"
+                app:hintTextColor="@color/black"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/black"
+                app:boxStrokeWidthFocused="2dp"
+                app:boxStrokeColor="@color/black"
+                android:layout_marginStart="7dp"
+                android:layout_marginEnd="7dp"
+                android:layout_marginTop="7dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/form_textFieldOptimalHumidity"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="number"
+                    android:fontFamily="@font/muli_black"
+                    android:textColor="@color/black"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nickname"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:startIconTint="@color/black"
+                app:hintTextColor="@color/black"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/black"
+                app:boxStrokeWidthFocused="2dp"
+                app:boxStrokeColor="@color/black"
+                android:layout_marginStart="7dp"
+                android:layout_marginEnd="7dp"
+                android:layout_marginTop="7dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/form_textFieldNickName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="text"
+                    android:fontFamily="@font/muli_black"
+                    android:textColor="@color/black"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Board ID"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:startIconTint="@color/black"
+                app:hintTextColor="@color/black"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/black"
+                app:boxStrokeWidthFocused="2dp"
+                app:boxStrokeColor="@color/black"
+                android:layout_marginStart="7dp"
+                android:layout_marginEnd="7dp"
+                android:layout_marginTop="7dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/form_textFieldBoardId"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="text"
+                    android:fontFamily="@font/muli_black"
+                    android:textColor="@color/black"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <!--<com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/form_textFieldPlantType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -49,26 +157,26 @@
                 android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 android:hint="PlantType"
                 android:inputType="text"
-                android:minHeight="48dp" />
+                android:minHeight="48dp" />-->
 
-            <com.google.android.material.textfield.TextInputEditText
+            <!--<com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/form_textFieldOptimalHumidity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:hint="Optimal Humidity"
                 android:inputType="number"
-                android:minHeight="48dp" />
+                android:minHeight="48dp" />-->
 
-            <com.google.android.material.textfield.TextInputEditText
+            <!--<com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/form_textFieldNickName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:hint="@string/form_nickName"
-                android:minHeight="48dp" />
+                android:minHeight="48dp" />-->
 
-            <com.google.android.material.textfield.TextInputEditText
+            <!--<com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/form_textFieldBoardId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,7 +184,7 @@
                 android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
                 android:hint="Board ID"
                 android:inputType="text"
-                android:minHeight="48dp" />
+                android:minHeight="48dp" />-->
 
         </LinearLayout>
 

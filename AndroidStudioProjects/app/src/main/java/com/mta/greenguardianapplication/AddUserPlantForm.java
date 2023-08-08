@@ -58,7 +58,7 @@ public class AddUserPlantForm extends AppCompatActivity {
     private static final int IMAGE_PICK_GALLERY_CODE = 300;
     private static final int IMAGE_PICK_CAMERA_CODE = 400;
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 1001;
-    LinearLayout myPlants, forum, logout, myProfile, addPlant, plantLibrary;
+    LinearLayout myPlants, chat, logout, myProfile, addPlant, plantLibrary;
     private ActivityResultLauncher<Uri> cameraLauncher;
     private ActivityResultLauncher<String> galleryLauncher;
     private AlertDialog progressDialog;
@@ -86,7 +86,7 @@ public class AddUserPlantForm extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         menu = findViewById(R.id.menu);
         myPlants = findViewById(R.id.myPlants);
-        forum = findViewById(R.id.forum);
+        chat = findViewById(R.id.chat);
         logout = findViewById(R.id.logoutNav);
         myProfile = findViewById(R.id.my_profile);
         addPlant = findViewById(R.id.add_plant);
@@ -108,10 +108,10 @@ public class AddUserPlantForm extends AppCompatActivity {
             }
         });
 
-        forum.setOnClickListener(new View.OnClickListener() {
+        chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                redirectActivity(AddUserPlantForm.this, ForumActivity2.class);
+                redirectActivity(AddUserPlantForm.this, MainChatActivity.class);
             }
         });
 

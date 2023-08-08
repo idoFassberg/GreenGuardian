@@ -43,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Plant Type: "
-                    android:textColor="#4CAF50"
+                    android:textColor="@color/greenApp"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -70,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Optimal Humidity: "
-                    android:textColor="#4CAF50"
+                    android:textColor="@color/greenApp"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 

@@ -20,7 +20,7 @@
             android:minHeight="48dp"
             android:onClick="callStartupScreen"
             android:padding="5dp"
-            android:drawableLeft="@drawable/baseline_arrow_back_24"
+            android:drawableLeft="@drawable/baseline_back_24"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:transitionName="transition_startup" />

@@ -4,8 +4,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.app.ActivityCompat;
@@ -15,10 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,13 +22,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.Manifest;
@@ -62,7 +54,7 @@ public class ProfileActivity extends AppCompatActivity {
     TextView userName,userEmail;
     DrawerLayout drawerLayout;
     ImageView menu,profilePicture;
-    LinearLayout myPlants, forum, logout,addPlant,myProfile,plantsLibrary;
+    LinearLayout myPlants, chat, logout,addPlant,myProfile,plantsLibrary;
     AppCompatButton btn_accountSetting;
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final int STORAGE_REQUEST_CODE = 200;
@@ -102,7 +94,7 @@ public class ProfileActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         menu = findViewById(R.id.menu);
         myPlants = findViewById(R.id.myPlants);
-        forum = findViewById(R.id.forum);
+        chat = findViewById(R.id.chat);
         logout = findViewById(R.id.logoutNav);
         plantsLibrary = findViewById(R.id.plantsLibrary);
         addPlant = findViewById(R.id.add_plant);
@@ -220,10 +212,10 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        forum.setOnClickListener(new View.OnClickListener() {
+        chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                redirectActivity(ProfileActivity.this,ForumActivity2.class);
+                redirectActivity(ProfileActivity.this, MainChatActivity.class);
             }
         });
 

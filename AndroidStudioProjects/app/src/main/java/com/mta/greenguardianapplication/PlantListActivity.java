@@ -1,13 +1,11 @@
 package com.mta.greenguardianapplication;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,17 +13,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.mta.greenguardianapplication.LoginSignup.StartupScreen;
 import com.mta.greenguardianapplication.adapter.PlantAdapter;
 import com.mta.greenguardianapplication.model.Plant;
@@ -37,7 +30,7 @@ public class PlantListActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     ImageView menu;
-    LinearLayout myPlants, forum, logout, plantsLibrary,addPlant,myProfile;
+    LinearLayout myPlants, chat, logout, plantsLibrary,addPlant,myProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +40,7 @@ public class PlantListActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         menu = findViewById(R.id.menu);
         myPlants = findViewById(R.id.myPlants);
-        forum = findViewById(R.id.forum);
+        chat = findViewById(R.id.chat);
         logout = findViewById(R.id.logoutNav);
         plantsLibrary = findViewById(R.id.plantsLibrary);
         addPlant = findViewById(R.id.add_plant);
@@ -74,10 +67,10 @@ public class PlantListActivity extends AppCompatActivity {
             }
         });
 
-        forum.setOnClickListener(new View.OnClickListener() {
+        chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                redirectActivity(PlantListActivity.this, ForumActivity2.class);
+                redirectActivity(PlantListActivity.this, MainChatActivity.class);
             }
         });
         myProfile.setOnClickListener(new View.OnClickListener() {
