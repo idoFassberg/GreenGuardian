@@ -39,7 +39,7 @@ public class GraphActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     ImageView menu;
-    LinearLayout myPlants, forum, logout, plantsLibrary,addPlant,myProfile;
+    LinearLayout myPlants, chat, logout, plantsLibrary,addPlant,myProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +48,7 @@ public class GraphActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         menu = findViewById(R.id.menu);
         myPlants = findViewById(R.id.myPlants);
-        forum = findViewById(R.id.forum);
+        chat = findViewById(R.id.chat);
         logout = findViewById(R.id.logoutNav);
         plantsLibrary = findViewById(R.id.plantsLibrary);
         addPlant = findViewById(R.id.add_plant);
@@ -75,7 +75,7 @@ public class GraphActivity extends AppCompatActivity {
             }
         });
 
-        forum.setOnClickListener(new View.OnClickListener() {
+        chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 redirectActivity(GraphActivity.this, ForumActivity2.class);
