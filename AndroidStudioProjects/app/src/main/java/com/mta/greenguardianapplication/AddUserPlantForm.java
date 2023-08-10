@@ -463,7 +463,6 @@ public class AddUserPlantForm extends AppCompatActivity {
         String userId = mAuth.getCurrentUser().getUid();
         DatabaseReference userPlantsRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("plants");
         DatabaseReference userPlantsRef2 = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("plants");
-        Log.d("try0" , "blabla" + oldNickName);
         // Read the data from the existing node
         userPlantsRef.child(oldNickName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

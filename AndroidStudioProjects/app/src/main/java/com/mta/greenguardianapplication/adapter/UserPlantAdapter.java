@@ -170,7 +170,6 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
                         // Get the clicked plant item
                         UserPlant clickedPlant = getItem(position);
                         String plantId = getSnapshots().getSnapshot(position).getKey();
-                        Log.d("shay" , "shay " +  clickedPlant.getNickName() + "shay1 " + clickedPlant.getOptimalHumidity());
                         // Retrieve the values you want to pass to the another form activity
                         String optimalHumidity = String.valueOf(clickedPlant.getOptimalHumidity());
 
