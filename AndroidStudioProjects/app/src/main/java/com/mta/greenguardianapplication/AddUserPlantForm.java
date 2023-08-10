@@ -35,8 +35,11 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mta.greenguardianapplication.LoginSignup.StartupScreen;
@@ -76,8 +79,7 @@ public class AddUserPlantForm extends AppCompatActivity {
         String plantType = getIntent().getStringExtra("plantType");
         String optimalHumidity = getIntent().getStringExtra("optimalHumidity");
         String pictureUrl = getIntent().getStringExtra("pictureUrl");
-        String boardId = getIntent().getStringExtra("boardId");
-        String nickName = getIntent().getStringExtra("nickName");
+        String oldNickName = getIntent().getStringExtra("nickName");
 
         cameraPermission = new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -186,17 +188,15 @@ public class AddUserPlantForm extends AppCompatActivity {
         plantType = plantType != null ? plantType : "";
         optimalHumidity = optimalHumidity != null ? optimalHumidity : "";
         pictureUrl = pictureUrl != null ? pictureUrl : "";
-        boardId = boardId != null ? boardId : "";
-        nickName = nickName != null ? nickName : "";
+        oldNickName = oldNickName != null ? oldNickName : "";
         mDatabase = FirebaseDatabase.getInstance().getReference("UserPlants");
-        initializeComponents(plantType, optimalHumidity,pictureUrl,boardId,nickName);
+        initializeComponents(plantType, optimalHumidity,pictureUrl,oldNickName);
     }
 
-    private void initializeComponents(String plantType, String optimalHumidity, String pictureUrl, String boardId, String nickName) {
+    private void initializeComponents(String plantType, String optimalHumidity, String pictureUrl, String oldNickName) {
         TextInputEditText inputEditPlantType = findViewById(R.id.form_textFieldPlantType);
         TextInputEditText inputEditOptimalHumidity = findViewById(R.id.form_textFieldOptimalHumidity);
         TextInputEditText inputEditNickName = findViewById(R.id.form_textFieldNickName);
-        TextInputEditText inputEditBoardId = findViewById(R.id.form_textFieldBoardId);
         //ImageView imageView = findViewById(R.id.plant_image);
         MaterialButton buttonSaveUserPlant = findViewById(R.id.form_buttonSaveUserPlant);
         if(pictureUrl != "") {
@@ -215,17 +215,15 @@ public class AddUserPlantForm extends AppCompatActivity {
         plantPicture.setTag(pictureUrl);
         inputEditPlantType.setText(plantType);
         inputEditOptimalHumidity.setText(optimalHumidity);
-        inputEditBoardId.setText(boardId);
-        inputEditNickName.setText(nickName);
+        inputEditNickName.setText(oldNickName);
 
         buttonSaveUserPlant.setOnClickListener(view -> {
             String type = String.valueOf(inputEditPlantType.getText());
             String nickNameStr = String.valueOf(inputEditNickName.getText());
             String optimalHumidityStr = String.valueOf(inputEditOptimalHumidity.getText());
-            String boardIdStr = String.valueOf(inputEditBoardId.getText());
             if(!Objects.equals(pictureUrl, ""))
                 imageUrl = pictureUrl;
-            addNewUserPlant(type, nickNameStr,Integer.parseInt(optimalHumidityStr),boardIdStr, imageUrl);
+            addNewUserPlant(oldNickName ,type, nickNameStr,Integer.parseInt(optimalHumidityStr), imageUrl);
 
             Intent intent = new Intent(AddUserPlantForm.this, UserPlantListActivity.class);
             startActivity(intent);
@@ -424,12 +422,16 @@ public class AddUserPlantForm extends AppCompatActivity {
         }
     }
 
-    public void addNewUserPlant(String type, String nickName, int optimalHumidity, String boardId, String pictureUrl) {
+    public void addNewUserPlant(String oldNickName, String type, String nickName, int optimalHumidity, String pictureUrl) {
         String plantId = getIntent().getStringExtra("plantId");
         if(plantId == null){
             plantId = mDatabase.push().getKey();
         }
-        UserPlant userPlant = new UserPlant(plantId, nickName, optimalHumidity, pictureUrl == null ? "" : pictureUrl, type, "123", boardId,-1 );
+        else {
+            editExistsPlant(oldNickName, nickName, type, optimalHumidity);
+            return;
+        }
+        UserPlant userPlant = new UserPlant(plantId, nickName, optimalHumidity, pictureUrl == null ? "" : pictureUrl, type, "123", -1);
         mDatabase.child(nickName).setValue(userPlant); // Save the plant with the generated ID
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference usersRef = database.getReference("Users");
@@ -453,6 +455,51 @@ public class AddUserPlantForm extends AppCompatActivity {
                 });
 
         Toast.makeText(AddUserPlantForm.this, "Save successful", Toast.LENGTH_SHORT).show();
+    }
+
+    private void editExistsPlant(String oldNickName, String nickName, String type, int optimalHumidity) {
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        String userId = mAuth.getCurrentUser().getUid();
+        DatabaseReference userPlantsRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("plants");
+        DatabaseReference userPlantsRef2 = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("plants");
+        Log.d("try0" , "blabla" + oldNickName);
+        // Read the data from the existing node
+        userPlantsRef.child(oldNickName).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Get the old plant data
+                    UserPlant oldPlant = dataSnapshot.getValue(UserPlant.class);
+
+                    if (!oldPlant.getNickName().equals(nickName)) {
+                        // If nickName is changed, create a new node with the new name
+                        userPlantsRef.child(nickName).setValue(oldPlant);
+                        userPlantsRef.child(nickName).child("nickName").setValue(nickName);
+                        userPlantsRef.child(nickName).child("optimalHumidity").setValue(optimalHumidity);
+                        userPlantsRef.child(nickName).child("plantType").setValue(type);
+
+                        // Remove the old node
+                        userPlantsRef.child(oldNickName).removeValue();
+                    } else {
+                        // If nickName is not changed, update the specific fields
+                        userPlantsRef.child(nickName).child("optimalHumidity").setValue(optimalHumidity);
+                        userPlantsRef.child(nickName).child("plantType").setValue(type);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle error if necessary
+            }
+        });
+       /* userPlantsRef.child(oldNickName).child("nickName").setValue(nickName);
+        userPlantsRef.child(oldNickName).child("optimalHumidity").setValue(optimalHumidity);
+        userPlantsRef.child(oldNickName).child("plantType").setValue(type);*/
+
+        //userPlantsRef.child(oldNickName).setValue(nickName);
+
     }
 
     public  static void openDrawer(DrawerLayout drawerLayout){

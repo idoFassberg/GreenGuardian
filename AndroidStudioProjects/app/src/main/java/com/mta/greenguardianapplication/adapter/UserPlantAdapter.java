@@ -170,7 +170,7 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
                         // Get the clicked plant item
                         UserPlant clickedPlant = getItem(position);
                         String plantId = getSnapshots().getSnapshot(position).getKey();
-
+                        Log.d("shay" , "shay " +  clickedPlant.getNickName() + "shay1 " + clickedPlant.getOptimalHumidity());
                         // Retrieve the values you want to pass to the another form activity
                         String optimalHumidity = String.valueOf(clickedPlant.getOptimalHumidity());
 
@@ -180,7 +180,6 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
                         intent.putExtra("optimalHumidity", optimalHumidity);
                         intent.putExtra("pictureUrl", clickedPlant.getPictureUrl());
                         intent.putExtra("nickName", clickedPlant.getNickName());
-                        intent.putExtra("boardId", clickedPlant.getBoardId());
                         intent.putExtra("currentHumidity", clickedPlant.getCurrentHumidity());
                         intent.putExtra("plantId", clickedPlant.getPlantId());
                         v.getContext().startActivity(intent);

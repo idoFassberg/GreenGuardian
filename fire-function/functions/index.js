@@ -93,7 +93,7 @@ exports.monitorMoistureLevels = functions.database.ref('/Users/{userId}/plants/{
 
         // Create a new map with the formatted timestamp and the value
         const map = {};
-        map[moment().format("YYYY-MM-DD HH:mm")] = value;
+        map[moment().format("YYYY-MM-DD HH:mm:ss")] = value;
         console.log("Map:", map);
 
         const parentRef = snapshot.ref.parent;

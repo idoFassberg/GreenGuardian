@@ -1,5 +1,8 @@
 package com.mta.greenguardianapplication.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class UserPlant {
     private String plantId;
     private String nickName;
@@ -8,26 +11,29 @@ public class UserPlant {
     private String plantType;
     private String userId;
 
-    private String boardId;
     private int currentHumidity;
-    private String statsHumidity;
-
+    private Map<String, Object> statsHumidity;
     public UserPlant() {
         // Default constructor required for Firebase
     }
 
-    public UserPlant(String plantId, String nickName, int optimalHumidity, String pictureUrl, String plantType, String userId, String boardId, Integer currentHumidity) {
+    public UserPlant(String plantId, String nickName, int optimalHumidity, String pictureUrl, String plantType, String userId, Integer currentHumidity) {
         this.plantId = plantId;
         this.nickName = nickName;
         this.optimalHumidity = optimalHumidity;
         this.pictureUrl = pictureUrl;
         this.plantType = plantType;
         this.userId = userId;
-        this.boardId = boardId;
         this.currentHumidity = currentHumidity;
-        this.statsHumidity = "";
+        this.statsHumidity =  new HashMap<>();
+    }
+    public Map<String, Object> getStatsHumidity() {
+        return statsHumidity;
     }
 
+    public void setStatsHumidity(Map<String, Object> statsHumidity) {
+        this.statsHumidity = statsHumidity;
+    }
     public String getPlantType() {
         return plantType;
     }
@@ -68,13 +74,6 @@ public class UserPlant {
         this.userId = userId;
     }
 
-    public String getBoardId() {
-        return boardId;
-    }
-
-    public void setBoardId(String boardId) {
-        this.boardId = boardId;
-    }
 
     public int getCurrentHumidity() {
         return currentHumidity;

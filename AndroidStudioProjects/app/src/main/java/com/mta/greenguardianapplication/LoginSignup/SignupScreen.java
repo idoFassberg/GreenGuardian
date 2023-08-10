@@ -115,7 +115,7 @@ public class SignupScreen extends AppCompatActivity {
         return password.length() >= 6; // For example, minimum 6 characters
     }
 
-    private void registerUser(String email, String password) {
+    private void registerUser(String email, String password, String fullName) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -126,7 +126,7 @@ public class SignupScreen extends AppCompatActivity {
                             Log.d(TAG, "createUserWithEmail:success");
 
                             // Get the FCM token and create User DataBase
-                            getTokenAndCreateUser();
+                            getTokenAndCreateUser(fullName);
 
                             Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), UserPlantListActivity.class);
@@ -143,7 +143,7 @@ public class SignupScreen extends AppCompatActivity {
                 });
     }
 
-    private void getTokenAndCreateUser()
+    private void getTokenAndCreateUser(String fullName)
     {
         // Get the FCM token asynchronously using addOnSuccessListener and addOnFailureListener
         FirebaseMessaging.getInstance().getToken()
@@ -152,7 +152,7 @@ public class SignupScreen extends AppCompatActivity {
                     public void onSuccess(String token) {
                         // The FCM token is successfully retrieved
                         // Call createUserDB with the FCM token after the user is successfully registered
-                        createUserDB(token);
+                        createUserDB(token,fullName);
 
                         // You can perform any other actions here after both user data and FCM token are saved
                         Log.d("FCM Token", "Token retrieved: " + token);
@@ -170,7 +170,7 @@ public class SignupScreen extends AppCompatActivity {
 
 
     }
-    private void createUserDB(String fcmToken) {
+    private void createUserDB(String fcmToken, String fullName) {
         // Get the current user's UID
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
@@ -183,7 +183,7 @@ public class SignupScreen extends AppCompatActivity {
             HashMap<String, Object> hashMap = new HashMap<>();
             hashMap.put("email", user.getEmail());
             hashMap.put("uid", uid);
-            hashMap.put("name", "");
+            hashMap.put("name", fullName);
             hashMap.put("phone", "");
             hashMap.put("plants", "");
             hashMap.put("image", "");
@@ -224,10 +224,11 @@ public class SignupScreen extends AppCompatActivity {
     public void callSignup(View view){
         String email = te_email.getText().toString();
         String password = te_password.getText().toString();
+        String fullName = te_fullName.getText().toString();
         /*progressBar.setVisibility(View.VISIBLE);*/
 
         if (Patterns.EMAIL_ADDRESS.matcher(email).matches() && isPasswordValid(password)) {
-            registerUser(email,password);
+            registerUser(email,password,fullName);
         } else {
             Toast.makeText(getApplicationContext(), "Invalid email or password", Toast.LENGTH_SHORT).show();
         }
