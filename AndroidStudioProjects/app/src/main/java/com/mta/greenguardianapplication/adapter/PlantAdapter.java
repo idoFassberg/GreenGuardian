@@ -15,11 +15,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.mta.greenguardianapplication.PlantListActivity;
 import com.mta.greenguardianapplication.R;
 import com.mta.greenguardianapplication.model.Plant;
 import com.mta.greenguardianapplication.AddUserPlantForm;
 
 public class PlantAdapter extends FirebaseRecyclerAdapter<Plant, PlantAdapter.PlantHolder> {
+
 
     public PlantAdapter(@NonNull FirebaseRecyclerOptions<Plant> options) {
         super(options);
@@ -41,8 +43,9 @@ public class PlantAdapter extends FirebaseRecyclerAdapter<Plant, PlantAdapter.Pl
 
     class PlantHolder extends RecyclerView.ViewHolder {
         ImageView pictureView;
-        TextView typeView, humidityView;
+        TextView typeView, humidityView, getInfo;
         ImageButton addButton;
+
 
         PlantHolder(View itemView) {
             super(itemView);
@@ -50,6 +53,7 @@ public class PlantAdapter extends FirebaseRecyclerAdapter<Plant, PlantAdapter.Pl
             typeView = itemView.findViewById(R.id.plant_type);
             humidityView = itemView.findViewById(R.id.optimal_humidity);
             addButton = itemView.findViewById(R.id.add_button);
+            getInfo = itemView.findViewById(R.id.get_info_about_plant);
         }
 
         void bind(Plant plant) {
