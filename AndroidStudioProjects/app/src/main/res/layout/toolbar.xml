@@ -10,8 +10,8 @@
     android:gravity="center_vertical">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:id="@+id/menu"
         android:src="@drawable/baseline_menu_24"/>
 
@@ -23,6 +23,14 @@
         android:textSize="20sp"
         android:fontFamily="@font/muli_black"
         android:layout_marginStart="12dp"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black"
+        android:layout_marginEnd="32dp"/>
+
+    <ImageView
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:src="@drawable/logo_of_app"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="12dp"/>
 
 </LinearLayout>

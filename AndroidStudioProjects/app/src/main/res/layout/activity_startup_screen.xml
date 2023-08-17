@@ -16,7 +16,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="230dp"
-            android:src="@drawable/lovepik_com_401302623_hand_painted_green_plants"/>
+            android:src="@drawable/logo_of_app"/>
 
         <TextView
             android:layout_width="wrap_content"
