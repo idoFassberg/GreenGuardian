@@ -141,7 +141,7 @@ public class UserPlantListActivity extends AppCompatActivity {
                 .setQuery(query, UserPlant.class).build();
 
         // Create a new PlantAdapter with the options
-        userPlantAdapter = new UserPlantAdapter(options);
+        userPlantAdapter = new UserPlantAdapter(options, getSupportFragmentManager());
 
         // Set the PlantAdapter to the RecyclerView
         recyclerView.setAdapter(userPlantAdapter);

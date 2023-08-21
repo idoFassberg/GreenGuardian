@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
@@ -40,6 +41,11 @@ public class GraphActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     ImageView menu;
     LinearLayout myPlants, chat, logout, plantsLibrary,addPlant,myProfile;
+
+    public void openDialog(){
+        StatsDialog statsDialog = new StatsDialog();
+        statsDialog.show(getSupportFragmentManager() , "custom_dialog");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

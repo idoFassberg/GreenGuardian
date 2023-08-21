@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -30,6 +31,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.mta.greenguardianapplication.AddUserPlantForm;
 import com.mta.greenguardianapplication.GraphActivity;
 import com.mta.greenguardianapplication.R;
+import com.mta.greenguardianapplication.StatsDialog;
+import com.mta.greenguardianapplication.UserPlantListActivity;
 import com.mta.greenguardianapplication.model.Plant;
 import com.mta.greenguardianapplication.model.UserPlant;
 
@@ -38,9 +41,11 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlantAdapter.UserPlantHolder> {
+    private FragmentManager fragmentManager;
 
-    public UserPlantAdapter(@NonNull FirebaseRecyclerOptions<UserPlant> options) {
+    public UserPlantAdapter(@NonNull FirebaseRecyclerOptions<UserPlant> options, FragmentManager fragmentManager) {
         super(options);
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -55,11 +60,12 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
         holder.bind(model);
     }
 
-    class UserPlantHolder extends RecyclerView.ViewHolder {
+    class UserPlantHolder extends RecyclerView.ViewHolder implements StatsDialog.DialogListener{
         TextView nickName, plantType, optimalHumidity, currentHumidity;
         CircleImageView imageView;
         ProgressBar humidityDif;
         ImageButton editButton, statsButton, historyButton;
+        View view;
 
 
         public UserPlantHolder(@NonNull View itemView) {
@@ -126,18 +132,8 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
             statsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = getBindingAdapterPosition();
-
-                    if (position != RecyclerView.NO_POSITION) {
-                        UserPlant clickedPlant = getItem(position);
-                        Intent intent = new Intent(v.getContext(), GraphActivity.class);
-                        intent.putExtra("plantId", clickedPlant.getPlantId());
-                        intent.putExtra("userId", clickedPlant.getUserId());
-                        intent.putExtra("optimalHumidity", clickedPlant.getOptimalHumidity()); // Pass optimalHumidity
-                        intent.putExtra("nickName", clickedPlant.getNickName());
-                        intent.putExtra("history", false);
-                        v.getContext().startActivity(intent);
-                    }
+                    view = v;
+                    openDialog();
                 }
             });
 
@@ -211,6 +207,32 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
 
             progressDrawable.setColorFilter(progressColor, PorterDuff.Mode.SRC_IN);
             humidityDif.setProgressDrawable(layerDrawable);
+        }
+
+        public void openDialog(){
+            StatsDialog statsDialog = new StatsDialog();
+            statsDialog.show(fragmentManager , "custom_dialog");
+
+        }
+
+        @Override
+        public void onProceedClicked(String fromDate, String toDate, int selectedRadioId) {
+            int position = getBindingAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                UserPlant clickedPlant = getItem(position);
+                Intent intent = new Intent(view.getContext(), GraphActivity.class);
+                intent.putExtra("plantId", clickedPlant.getPlantId());
+                intent.putExtra("userId", clickedPlant.getUserId());
+                intent.putExtra("optimalHumidity", clickedPlant.getOptimalHumidity()); // Pass optimalHumidity
+                intent.putExtra("nickName", clickedPlant.getNickName());
+                intent.putExtra("history", false);
+                view.getContext().startActivity(intent);
+            }
+        }
+
+        @Override
+        public void onCancelClicked() {
+
         }
     }
 }
