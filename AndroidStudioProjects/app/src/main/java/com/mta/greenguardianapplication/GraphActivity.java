@@ -42,11 +42,6 @@ public class GraphActivity extends AppCompatActivity {
     ImageView menu;
     LinearLayout myPlants, chat, logout, plantsLibrary,addPlant,myProfile;
 
-    public void openDialog(){
-        StatsDialog statsDialog = new StatsDialog();
-        statsDialog.show(getSupportFragmentManager() , "custom_dialog");
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -184,7 +179,7 @@ public class GraphActivity extends AppCompatActivity {
                                 // Cast the data to the appropriate type (Long in this case)
                                 Long humidityValue = timestampSnapshot.getValue(Long.class);
                                 String date = timestampSnapshot.getKey();
-                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                                 LocalDate inputDate = LocalDate.parse(date, formatter);
 
                                 // Get the current dat

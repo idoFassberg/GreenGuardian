@@ -1,6 +1,7 @@
 package com.mta.greenguardianapplication;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -10,21 +11,28 @@ import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.mta.greenguardianapplication.R;
-
 public class StatsDialog extends DialogFragment {
+
     public interface DialogListener {
-        void onProceedClicked(String fromDate, String toDate, int selectedRadioId);
+        void onProceedClicked(String fromDate, String toDate, boolean isStats);
         void onCancelClicked();
     }
 
     private DialogListener dialogListener;
 
-    private Button btnFromDate, btnToDate;
+    private Button btnFromDate, btnToDate, btnPositive;
     private RadioGroup radioGroup;
+    private int selectedYear, selectedMonth, selectedDay;
 
+    private boolean fromDate = false, toDate = false;
+
+    public void setDialogListener(DialogListener listener) {
+        this.dialogListener = listener;
+    }
 
     @NonNull
     @Override
@@ -34,13 +42,29 @@ public class StatsDialog extends DialogFragment {
         // Inflate the custom layout
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.layout_stats_dialog, null);
+        View viewTitle = inflater.inflate(R.layout.stats_dialog_title, null);
 
         btnFromDate = view.findViewById(R.id.btnFromDate);
         btnToDate = view.findViewById(R.id.btnToDate);
         radioGroup = view.findViewById(R.id.radioGroup);
+        RadioButton radioDefault = view.findViewById(R.id.radioStats);
+        radioDefault.setChecked(true);
+        btnFromDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog(btnFromDate);
+            }
+        });
 
+        btnToDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog(btnToDate);
+            }
+        });
+
+        builder.setCustomTitle(viewTitle);
         builder.setView(view)
-                .setTitle("Humidity Statistics")
                 .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -50,8 +74,10 @@ public class StatsDialog extends DialogFragment {
 
                         if (selectedRadioId == R.id.radioStats) {
                             // Handle "Show average humidity per day" radio button
+                            dialogListener.onProceedClicked(selectedFromDate, selectedToDate, true);
                         } else if (selectedRadioId == R.id.radioHistory) {
                             // Handle "Show full history" radio button
+                            dialogListener.onProceedClicked(selectedFromDate, selectedToDate, false);
                         }
                     }
                 })
@@ -68,11 +94,44 @@ public class StatsDialog extends DialogFragment {
         alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                positiveButton.setEnabled(false);
+                btnPositive = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                btnPositive.setEnabled(false);
             }
         });
 
         return alertDialog;
+    }
+
+    private void showDatePickerDialog(final Button targetButton) {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                requireContext(),
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        selectedYear = year;
+                        selectedMonth = monthOfYear;
+                        selectedDay = dayOfMonth;
+                        updateButtonDate(targetButton);
+                    }
+                },
+                selectedYear, selectedMonth, selectedDay
+        );
+
+        datePickerDialog.show();
+    }
+
+    private void updateButtonDate(Button button) {
+        String dateString = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
+
+        if(button.getText().equals("Starting Date")){
+            fromDate = true;
+        }
+        if(button.getText().equals("Ending Date")){
+            toDate = true;
+        }
+        button.setText(dateString);
+        if(fromDate && toDate){
+            btnPositive.setEnabled(true);
+        }
     }
 }

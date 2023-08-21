@@ -22,7 +22,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.github.mikephil.charting.data.BarEntry;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,11 +31,7 @@ import com.mta.greenguardianapplication.AddUserPlantForm;
 import com.mta.greenguardianapplication.GraphActivity;
 import com.mta.greenguardianapplication.R;
 import com.mta.greenguardianapplication.StatsDialog;
-import com.mta.greenguardianapplication.UserPlantListActivity;
-import com.mta.greenguardianapplication.model.Plant;
 import com.mta.greenguardianapplication.model.UserPlant;
-
-import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -60,7 +55,7 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
         holder.bind(model);
     }
 
-    class UserPlantHolder extends RecyclerView.ViewHolder implements StatsDialog.DialogListener{
+    class UserPlantHolder extends RecyclerView.ViewHolder {
         TextView nickName, plantType, optimalHumidity, currentHumidity;
         CircleImageView imageView;
         ProgressBar humidityDif;
@@ -211,28 +206,30 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
 
         public void openDialog(){
             StatsDialog statsDialog = new StatsDialog();
-            statsDialog.show(fragmentManager , "custom_dialog");
+            statsDialog.setDialogListener(new StatsDialog.DialogListener() {
+                @Override
+                public void onProceedClicked(String fromDate, String toDate, boolean isStats) {
+                    int position = getBindingAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        UserPlant clickedPlant = getItem(position);
+                        Intent intent = new Intent(view.getContext(), GraphActivity.class);
+                        intent.putExtra("plantId", clickedPlant.getPlantId());
+                        intent.putExtra("userId", clickedPlant.getUserId());
+                        intent.putExtra("optimalHumidity", clickedPlant.getOptimalHumidity()); // Pass optimalHumidity
+                        intent.putExtra("nickName", clickedPlant.getNickName());
+                        intent.putExtra("history", !isStats);
+                        intent.putExtra("fromDate", fromDate);
+                        intent.putExtra("toDate", toDate);
+                        view.getContext().startActivity(intent);
+                    }
+                }
 
-        }
-
-        @Override
-        public void onProceedClicked(String fromDate, String toDate, int selectedRadioId) {
-            int position = getBindingAdapterPosition();
-            if (position != RecyclerView.NO_POSITION) {
-                UserPlant clickedPlant = getItem(position);
-                Intent intent = new Intent(view.getContext(), GraphActivity.class);
-                intent.putExtra("plantId", clickedPlant.getPlantId());
-                intent.putExtra("userId", clickedPlant.getUserId());
-                intent.putExtra("optimalHumidity", clickedPlant.getOptimalHumidity()); // Pass optimalHumidity
-                intent.putExtra("nickName", clickedPlant.getNickName());
-                intent.putExtra("history", false);
-                view.getContext().startActivity(intent);
-            }
-        }
-
-        @Override
-        public void onCancelClicked() {
-
+                @Override
+                public void onCancelClicked() {
+                    // Handle cancel button click
+                }
+            });
+            statsDialog.show(fragmentManager , "stats_dialog");
         }
     }
 }
