@@ -10,16 +10,18 @@ public class Plant {
     private String type;
     private int recommendedHumidity;
     private String pictureUrl;
+    private String infoLink;
 
     public Plant() {
         // Required empty constructor for Firebase
     }
 
-    public Plant(String name, String type, int recommendedHumidity, String pictureUrl) {
+    public Plant(String name, String type, int recommendedHumidity, String pictureUrl, String infoLink) {
         this.name = name;
         this.type = type;
         this.recommendedHumidity = recommendedHumidity;
         this.pictureUrl = pictureUrl;
+        this.infoLink = infoLink;
     }
 
     public String getName() {
@@ -54,5 +56,7 @@ public class Plant {
         return pictureUrl;
     }
 
-    // Additional setter and getter methods as needed
+    public String getInfoLink() { return infoLink; }
+
+    public void setInfoLink(String infoLink) { this.infoLink = infoLink; }
 }
