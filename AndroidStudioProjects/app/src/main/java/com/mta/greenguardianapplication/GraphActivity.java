@@ -31,6 +31,7 @@ import com.mta.greenguardianapplication.LoginSignup.StartupScreen;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -154,14 +155,25 @@ public class GraphActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Create a list of lists to store the humidity values for each day
+                String fromDateStr = getIntent().getStringExtra("fromDate");
+                String toDateStr = getIntent().getStringExtra("toDate");
+                DateTimeFormatter formatterIn = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate fromDate = LocalDate.parse(fromDateStr, formatterIn);
+                LocalDate toDate = LocalDate.parse(toDateStr, formatterIn);
+
                 if (getIntent().getBooleanExtra("history", false)){
                     List<Long> statsHumidityList = new ArrayList<>();
                     for (DataSnapshot statsSnapshot : dataSnapshot.getChildren()) {
                         if(statsSnapshot.hasChildren()) {
                             for (DataSnapshot timestampSnapshot : statsSnapshot.getChildren()) {
-                                // Cast the data to the appropriate type (Long in this case)
-                                Long humidityValue = timestampSnapshot.getValue(Long.class);
-                                statsHumidityList.add(humidityValue);
+                                // Cast the data to the appropriate type (Long in this case)c
+                                String date = timestampSnapshot.getKey();
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                                LocalDate inputDate = LocalDate.parse(date, formatter);
+                                if (!inputDate.isBefore(fromDate) && !inputDate.isAfter(toDate)) {
+                                    Long humidityValue = timestampSnapshot.getValue(Long.class);
+                                    statsHumidityList.add(humidityValue);
+                                }
                             }
                         }
                     }
@@ -169,8 +181,9 @@ public class GraphActivity extends AppCompatActivity {
                 }
                 else {
                     List<List<Long>> humidityValuesByDay = new ArrayList<>();
-                    // Initialize the list of lists with empty lists for each day (0 to 6)
-                    for (int i = 0; i <= 6; i++) {
+                    long daysInRange = ChronoUnit.DAYS.between(fromDate, toDate);
+
+                    for (int i = 0; i <= daysInRange; i++) {
                         humidityValuesByDay.add(new ArrayList<>());
                     }
                     for (DataSnapshot statsSnapshot : dataSnapshot.getChildren()) {
@@ -183,12 +196,14 @@ public class GraphActivity extends AppCompatActivity {
                                 LocalDate inputDate = LocalDate.parse(date, formatter);
 
                                 // Get the current dat
-                                LocalDate currentDate = LocalDate.now();
+                                //LocalDate currentDate = LocalDate.now();
 
                                 // Calculate the difference in days between the input date and the current date
-                                long daysDifference = currentDate.toEpochDay() - inputDate.toEpochDay();
+                                //long daysDifference = currentDate.toEpochDay() - inputDate.toEpochDay();
+                                long daysDifference = ChronoUnit.DAYS.between(fromDate, inputDate);
 
-                                if (daysDifference >= 0 && daysDifference <= 6) {
+
+                                if (daysDifference >= 0 && daysDifference <= daysInRange) {
                                     humidityValuesByDay.get((int) daysDifference).add(humidityValue);
                                 }
                             }
