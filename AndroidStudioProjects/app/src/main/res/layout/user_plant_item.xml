@@ -42,16 +42,6 @@
             android:layout_below="@id/editButton"
             android:tooltipText="Edit"/>
 
-        <ImageButton
-            android:id="@+id/historyButton"
-            android:background="@drawable/baseline_history_24"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/statsButton"
-            android:tooltipText="Edit"/>
-
-
         <TextView
             android:id="@+id/form_userPlant_textFieldNickName"
             android:layout_width="match_parent"
