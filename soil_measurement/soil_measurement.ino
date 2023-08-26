@@ -1,98 +1,115 @@
 #include <Arduino.h>
-#if defined(ESP32)
-#include <WiFi.h>
-#include <FirebaseESP32.h>
-#elif defined(ESP8266) // This is defined
-#include <ESP8266WiFi.h>
-#include <FirebaseESP8266.h>
-#elif defined(ARDUINO_RASPBERRY_PI_PICO_W)
-#include <WiFi.h>
-#include <FirebaseESP8266.h>
-#endif
-
+#include <Firebase_ESP_Client.h>
+#include <WiFiManager.h> // Connect to Wi-Fi using html config file
 // Provide the token generation process info.
-#include <addons/TokenHelper.h>
-
+#include "addons/TokenHelper.h"
 // Provide the RTDB payload printing info and other helper functions.
-#include <addons/RTDBHelper.h>
+#include "addons/RTDBHelper.h"
 
-const char* ssid = "Fassberg_2.4"; // Wi-Fi name
-const char* password = "0546366753";
 const char* webAPIKey = "AIzaSyBfcRrSCqfqCui2Fkt1DlTHaTZTBx0sAIQ";
 const char* databaseUrl = "https://greenguardian-app-default-rtdb.europe-west1.firebasedatabase.app/";
-const char* userEmail = "test@gmail.com";
-const char* userPassword = "123456";
 
 FirebaseData fbdo;
-FirebaseData fbdo2;
 FirebaseAuth auth;
 FirebaseConfig config;
 #define soilMoisturePin A0
 String macAddress;
 
-void initializeWiFiConnection()
-{
-  WiFi.begin(ssid, password);
-  Serial.print("Connecting to Wi-Fi");
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-    Serial.print(".");
-  } 
+unsigned long previousMillis = 0;
+//const unsigned long interval = 30000; // 3 second(s) interval
+int soilMoisture;
+bool signupOK = true;
+String plantName, uid, url_currentData, url_statistics;
 
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("NodeMCU IP address: " + WiFi.localIP().toString());
+WiFiManagerParameter customFirebaseEmail("firebaseEmail", "Firebase User Email", "", 40);
+WiFiManagerParameter customFirebasePassword("firebasePassword", "Firebase User Password", "", 40);
+WiFiManagerParameter customPlantName("firebasePlantName", "User Plant Name", "", 40);
+
+
+void accessWiFiUsingManager(WiFiManager& wifiManager)
+{
+  // clear the Wi-Fi credentials from the flash memory to disable auto-connect
+  wifiManager.resetSettings();
+
+  // Add custom parameters to the configuration page
+  wifiManager.addParameter(&customFirebaseEmail);
+  wifiManager.addParameter(&customFirebasePassword);
+  wifiManager.addParameter(&customPlantName);
+
+  // set custom ip for portal
+  wifiManager.setAPStaticIPConfig(IPAddress(10,0,1,1), IPAddress(10,0,1,1), IPAddress(255,255,255,0)); // new func name instead of setAPConfig
+  // Disable auto-connect to previously logged Wi-Fi network
+  WiFi.persistent(false);
+  // 4 minutes until timeout
+  wifiManager.setTimeout(240);
+  // Attempt to connect to Wi-Fi
+  wifiManager.autoConnect("GreenGuardian"); // blocking until connected
+  // Inform user for a successful connection
+  Serial.println("Connected.");
 }
 
 void setup()
 {
   Serial.begin(9600);
+  WiFiManager wifiManager;
 
-  // initialize Led
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
-
-  initializeWiFiConnection();
+  accessWiFiUsingManager(wifiManager);
 
   // Retrieve and print the MAC address
   macAddress = WiFi.macAddress();
   macAddress.replace(":", "");
-  Serial.print("MAC Address: ");
-  Serial.println(macAddress);
+  Serial.println("MAC Address: " + macAddress);
 
   config.api_key = webAPIKey;
-  config.database_url = databaseUrl;
-  auth.user.email = userEmail;
-  auth.user.password = userPassword;
+  config.database_url = databaseUrl; 
+  // signup using anomymus user
+  /*if (Firebase.signUp(&config, &auth, "", ""))
+  {
+    Serial.println("Singup ok");
+    signupOK = true;
+  }
+  else
+  {
+    Serial.println(config.signer.signupError.message.c_str());
+  }*/
+  plantName = customPlantName.getValue();
+  auth.user.email = customFirebaseEmail.getValue();
+  auth.user.password = customFirebasePassword.getValue();
+  config.token_status_callback = tokenStatusCallback;
   Firebase.begin(&config, &auth);
-}
+  Firebase.reconnectWiFi(true);
 
-unsigned long previousMillis = 0;
-const unsigned long interval = 5000; // 5 second interval
+  // Getting the user UID might take a few seconds
+  Serial.println("Getting User UID");
+  while ((auth.token.uid) == "")
+  {
+    Serial.print('.');
+    delay(1000);
+  }
+  uid = auth.token.uid.c_str();
+
+  url_currentData = "/Users/" + uid + "/plants/" + String(customPlantName.getValue()) + "/currentHumidity";
+  url_statistics = "/Users/" + uid + "/plants/" + customPlantName.getValue() + "/statsHumidity";
+
+  Serial.println("Begin firebase: User name: " + String(customFirebaseEmail.getValue()) + " Password: " + String(customFirebasePassword.getValue()) + " Uid: " + uid);
+}
 
 void loop()
 {
-  int soilMoisture = analogRead(soilMoisturePin); // Read the analog input value from the sensor
-  
-  // Create a time delay using millis()
-  unsigned long currentMillis = millis();
+  if (Firebase.ready() && signupOK && (millis() -  previousMillis > 5000 || previousMillis == 0)) // create delay without using delay()
+  {
+    previousMillis = millis();
+    soilMoisture = analogRead(soilMoisturePin); // Read the analog input value from the sensor
 
-  if (currentMillis - previousMillis >= interval) { // create delay without using delay()
-      previousMillis = currentMillis;
-      
-    if (Firebase.ready())
-    {
-      FirebaseJson json;
-      json.set("humidity", soilMoisture);
+    //FirebaseJson json;
+    //json.set("humidity", soilMoisture);
 
-      // Set the data in Firebase under the MAC address node
-      String path = "/RealTimeData/" + macAddress;
-      Serial.println(Firebase.RTDB.setJSON(&fbdo, path.c_str(), &json) ? "Json sent successfully" : fbdo.errorReason().c_str());
-    }
-    else
-    {
-      Serial.println("firebase is not ready!");
-    }
+    // replace the current value for real-time value
+    Serial.println(url_currentData.c_str());
+    Serial.println(Firebase.RTDB.setInt(&fbdo, url_currentData.c_str(), soilMoisture) ? "setInt successfully" : fbdo.errorReason().c_str());
+
+    // add values to create statistics
+    Serial.println(Firebase.RTDB.pushInt(&fbdo, url_statistics.c_str(), soilMoisture) ? "pushInt successfully" : fbdo.errorReason().c_str());
+    Serial.println(url_statistics.c_str());
   }
 }
