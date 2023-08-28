@@ -161,4 +161,11 @@ public class PlantListActivity extends AppCompatActivity {
             plantAdapter.stopListening();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        redirectActivity(PlantListActivity.this, UserPlantListActivity.class);
+
+    }
 }
