@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -73,6 +74,7 @@ public class PlantListActivity extends AppCompatActivity {
                 redirectActivity(PlantListActivity.this, MainChatActivity.class);
             }
         });
+
         myProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,7 +99,6 @@ public class PlantListActivity extends AppCompatActivity {
             }
         });
 
-
         recyclerView = findViewById(R.id.recycler_view_plant_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -114,6 +115,7 @@ public class PlantListActivity extends AppCompatActivity {
 
         // Create a new PlantAdapter with the options
         plantAdapter = new PlantAdapter(options);
+
 
         // Set the PlantAdapter to the RecyclerView
         recyclerView.setAdapter(plantAdapter);
@@ -135,6 +137,7 @@ public class PlantListActivity extends AppCompatActivity {
         activity.startActivity(intent);
         activity.finish();
     }
+
 
     @Override
     protected void onPause() {

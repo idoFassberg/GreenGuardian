@@ -1,6 +1,7 @@
 package com.mta.greenguardianapplication.adapter;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.mta.greenguardianapplication.PlantListActivity;
 import com.mta.greenguardianapplication.R;
 import com.mta.greenguardianapplication.model.Plant;
 import com.mta.greenguardianapplication.AddUserPlantForm;
+import android.net.Uri;
 
 public class PlantAdapter extends FirebaseRecyclerAdapter<Plant, PlantAdapter.PlantHolder> {
+
 
     public PlantAdapter(@NonNull FirebaseRecyclerOptions<Plant> options) {
         super(options);
@@ -41,7 +45,7 @@ public class PlantAdapter extends FirebaseRecyclerAdapter<Plant, PlantAdapter.Pl
 
     class PlantHolder extends RecyclerView.ViewHolder {
         ImageView pictureView;
-        TextView typeView, humidityView;
+        TextView typeView, humidityView, getInfo;
         ImageButton addButton;
 
         PlantHolder(View itemView) {
@@ -50,6 +54,7 @@ public class PlantAdapter extends FirebaseRecyclerAdapter<Plant, PlantAdapter.Pl
             typeView = itemView.findViewById(R.id.plant_type);
             humidityView = itemView.findViewById(R.id.optimal_humidity);
             addButton = itemView.findViewById(R.id.add_button);
+            getInfo = itemView.findViewById(R.id.get_info_about_plant);
         }
 
         void bind(Plant plant) {
@@ -59,6 +64,21 @@ public class PlantAdapter extends FirebaseRecyclerAdapter<Plant, PlantAdapter.Pl
                     .load(plant.getPictureUrl())
                     .apply(new RequestOptions().circleCrop())
                     .into(pictureView);
+
+            getInfo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Retrieve the link you want to open from the plant object
+                    String plantLink = plant.getInfoLink();
+                    Log.d("PlantAdapter", "plantLink: " + plantLink); // Use a tag for the log message
+
+                    if (plantLink != null && !plantLink.isEmpty()) {
+                        // Create an Intent to open the link in a web browser
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(plantLink));
+                        v.getContext().startActivity(intent);
+                    }
+                }
+            });
 
             addButton.setOnClickListener(new View.OnClickListener() {
                 @Override
