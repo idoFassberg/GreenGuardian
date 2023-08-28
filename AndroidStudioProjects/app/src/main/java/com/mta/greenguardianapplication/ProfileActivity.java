@@ -625,4 +625,11 @@ public class ProfileActivity extends AppCompatActivity {
         redirectActivity(ProfileActivity.this, UserPlantListActivity.class);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        redirectActivity(ProfileActivity.this, UserPlantListActivity.class);
+
+    }
+
 }

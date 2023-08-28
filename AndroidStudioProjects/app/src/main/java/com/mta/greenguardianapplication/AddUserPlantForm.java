@@ -199,7 +199,7 @@ public class AddUserPlantForm extends AppCompatActivity {
         TextInputEditText inputEditNickName = findViewById(R.id.form_textFieldNickName);
         //ImageView imageView = findViewById(R.id.plant_image);
         MaterialButton buttonSaveUserPlant = findViewById(R.id.form_buttonSaveUserPlant);
-        if(pictureUrl != "") {
+        if(!Objects.equals(pictureUrl, "")) {
             Glide.with(plantPicture.getContext())
                     .load(pictureUrl)
                     .apply(new RequestOptions().circleCrop())
@@ -395,6 +395,7 @@ public class AddUserPlantForm extends AppCompatActivity {
             } else {
                 // Storage permission is denied, show a message or perform some action
                 Toast.makeText(AddUserPlantForm.this, "Storage permission denied", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
             }
         } else if (requestCode == CAMERA_REQUEST_CODE) {
             pickFromCamera();
@@ -428,7 +429,7 @@ public class AddUserPlantForm extends AppCompatActivity {
             plantId = mDatabase.push().getKey();
         }
         else {
-            editExistsPlant(oldNickName, nickName, type, optimalHumidity);
+            editExistsPlant(oldNickName, nickName, type, optimalHumidity,pictureUrl);
             return;
         }
         UserPlant userPlant = new UserPlant(plantId, nickName, optimalHumidity, pictureUrl == null ? "" : pictureUrl, type, "123", -1);
@@ -457,12 +458,11 @@ public class AddUserPlantForm extends AppCompatActivity {
         Toast.makeText(AddUserPlantForm.this, "Save successful", Toast.LENGTH_SHORT).show();
     }
 
-    private void editExistsPlant(String oldNickName, String nickName, String type, int optimalHumidity) {
+    private void editExistsPlant(String oldNickName, String nickName, String type, int optimalHumidity, String pictureUrl) {
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         String userId = mAuth.getCurrentUser().getUid();
         DatabaseReference userPlantsRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("plants");
-        DatabaseReference userPlantsRef2 = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("plants");
         // Read the data from the existing node
         userPlantsRef.child(oldNickName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -477,13 +477,14 @@ public class AddUserPlantForm extends AppCompatActivity {
                         userPlantsRef.child(nickName).child("nickName").setValue(nickName);
                         userPlantsRef.child(nickName).child("optimalHumidity").setValue(optimalHumidity);
                         userPlantsRef.child(nickName).child("plantType").setValue(type);
-
+                        userPlantsRef.child(nickName).child("pictureUrl").setValue(pictureUrl);
                         // Remove the old node
                         userPlantsRef.child(oldNickName).removeValue();
                     } else {
                         // If nickName is not changed, update the specific fields
                         userPlantsRef.child(nickName).child("optimalHumidity").setValue(optimalHumidity);
                         userPlantsRef.child(nickName).child("plantType").setValue(type);
+                        userPlantsRef.child(nickName).child("pictureUrl").setValue(pictureUrl);
                     }
                 }
             }
@@ -516,5 +517,11 @@ public class AddUserPlantForm extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activity.startActivity(intent);
         activity.finish();
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        redirectActivity(AddUserPlantForm.this, UserPlantListActivity.class);
+
     }
 }
