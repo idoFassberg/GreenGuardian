@@ -29,6 +29,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
@@ -202,6 +203,7 @@ public class AddUserPlantForm extends AppCompatActivity {
         if(!Objects.equals(pictureUrl, "")) {
             Glide.with(plantPicture.getContext())
                     .load(pictureUrl)
+                    .signature(new ObjectKey(System.currentTimeMillis())) // Use a unique identifier as the signature
                     .apply(new RequestOptions().circleCrop())
                     .into(plantPicture);
         }
@@ -209,7 +211,7 @@ public class AddUserPlantForm extends AppCompatActivity {
         {
             Glide.with(plantPicture.getContext())
                     .load(R.drawable.ic_launcher_background)
-                    .apply(new RequestOptions().circleCrop())
+                    .signature(new ObjectKey(System.currentTimeMillis())) // Use a unique identifier as the signature
                     .into(plantPicture);
         }
         plantPicture.setTag(pictureUrl);
@@ -221,8 +223,6 @@ public class AddUserPlantForm extends AppCompatActivity {
             String type = String.valueOf(inputEditPlantType.getText());
             String nickNameStr = String.valueOf(inputEditNickName.getText());
             String optimalHumidityStr = String.valueOf(inputEditOptimalHumidity.getText());
-            if(!Objects.equals(pictureUrl, ""))
-                imageUrl = pictureUrl;
             addNewUserPlant(oldNickName ,type, nickNameStr,Integer.parseInt(optimalHumidityStr), imageUrl);
 
             Intent intent = new Intent(AddUserPlantForm.this, UserPlantListActivity.class);
@@ -230,7 +230,7 @@ public class AddUserPlantForm extends AppCompatActivity {
         });
     }
     private void uploadPlantPicture(Uri image_uri) {
-        String filePathAndName = storagePath + user.getUid();
+        String filePathAndName = storagePath + user.getUid() + "/" +  System.currentTimeMillis();
         StorageReference storageReference1 = storageReference.child(filePathAndName);
 
         // Add an OnSuccessListener to handle the success case
@@ -242,7 +242,6 @@ public class AddUserPlantForm extends AppCompatActivity {
                         String downloadUrl = uri.toString();
                         // For example, you can save the download URL to the user's profile in the database
                         imageUrl = downloadUrl;
-
                         // Dismiss the progress dialog once the update process is complete
                         progressDialog.dismiss();
                     });
@@ -255,27 +254,7 @@ public class AddUserPlantForm extends AppCompatActivity {
                     progressDialog.dismiss();
                 });
     }
-    private void saveImageUrlToDatabase(String downloadUrl) {
-        // Get the current user's ID
-        String userId = user.getUid();
 
-        // Get a reference to the "Users" node in the database
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-
-        // Get a reference to the specific user's profile in the database
-        DatabaseReference userRef = usersRef.child(userId);
-
-        // Update the "profilePictureUrl" field in the user's profile with the download URL
-        userRef.child("image").setValue(downloadUrl)
-                .addOnSuccessListener(aVoid -> {
-                    // Profile picture URL is successfully saved in the database
-                    Toast.makeText(AddUserPlantForm.this, "Profile picture updated successfully", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    // There was an error saving the profile picture URL
-                    Toast.makeText(AddUserPlantForm.this, "Failed to update profile picture", Toast.LENGTH_SHORT).show();
-                });
-    }
     private void handleImageCapture(int requestCode, Uri imageUri) {
         // Use the captured image URI (imageUri) to perform the desired operations
         // For example, you can display the image in an ImageView
@@ -311,8 +290,11 @@ public class AddUserPlantForm extends AppCompatActivity {
                 } else if (which == 1) { // Gallery
                     if (!checkStoragePermission()) {
                         requestStoragePermission();
+                        progressDialog.dismiss();
                     } else {
                         pickFromGallery();
+                        progressDialog.dismiss();
+
                     }
                 }
             }
@@ -463,6 +445,7 @@ public class AddUserPlantForm extends AppCompatActivity {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         String userId = mAuth.getCurrentUser().getUid();
         DatabaseReference userPlantsRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("plants");
+
         // Read the data from the existing node
         userPlantsRef.child(oldNickName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

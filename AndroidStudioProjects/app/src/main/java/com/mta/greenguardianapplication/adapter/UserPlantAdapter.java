@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -82,15 +83,18 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
             currentHumidity.setText(String.valueOf(userPlant.getCurrentHumidity()));
             String pictureUrl = userPlant.getPictureUrl();
             calcProgress(userPlant.getCurrentHumidity(), userPlant.getOptimalHumidity());
+
             if (!TextUtils.isEmpty(pictureUrl)) {
                 Glide.with(imageView.getContext())
                         .load(pictureUrl)
+                        .signature(new ObjectKey(System.currentTimeMillis())) // Use a unique identifier as the signature
                         .apply(new RequestOptions().circleCrop())
                         .into(imageView);
             } else {
                 // Load the default image when pictureUrl is empty
                 Glide.with(imageView.getContext())
                         .load(R.drawable.ic_launcher_background)
+                        .signature(new ObjectKey(System.currentTimeMillis())) // Use a unique identifier as the signature
                         .apply(new RequestOptions().circleCrop())
                         .into(imageView);
             }
