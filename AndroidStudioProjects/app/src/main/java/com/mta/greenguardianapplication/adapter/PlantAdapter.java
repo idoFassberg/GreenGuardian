@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.mta.greenguardianapplication.PlantListActivity;
@@ -62,6 +63,7 @@ public class PlantAdapter extends FirebaseRecyclerAdapter<Plant, PlantAdapter.Pl
             humidityView.setText(String.valueOf(plant.getRecommendedHumidity()));
             Glide.with(pictureView.getContext())
                     .load(plant.getPictureUrl())
+                    .signature(new ObjectKey(System.currentTimeMillis())) // Use a unique identifier as the signature
                     .apply(new RequestOptions().circleCrop())
                     .into(pictureView);
 
