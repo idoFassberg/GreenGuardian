@@ -5,15 +5,16 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
 public class StatsDialog extends DialogFragment {
 
@@ -103,6 +104,11 @@ public class StatsDialog extends DialogFragment {
     }
 
     private void showDatePickerDialog(final Button targetButton) {
+        // Set the initial year, month, and day
+        int initialYear = 2023; // Change this to the year you want
+        int initialMonth = 8;   // 0-based index for January, adjust as needed
+        int initialDay = 1;     // Day of the month (1-based)
+
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 requireContext(),
                 new DatePickerDialog.OnDateSetListener() {
@@ -114,11 +120,12 @@ public class StatsDialog extends DialogFragment {
                         updateButtonDate(targetButton);
                     }
                 },
-                selectedYear, selectedMonth, selectedDay
+                initialYear, initialMonth, initialDay // Set the initial date here
         );
 
         datePickerDialog.show();
     }
+
 
     private void updateButtonDate(Button button) {
         String dateString = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
