@@ -1,32 +1,25 @@
 package com.mta.greenguardianapplication;
 
-import androidx.annotation.NonNull;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.mta.greenguardianapplication.LoginSignup.StartupScreen;
-/*import com.mta.greenguardianapplication.databinding.ActivityMainChatBinding;*/
 import com.mta.greenguardianapplication.utilities.Constants;
 import com.mta.greenguardianapplication.utilities.PreferenceManager;
 
@@ -51,12 +44,12 @@ public class MainChatActivity extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawerLayout);
         menu = findViewById(R.id.menu);
-        /*myPlants = findViewById(R.id.myPlants);
+        myPlants = findViewById(R.id.myPlants);
         chat = findViewById(R.id.chat);
         logout = findViewById(R.id.logoutNav);
         plantsLibrary = findViewById(R.id.plantsLibrary);
         addPlant = findViewById(R.id.add_plant);
-        myProfile = findViewById(R.id.my_profile);*/
+        myProfile = findViewById(R.id.my_profile);
 
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +72,7 @@ public class MainChatActivity extends AppCompatActivity {
 
 
 
-        /*chat.setOnClickListener(new View.OnClickListener() {
+        chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 recreate();
@@ -115,7 +108,7 @@ public class MainChatActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        });*/
+        });
 
 
     }
