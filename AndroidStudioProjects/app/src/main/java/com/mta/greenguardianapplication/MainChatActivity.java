@@ -6,16 +6,21 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -38,8 +43,6 @@ public class MainChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*binding = ActivityMainChatBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());*/
         setContentView(R.layout.activity_main_chat);
 
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -57,20 +60,6 @@ public class MainChatActivity extends AppCompatActivity {
                 openDrawer(drawerLayout);
             }
         });
-
-
-        preferenceManager = new PreferenceManager(getApplicationContext());
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid());
-        /*loadUserDetails(userRef);*/
-        /*getToken();*/
-
-
-        setListeners();
-
-
-
 
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +99,12 @@ public class MainChatActivity extends AppCompatActivity {
             }
         });
 
-
+        preferenceManager = new PreferenceManager(getApplicationContext());
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid());
+        loadUserDetails(userRef);
+        setListeners();
     }
 
     public static void openDrawer(DrawerLayout drawerLayout){
@@ -137,7 +131,7 @@ public class MainChatActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), UserActivity.class)));*/
     }
 
-    /*private void loadUserDetails(DatabaseReference userRef) {
+    private void loadUserDetails(DatabaseReference userRef) {
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -153,7 +147,7 @@ public class MainChatActivity extends AppCompatActivity {
             }
 
         });
-    }*/
+    }
 
     private void showToast(String message){
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
