@@ -9,10 +9,11 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.ValueEventListener;
+import com.mta.greenguardianapplication.R;
 import com.mta.greenguardianapplication.databinding.ItemContainerUserBinding;
 import com.mta.greenguardianapplication.listeners.UserListener;
 import com.mta.greenguardianapplication.model.User;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -58,7 +59,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         void setUserDate(User user){
             binding.textName.setText(user.name);
             binding.textEmail.setText(user.email);
-            /*binding.imageProfile.setImageBitmap(getUserImage(user.image));*/
+            String profileImageUrl = user.image;
+            if (profileImageUrl != null && !user.image.isEmpty()) {
+                // If there's no profile image, set a default profile picture
+                Picasso.get()
+                        .load(profileImageUrl)
+                        .placeholder(R.drawable.ic_account_profile2) // Placeholder image while loading
+                        .error(R.drawable.ic_account_profile2) // Error image if the URL is invalid or loading fails
+                        .into(binding.imageProfile);
+            }
+            else {
+                binding.imageProfile.setImageResource(R.drawable.ic_account_profile2);
+            }
             binding.getRoot().setOnClickListener(v->userListener.onUserClicked(user));
         }
     }

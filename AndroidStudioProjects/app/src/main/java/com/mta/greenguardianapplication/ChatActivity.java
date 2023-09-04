@@ -1,13 +1,13 @@
 package com.mta.greenguardianapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -17,14 +17,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.mta.greenguardianapplication.adapter.ChatAdapter;
 import com.mta.greenguardianapplication.databinding.ActivityChatBinding;
 import com.mta.greenguardianapplication.model.ChatMessage;
 import com.mta.greenguardianapplication.model.User;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -202,7 +199,20 @@ public class ChatActivity extends AppCompatActivity {
         Log.d(userId, "userID:");
         receiverUser.name = userName;
         receiverUser.id = userId;
+        receiverUser.image = getIntent().getStringExtra("image");
         binding.textName.setText(receiverUser.name);
+        String profileImageUrl = receiverUser.image;
+        if (profileImageUrl != null && !receiverUser.image.isEmpty()) {
+            // If there's no profile image, set a default profile picture
+            Picasso.get()
+                    .load(profileImageUrl)
+                    .placeholder(R.drawable.ic_account_profile2) // Placeholder image while loading
+                    .error(R.drawable.ic_account_profile2) // Error image if the URL is invalid or loading fails
+                    .into(binding.imageReceiver);
+        }
+        else {
+            binding.imageReceiver.setImageResource(R.drawable.ic_account_profile2);
+        }
     }
 
     private void setListeners(){
