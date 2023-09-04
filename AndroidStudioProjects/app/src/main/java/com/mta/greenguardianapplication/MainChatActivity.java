@@ -24,9 +24,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.mta.greenguardianapplication.LoginSignup.StartupScreen;
 import com.mta.greenguardianapplication.utilities.Constants;
 import com.mta.greenguardianapplication.utilities.PreferenceManager;
+import com.squareup.picasso.Picasso;
 
 
 public class MainChatActivity extends AppCompatActivity {
@@ -39,6 +41,8 @@ public class MainChatActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     ImageView menu;
     LinearLayout myPlants, chat, logout, plantsLibrary, addPlant, myProfile;
+    private RoundedImageView profilePicture;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,7 @@ public class MainChatActivity extends AppCompatActivity {
         plantsLibrary = findViewById(R.id.plantsLibrary);
         addPlant = findViewById(R.id.add_plant);
         myProfile = findViewById(R.id.my_profile);
+        profilePicture = findViewById(R.id.imageProfile);
 
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +84,12 @@ public class MainChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 redirectActivity(MainChatActivity.this,ProfileActivity.class);
+            }
+        });
+        plantsLibrary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                redirectActivity(MainChatActivity.this, PlantListActivity.class);
             }
         });
 
@@ -137,6 +148,19 @@ public class MainChatActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     String name = dataSnapshot.child("name").getValue(String.class);
+                    String profileImageUrl = dataSnapshot.child("image").getValue(String.class);
+                    if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
+                        // Load and display the profile picture using Picasso
+                        // Load and display the profile picture using Picasso
+                        Picasso.get()
+                                .load(profileImageUrl)
+                                .placeholder(R.drawable.ic_account_profile2) // Placeholder image while loading
+                                .error(R.drawable.ic_account_profile2) // Error image if the URL is invalid or loading fails
+                                .into(profilePicture);
+                    } else {
+                        // If the "image" value is empty or null, set a default profile picture
+                        profilePicture.setImageResource(R.drawable.ic_account_profile2);
+                    }
                     TextView textName = findViewById(R.id.textName);
                     textName.setText(name);
                 }
