@@ -2,6 +2,7 @@ package com.mta.greenguardianapplication.LoginSignup;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,20 +16,34 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
 import android.Manifest;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.mta.greenguardianapplication.R;
 
+import java.lang.ref.WeakReference;
+
 
 public class StartupScreen extends AppCompatActivity {
+
+    Button aboutUs;
+
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
@@ -47,11 +62,36 @@ public class StartupScreen extends AppCompatActivity {
         askNotificationPermission();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_startup_screen);
+
+        aboutUs = findViewById(R.id.aboutUs_btn);
+
+        aboutUs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                android.app.AlertDialog.Builder builder= new android.app.AlertDialog.Builder(StartupScreen.this);
+                View dialogView = getLayoutInflater().inflate(R.layout.dialog_about_us, null);
+
+                builder.setView(dialogView);
+                android.app.AlertDialog dialog = builder.create();
+
+                if (dialog.getWindow() != null){
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+                }
+                dialog.show();
+            }
+        });
     }
 
     public void callLoginScreen(View view) {
 
         Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void callStartupScreen(View view) {
+
+        Intent intent = new Intent(getApplicationContext(), StartupScreen.class);
         startActivity(intent);
         finish();
     }
