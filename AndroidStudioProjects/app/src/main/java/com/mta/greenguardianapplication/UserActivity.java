@@ -1,29 +1,25 @@
 package com.mta.greenguardianapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mta.greenguardianapplication.adapter.UserAdapter;
 import com.mta.greenguardianapplication.databinding.ActivityUserBinding;
-import com.google.firebase.database.DataSnapshot;
 import com.mta.greenguardianapplication.listeners.UserListener;
 import com.mta.greenguardianapplication.model.User;
-import com.google.firebase.database.DatabaseError;
-
-import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 
 
@@ -73,8 +69,8 @@ public class UserActivity extends AppCompatActivity implements UserListener {
                         String email = userSnapshot.child("email").getValue(String.class);
                         String name = userSnapshot.child("name").getValue(String.class);
                         String id = userSnapshot.child("uid").getValue(String.class);
-
-                        User user = new User(id, name, email);
+                        String profileImageUrl = userSnapshot.child("image").getValue(String.class);
+                        User user = new User(id, name, email,profileImageUrl);
                         users.add(user);
                     }
                 }
@@ -115,6 +111,7 @@ public class UserActivity extends AppCompatActivity implements UserListener {
         intent.putExtra("id", user.getId());
         intent.putExtra("name", user.getName());
         intent.putExtra("email", user.getEmail());
+        intent.putExtra("image", user.getImage());
         startActivity(intent);
         finish();
     }
