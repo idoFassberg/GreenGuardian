@@ -49,7 +49,7 @@
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@id/form_userPlant_imageView"
             android:text="Nickname"
-            android:textColor="@color/our_green"
+            android:textColor="@color/greenApp"
             android:textSize="25sp"
             android:textStyle="bold" />
 
@@ -60,7 +60,7 @@
             android:layout_below="@id/form_userPlant_textFieldNickName"
             android:layout_toEndOf="@id/form_userPlant_imageView"
             android:text="Plant Type"
-            android:textColor="@color/our_green"
+            android:textColor="@color/greenApp"
             android:textSize="25sp" />
 
         <TextView
@@ -70,7 +70,7 @@
             android:layout_below="@id/form_userPlant_textFieldPlantType"
             android:layout_toEndOf="@id/form_userPlant_imageView"
             android:text="Humidity Levels:"
-            android:textColor="@color/our_green"
+            android:textColor="@color/greenApp"
             android:textSize="20sp" />
 
         <LinearLayout
