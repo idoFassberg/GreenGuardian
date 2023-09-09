@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/beige">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HUMIDITY STATISTICS"
+            android:textSize="34sp"
+            android:fontFamily="@font/muli_black"
+            android:textColor="@color/black"
+            android:layout_marginTop="40dp"/>
+
+        <TextView
+            android:id="@+id/header_stats2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Please choose range:"
+            android:textSize="20sp"
+            android:fontFamily="@font/muli_black"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp"/>
+
+        <Button
+            android:id="@+id/btnFromDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Starting Date"
+            android:backgroundTint="@color/beige"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/header_stats2"/>
+
+        <Button
+            android:id="@+id/btnToDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ending Date"
+            android:backgroundTint="@color/beige"
+            android:layout_below="@id/btnFromDate"
+            android:layout_centerHorizontal="true"/>
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnToDate">
+
+            <RadioButton
+                android:id="@+id/radioStats"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:text="Show average humidity per day"
+                android:textColor="@color/black"/>
+
+            <RadioButton
+                android:id="@+id/radioHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="33dp"
+                android:text="Show full history"
+                android:textColor="@color/black"/>
+        </RadioGroup>
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    &lt;!&ndash;<TextView
+        android:id="@+id/header_stats1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Welcome to Humidity statistics form"
+        android:textSize="20dp"
+        android:textColor="@color/our_green"/>&ndash;&gt;
+
+    &lt;!&ndash;<TextView
+        android:id="@+id/header_stats2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Please choose range:"
+        android:textSize="20dp"
+        android:textColor="@color/our_green"
+        android:layout_below="@id/header_stats1"/>&ndash;&gt;
+
+    &lt;!&ndash;<Button
+        android:id="@+id/btnFromDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Starting Date"
+        android:backgroundTint="@color/beige"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/header_stats2"/>
+
+    <Button
+        android:id="@+id/btnToDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ending Date"
+        android:backgroundTint="@color/beige"
+        android:layout_below="@id/btnFromDate"
+        android:layout_centerHorizontal="true"/>&ndash;&gt;
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnToDate">
+
+        <RadioButton
+            android:id="@+id/radioStats"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:text="Show average humidity per day"
+            android:textColor="@color/our_green"/>
+
+        <RadioButton
+            android:id="@+id/radioHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="33dp"
+            android:text="Show full history"
+            android:textColor="@color/our_green"/>
+    </RadioGroup>
+
+</RelativeLayout>-->

@@ -42,8 +42,8 @@ public class StatsDialog extends DialogFragment {
 
         // Inflate the custom layout
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.layout_stats_dialog, null);
-        View viewTitle = inflater.inflate(R.layout.stats_dialog_title, null);
+        View view = inflater.inflate(R.layout.dialog_statistics, null);
+        /*View viewTitle = inflater.inflate(R.layout.stats_dialog_title, null);*/
 
         btnFromDate = view.findViewById(R.id.btnFromDate);
         btnToDate = view.findViewById(R.id.btnToDate);
@@ -64,7 +64,7 @@ public class StatsDialog extends DialogFragment {
             }
         });
 
-        builder.setCustomTitle(viewTitle);
+        /*builder.setCustomTitle(viewTitle);*/
         builder.setView(view)
                 .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
                     @Override
