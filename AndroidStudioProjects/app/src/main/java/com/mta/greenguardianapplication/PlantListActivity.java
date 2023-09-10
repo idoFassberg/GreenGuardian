@@ -1,11 +1,6 @@
 package com.mta.greenguardianapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,8 +8,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,6 +23,8 @@ import com.google.firebase.database.Query;
 import com.mta.greenguardianapplication.LoginSignup.StartupScreen;
 import com.mta.greenguardianapplication.adapter.PlantAdapter;
 import com.mta.greenguardianapplication.model.Plant;
+
+import java.util.Objects;
 
 public class PlantListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -154,11 +156,13 @@ public class PlantListActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onStop() {
         super.onStop();
         if (plantAdapter != null) {
             plantAdapter.stopListening();
+            Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
         }
     }
 
