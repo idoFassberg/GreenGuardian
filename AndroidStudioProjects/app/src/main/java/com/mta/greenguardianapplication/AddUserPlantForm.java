@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -156,13 +157,13 @@ public class AddUserPlantForm extends AppCompatActivity {
                 finish();
             }
         });
+
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.TakePicture(), result -> {
             if (result) {
                 // Image capture successful, handle the image URI here
                 uploadPlantPicture(image_uri);
             } else {
                 // Image capture canceled or failed, handle accordingly
-                // For example, show a Toast or perform some action
             }
         });
 
@@ -178,12 +179,10 @@ public class AddUserPlantForm extends AppCompatActivity {
                             Toast.makeText(AddUserPlantForm.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                             progressDialog.dismiss();
                             // Image selection canceled or failed, handle accordingly
-                            // For example, show a Toast or perform some action
                         }
                     }
                 }
         );
-
 
         // Assign default values if the extras are null
         plantType = plantType != null ? plantType : "";
@@ -198,22 +197,21 @@ public class AddUserPlantForm extends AppCompatActivity {
         TextInputEditText inputEditPlantType = findViewById(R.id.form_textFieldPlantType);
         TextInputEditText inputEditOptimalHumidity = findViewById(R.id.form_textFieldOptimalHumidity);
         TextInputEditText inputEditNickName = findViewById(R.id.form_textFieldNickName);
-        //ImageView imageView = findViewById(R.id.plant_image);
         MaterialButton buttonSaveUserPlant = findViewById(R.id.form_buttonSaveUserPlant);
-        if(!Objects.equals(pictureUrl, "")) {
+
+        if (!Objects.equals(pictureUrl, "")) {
             Glide.with(plantPicture.getContext())
                     .load(pictureUrl)
                     .signature(new ObjectKey(System.currentTimeMillis())) // Use a unique identifier as the signature
                     .apply(new RequestOptions().circleCrop())
                     .into(plantPicture);
-        }
-        else
-        {
+        } else {
             Glide.with(plantPicture.getContext())
                     .load(R.drawable.ic_launcher_background)
                     .signature(new ObjectKey(System.currentTimeMillis())) // Use a unique identifier as the signature
                     .into(plantPicture);
         }
+
         plantPicture.setTag(pictureUrl);
         inputEditPlantType.setText(plantType);
         inputEditOptimalHumidity.setText(optimalHumidity);
@@ -223,52 +221,58 @@ public class AddUserPlantForm extends AppCompatActivity {
             String type = String.valueOf(inputEditPlantType.getText());
             String nickNameStr = String.valueOf(inputEditNickName.getText());
             String optimalHumidityStr = String.valueOf(inputEditOptimalHumidity.getText());
-            addNewUserPlant(oldNickName ,type, nickNameStr,Integer.parseInt(optimalHumidityStr), imageUrl);
 
+            if (TextUtils.isEmpty(type)) {
+                inputEditPlantType.setError("Plant type is required.");
+                return;
+            }
+
+            if (TextUtils.isEmpty(optimalHumidityStr)) {
+                inputEditOptimalHumidity.setError("Optimal humidity is required.");
+                return;
+            }
+
+            if (TextUtils.isEmpty(nickNameStr)) {
+                inputEditNickName.setError("Nickname is required.");
+                return;
+            }
+
+            addNewUserPlant(oldNickName, type, nickNameStr, Integer.parseInt(optimalHumidityStr), imageUrl);
             Intent intent = new Intent(AddUserPlantForm.this, UserPlantListActivity.class);
             startActivity(intent);
         });
     }
+
     private void uploadPlantPicture(Uri image_uri) {
         String filePathAndName = storagePath + user.getUid() + "/" +  System.currentTimeMillis();
         StorageReference storageReference1 = storageReference.child(filePathAndName);
 
-        // Add an OnSuccessListener to handle the success case
         storageReference1.putFile(image_uri)
                 .addOnSuccessListener(taskSnapshot -> {
                     // The image upload is successful, you can get the download URL here if needed
                     storageReference1.getDownloadUrl().addOnSuccessListener(uri -> {
                         // uri contains the download URL of the uploaded image, you can save it to the database or use it as needed
                         String downloadUrl = uri.toString();
-                        // For example, you can save the download URL to the user's profile in the database
                         imageUrl = downloadUrl;
                         // Dismiss the progress dialog once the update process is complete
                         progressDialog.dismiss();
                     });
                 })
                 .addOnFailureListener(exception -> {
-                    // The image upload failed, handle the failure case here
-                    // For example, show a Toast or perform some action
-
                     // Dismiss the progress dialog in the failure case as well
                     progressDialog.dismiss();
                 });
     }
 
     private void handleImageCapture(int requestCode, Uri imageUri) {
-        // Use the captured image URI (imageUri) to perform the desired operations
-        // For example, you can display the image in an ImageView
         plantPicture.setImageURI(imageUri);
         progressDialog.dismiss();
-        // Or you can upload the image to Firebase Storage or any other storage service
-        // For example:
-        // uploadImageToFirebase(imageUri);
         imageUrl = imageUri.toString();
-        // Add this line to call uploadProfilePicture with the correct requestCode
         if (requestCode == IMAGE_PICK_GALLERY_CODE) {
             uploadPlantPicture(imageUri);
         }
     }
+
     private void showEditImageDialog() {
         String[] options = {"Camera", "Gallery"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -285,7 +289,6 @@ public class AddUserPlantForm extends AppCompatActivity {
                         Log.d("permission ","the user have camera permission! try open camera");
                         pickFromCamera();
                         progressDialog.dismiss();
-
                     }
                 } else if (which == 1) { // Gallery
                     if (!checkStoragePermission()) {
@@ -294,13 +297,13 @@ public class AddUserPlantForm extends AppCompatActivity {
                     } else {
                         pickFromGallery();
                         progressDialog.dismiss();
-
                     }
                 }
             }
         });
         builder.show();
     }
+
     private void showCustomProgressDialog(String message) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.progress_dialog_layout, null);
@@ -314,6 +317,7 @@ public class AddUserPlantForm extends AppCompatActivity {
         // Store the progressDialog instance as a member variable to use it later
         this.progressDialog = progressDialog;
     }
+
     private boolean checkStoragePermission() {
         // Check if the device is running Android 6.0 (Marshmallow) or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -328,7 +332,6 @@ public class AddUserPlantForm extends AppCompatActivity {
                 return false;
             }
         } else {
-            // If the device is running below Android 6.0, permission is granted by default
             return true;
         }
     }
@@ -339,6 +342,7 @@ public class AddUserPlantForm extends AppCompatActivity {
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                 STORAGE_PERMISSION_REQUEST_CODE);
     }
+
     private boolean checkCameraPermission() {
         // Check if the device is running Android 6.0 (Marshmallow) or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -355,10 +359,10 @@ public class AddUserPlantForm extends AppCompatActivity {
                 return false;
             }
         } else {
-            // If the device is running below Android 6.0, permission is granted by default
             return true;
         }
     }
+
     // Request the camera permission
     private void requestCameraPermission() {
         ActivityCompat.requestPermissions(this,
@@ -383,7 +387,6 @@ public class AddUserPlantForm extends AppCompatActivity {
             pickFromCamera();
         }
     }
-
 
     private void pickFromGallery() {
         // Create a new ActivityResultLauncher for picking an image from the gallery
@@ -414,6 +417,7 @@ public class AddUserPlantForm extends AppCompatActivity {
             editExistsPlant(oldNickName, nickName, type, optimalHumidity,pictureUrl);
             return;
         }
+
         UserPlant userPlant = new UserPlant(plantId, nickName, optimalHumidity, pictureUrl == null ? "" : pictureUrl, type, "123", -1);
         mDatabase.child(nickName).setValue(userPlant); // Save the plant with the generated ID
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -421,12 +425,10 @@ public class AddUserPlantForm extends AppCompatActivity {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         String userId = mAuth.getCurrentUser().getUid();
 
-// Set the plant data at the generated key under the user's "plants" node
         usersRef.child(userId).child("plants").child(nickName).setValue(userPlant)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-
                         // Plant added successfully
                     }
                 })
@@ -441,7 +443,6 @@ public class AddUserPlantForm extends AppCompatActivity {
     }
 
     private void editExistsPlant(String oldNickName, String nickName, String type, int optimalHumidity, String pictureUrl) {
-
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         String userId = mAuth.getCurrentUser().getUid();
         DatabaseReference userPlantsRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("plants");
@@ -477,12 +478,6 @@ public class AddUserPlantForm extends AppCompatActivity {
                 // Handle error if necessary
             }
         });
-       /* userPlantsRef.child(oldNickName).child("nickName").setValue(nickName);
-        userPlantsRef.child(oldNickName).child("optimalHumidity").setValue(optimalHumidity);
-        userPlantsRef.child(oldNickName).child("plantType").setValue(type);*/
-
-        //userPlantsRef.child(oldNickName).setValue(nickName);
-
     }
 
     public  static void openDrawer(DrawerLayout drawerLayout){
@@ -501,10 +496,10 @@ public class AddUserPlantForm extends AppCompatActivity {
         activity.startActivity(intent);
         activity.finish();
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         redirectActivity(AddUserPlantForm.this, UserPlantListActivity.class);
-
     }
 }
