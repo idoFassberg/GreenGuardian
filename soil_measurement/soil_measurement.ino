@@ -16,8 +16,8 @@ FirebaseConfig config;
 String macAddress;
 
 unsigned long previousMillis = 0;
-//const unsigned long interval = 30000; // 3 second(s) interval
-int soilMoisture;
+const unsigned long interval = 5000; // 0.5 second(s) interval
+int soilMoisture, drySoil, wetSoil;
 bool signupOK = true;
 String plantName, uid, url_currentData, url_statistics;
 
@@ -25,6 +25,17 @@ WiFiManagerParameter customFirebaseEmail("firebaseEmail", "Firebase User Email",
 WiFiManagerParameter customFirebasePassword("firebasePassword", "Firebase User Password", "", 40);
 WiFiManagerParameter customPlantName("firebasePlantName", "User Plant Name", "", 40);
 
+int convertRawDataToPrecentages(int rawValue)
+{
+  const int range = drySoil - wetSoil;
+
+  if (rawValue < drySoil)
+    return drySoil;
+  else if (rawValue > wetSoil)
+    return wetSoil;
+  else
+    return (((rawValue - drySoil) / range) * 100);
+}
 
 void accessWiFiUsingManager(WiFiManager& wifiManager)
 {
@@ -62,16 +73,7 @@ void setup()
 
   config.api_key = webAPIKey;
   config.database_url = databaseUrl; 
-  // signup using anomymus user
-  /*if (Firebase.signUp(&config, &auth, "", ""))
-  {
-    Serial.println("Singup ok");
-    signupOK = true;
-  }
-  else
-  {
-    Serial.println(config.signer.signupError.message.c_str());
-  }*/
+
   plantName = customPlantName.getValue();
   auth.user.email = customFirebaseEmail.getValue();
   auth.user.password = customFirebasePassword.getValue();
@@ -92,18 +94,25 @@ void setup()
   url_statistics = "/Users/" + uid + "/plants/" + customPlantName.getValue() + "/statsHumidity";
 
   Serial.println("Begin firebase: User name: " + String(customFirebaseEmail.getValue()) + " Password: " + String(customFirebasePassword.getValue()) + " Uid: " + uid);
+
+  // Get Configuration data from server 
+  String drySoilUrl = "Configuration/drySoil";
+  String wetSoilUrl = "Configuration/wetSoil";
+  Serial.println(Firebase.RTDB.getInt(&fbdo, drySoilUrl.c_str(), &drySoil) ? "getInt (drySoilUrl) successfully" : fbdo.errorReason().c_str());
+  Serial.println(Firebase.RTDB.getInt(&fbdo, wetSoilUrl.c_str(), &wetSoil) ? "getInt (wetSoilUrl) successfully" : fbdo.errorReason().c_str());
 }
 
 void loop()
 {
-  if (Firebase.ready() && signupOK && (millis() -  previousMillis > 5000 || previousMillis == 0)) // create delay without using delay()
+  if (Firebase.ready() && signupOK && (millis() -  previousMillis > interval || previousMillis == 0)) // create delay without using delay()
   {
     previousMillis = millis();
-    soilMoisture = analogRead(soilMoisturePin); // Read the analog input value from the sensor
+    // Read the analog input value from the sensor and convert to precentages
+    soilMoisture = convertRawDataToPrecentages(analogRead(soilMoisturePin));
 
     //FirebaseJson json;
     //json.set("humidity", soilMoisture);
-
+    Serial.println(soilMoisture);
     // replace the current value for real-time value
     Serial.println(url_currentData.c_str());
     Serial.println(Firebase.RTDB.setInt(&fbdo, url_currentData.c_str(), soilMoisture) ? "setInt successfully" : fbdo.errorReason().c_str());
