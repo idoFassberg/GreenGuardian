@@ -205,6 +205,7 @@ public class AddUserPlantForm extends AppCompatActivity {
                     .signature(new ObjectKey(System.currentTimeMillis())) // Use a unique identifier as the signature
                     .apply(new RequestOptions().circleCrop())
                     .into(plantPicture);
+            imageUrl = pictureUrl;
         } else {
             Glide.with(plantPicture.getContext())
                     .load(R.drawable.ic_launcher_background)
