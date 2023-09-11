@@ -167,7 +167,7 @@ public class GraphActivity extends AppCompatActivity {
                             for (DataSnapshot timestampSnapshot : statsSnapshot.getChildren()) {
                                 // Cast the data to the appropriate type (Long in this case)c
                                 String date = timestampSnapshot.getKey();
-                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                                 LocalDate inputDate = LocalDate.parse(date, formatter);
                                 if (!inputDate.isBefore(fromDate) && !inputDate.isAfter(toDate)) {
                                     Long humidityValue = timestampSnapshot.getValue(Long.class);
@@ -191,7 +191,7 @@ public class GraphActivity extends AppCompatActivity {
                                 // Cast the data to the appropriate type (Long in this case)
                                 Long humidityValue = timestampSnapshot.getValue(Long.class);
                                 String date = timestampSnapshot.getKey();
-                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                                 LocalDate inputDate = LocalDate.parse(date, formatter);
 
                                 // Get the current dat
