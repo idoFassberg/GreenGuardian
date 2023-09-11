@@ -32,6 +32,17 @@
 
             <include layout="@layout/toolbar" />
 
+            <!-- Add a TextView for the title "Add Plant" -->
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/muli_black"
+                android:text="ADD PLANT"
+                android:textSize="20sp"
+                android:textColor="#000" />
+
             <ImageView
                 android:id="@+id/plant_image"
                 android:layout_width="match_parent"

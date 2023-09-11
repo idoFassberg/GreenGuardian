@@ -17,6 +17,17 @@ android:id="@+id/drawerLayout">
   <include
       layout="@layout/toolbar"/>
 
+  <!-- Add a TextView for the title "Plants Library" -->
+  <TextView
+      android:id="@+id/toolbar_title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:fontFamily="@font/muli_black"
+      android:text="PLANTS LIBRARY"
+      android:textSize="20sp"
+      android:textColor="#000" />
+
   <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/recycler_view_plant_list"
       android:layout_width="match_parent"
