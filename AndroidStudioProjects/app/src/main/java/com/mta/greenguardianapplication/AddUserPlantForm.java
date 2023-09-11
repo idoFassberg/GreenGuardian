@@ -163,6 +163,8 @@ public class AddUserPlantForm extends AppCompatActivity {
                 // Image capture successful, handle the image URI here
                 uploadPlantPicture(image_uri);
             } else {
+                Toast.makeText(AddUserPlantForm.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
                 // Image capture canceled or failed, handle accordingly
             }
         });
