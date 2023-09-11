@@ -170,7 +170,6 @@ public class GraphActivity extends AppCompatActivity {
                                 try {
                                     LocalDate inputDate = LocalDate.parse(date, formatter);
                                     if (!inputDate.isBefore(fromDate) && !inputDate.isAfter(toDate)) {
-                                        Log.d("try shay",timestampSnapshot.getKey() + timestampSnapshot.getValue());
                                         Long humidityValue = timestampSnapshot.getValue(Long.class);
                                         statsHumidityList.add(humidityValue);
                                     }
