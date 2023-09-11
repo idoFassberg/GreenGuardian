@@ -17,6 +17,17 @@
         <include
             layout="@layout/toolbar"/>
 
+        <!-- Add a TextView for the title "My Plants" -->
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/muli_bold"
+            android:text="MY PLANTS"
+            android:textSize="25sp"
+            android:textColor="#000" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/userPlantList_recyclerView"
             android:layout_width="match_parent"
@@ -29,9 +40,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-        
+
     </LinearLayout>
-    
+
     <RelativeLayout
         android:layout_width="300dp"
         android:layout_height="match_parent"
