@@ -83,13 +83,18 @@ public class UserPlantAdapter extends FirebaseRecyclerAdapter<UserPlant,UserPlan
             currentHumidity.setText(String.valueOf(userPlant.getCurrentHumidity()));
             String pictureUrl = userPlant.getPictureUrl();
             calcProgress(userPlant.getCurrentHumidity(), userPlant.getOptimalHumidity());
+            if (!TextUtils.isEmpty(userPlant.getPictureUrl())) {
+                // Load the new image
+                if(!userPlant.getPictureUrl().equals(imageView.getTag())) {
+                    Glide.with(imageView.getContext())
+                            .load(userPlant.getPictureUrl())
+                            .signature(new ObjectKey(System.currentTimeMillis())) // Use a unique identifier as the signature
+                            .apply(new RequestOptions().circleCrop())
+                            .into(imageView);
 
-            if (!TextUtils.isEmpty(pictureUrl)) {
-                Glide.with(imageView.getContext())
-                        .load(pictureUrl)
-                        .signature(new ObjectKey(System.currentTimeMillis())) // Use a unique identifier as the signature
-                        .apply(new RequestOptions().circleCrop())
-                        .into(imageView);
+                    // Store the new pictureUrl as a tag on the ImageView
+                    imageView.setTag(userPlant.getPictureUrl());
+                }
             } else {
                 // Load the default image when pictureUrl is empty
                 Glide.with(imageView.getContext())

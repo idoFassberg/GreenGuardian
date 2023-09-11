@@ -30,6 +30,7 @@ import com.mta.greenguardianapplication.LoginSignup.StartupScreen;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -139,8 +140,7 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
-    private void getDataFromFirebase(String nickName, String userId,int optimalHumidity) {
-
+    private void getDataFromFirebase(String nickName, String userId, int optimalHumidity) {
         DatabaseReference statsHumidityRef = FirebaseDatabase.getInstance()
                 .getReference("Users")
                 .child(FirebaseAuth.getInstance().getUid())
@@ -168,10 +168,14 @@ public class GraphActivity extends AppCompatActivity {
                                 // Cast the data to the appropriate type (Long in this case)c
                                 String date = timestampSnapshot.getKey();
                                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                                LocalDate inputDate = LocalDate.parse(date, formatter);
-                                if (!inputDate.isBefore(fromDate) && !inputDate.isAfter(toDate)) {
-                                    Long humidityValue = timestampSnapshot.getValue(Long.class);
-                                    statsHumidityList.add(humidityValue);
+                                try {
+                                    LocalDate inputDate = LocalDate.parse(date, formatter);
+                                    if (!inputDate.isBefore(fromDate) && !inputDate.isAfter(toDate)) {
+                                        Long humidityValue = timestampSnapshot.getValue(Long.class);
+                                        statsHumidityList.add(humidityValue);
+                                    }
+                                } catch (DateTimeParseException e) {
+                                    Log.e("getDataFromFirebase", "Error parsing date: " + date);
                                 }
                             }
                         }
@@ -192,18 +196,15 @@ public class GraphActivity extends AppCompatActivity {
                                 Long humidityValue = timestampSnapshot.getValue(Long.class);
                                 String date = timestampSnapshot.getKey();
                                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                                LocalDate inputDate = LocalDate.parse(date, formatter);
+                                try {
+                                    LocalDate inputDate = LocalDate.parse(date, formatter);
+                                    long daysDifference = ChronoUnit.DAYS.between(fromDate, inputDate);
 
-                                // Get the current dat
-                                //LocalDate currentDate = LocalDate.now();
-
-                                // Calculate the difference in days between the input date and the current date
-                                //long daysDifference = currentDate.toEpochDay() - inputDate.toEpochDay();
-                                long daysDifference = ChronoUnit.DAYS.between(fromDate, inputDate);
-
-
-                                if (daysDifference >= 0 && daysDifference <= daysInRange) {
-                                    humidityValuesByDay.get((int) daysDifference).add(humidityValue);
+                                    if (daysDifference >= 0 && daysDifference <= daysInRange) {
+                                        humidityValuesByDay.get((int) daysDifference).add(humidityValue);
+                                    }
+                                } catch (DateTimeParseException e) {
+                                    Log.e("getDataFromFirebase", "Error parsing date: " + date);
                                 }
                             }
                         }
