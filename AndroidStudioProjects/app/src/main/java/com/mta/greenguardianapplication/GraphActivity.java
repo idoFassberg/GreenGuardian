@@ -30,7 +30,6 @@ import com.mta.greenguardianapplication.LoginSignup.StartupScreen;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -171,10 +170,11 @@ public class GraphActivity extends AppCompatActivity {
                                 try {
                                     LocalDate inputDate = LocalDate.parse(date, formatter);
                                     if (!inputDate.isBefore(fromDate) && !inputDate.isAfter(toDate)) {
+                                        Log.d("try shay",timestampSnapshot.getKey() + timestampSnapshot.getValue());
                                         Long humidityValue = timestampSnapshot.getValue(Long.class);
                                         statsHumidityList.add(humidityValue);
                                     }
-                                } catch (DateTimeParseException e) {
+                                } catch (Exception e) {
                                     Log.e("getDataFromFirebase", "Error parsing date: " + date);
                                 }
                             }
@@ -203,7 +203,7 @@ public class GraphActivity extends AppCompatActivity {
                                     if (daysDifference >= 0 && daysDifference <= daysInRange) {
                                         humidityValuesByDay.get((int) daysDifference).add(humidityValue);
                                     }
-                                } catch (DateTimeParseException e) {
+                                } catch (Exception e) {
                                     Log.e("getDataFromFirebase", "Error parsing date: " + date);
                                 }
                             }
