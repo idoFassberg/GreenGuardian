@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,6 +49,8 @@ import com.google.firebase.storage.StorageReference;
 import com.mta.greenguardianapplication.LoginSignup.StartupScreen;
 import com.mta.greenguardianapplication.model.UserPlant;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Objects;
 
 public class AddUserPlantForm extends AppCompatActivity {
@@ -71,7 +75,7 @@ public class AddUserPlantForm extends AppCompatActivity {
 
     String storagePath = "Users_Plants_Img/";
     Uri image_uri;
-
+    private static final int CAMERA_REQUEST = 1888;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -399,16 +403,50 @@ public class AddUserPlantForm extends AppCompatActivity {
 
     private void pickFromCamera() {
         // Create the camera intent
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         // Check if there's a camera app available to handle the intent
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             // Launch the camera activity and pass null as the argument
-            cameraLauncher.launch(null);
+            //cameraLauncher.launch(null);
+            cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(cameraIntent, CAMERA_REQUEST);
         } else {
             // If there's no camera app available, show a message to the user or handle the situation accordingly
             Toast.makeText(this, "No camera app found", Toast.LENGTH_SHORT).show();
         }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            Uri myUri = bitmapToUriConverter(photo);
+            plantPicture.setImageURI(myUri);
+            progressDialog.dismiss();
+            imageUrl = myUri.toString();
+            uploadPlantPicture(myUri);
+            //imageView.setImageBitmap(photo);
+
+        }
+    }
+    private Uri bitmapToUriConverter(Bitmap bitmap) {
+        Uri uri = null;
+        try {
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            // Ensure the bitmap is not compressed
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            // Create a temporary file to store the bitmap
+            File file = new File(getCacheDir(), "temp_image");
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+            uri = Uri.fromFile(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return uri;
     }
 
     public void addNewUserPlant(String oldNickName, String type, String nickName, int optimalHumidity, String pictureUrl) {

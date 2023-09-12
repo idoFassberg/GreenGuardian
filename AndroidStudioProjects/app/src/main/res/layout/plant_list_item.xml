@@ -54,7 +54,6 @@
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:maxLines="1"
-                    android:textColor="@color/material_dynamic_neutral40"
                     android:textSize="14sp"
                     android:textStyle="normal|bold|italic" />
             </LinearLayout>
@@ -81,7 +80,6 @@
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:maxLines="1"
-                    android:textColor="@color/material_dynamic_neutral40"
                     android:textSize="14sp"
                     android:textStyle="normal|bold|italic" />
             </LinearLayout>
