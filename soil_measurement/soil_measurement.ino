@@ -30,9 +30,9 @@ int convertRawDataToPrecentages(int rawValue)
   const float range = wetSoil - drySoil;
 
   if (rawValue < drySoil)
-    return drySoil;
+    return 0;
   else if (rawValue > wetSoil)
-    return wetSoil;
+    return 100;
   else
     return (((rawValue - drySoil) / (float)range) * 100);
 }
